@@ -1,0 +1,48 @@
+<div class="d-flex">
+    <!-- Sidebar -->
+    <div class="sidebar bg-dark text-white p-3 vh-100">
+        <h4 class="mb-4 text-center">Admin Panel</h4>
+        <ul class="nav flex-column list-unstyled">
+            <li class="nav-item">
+                <a class="nav-link text-white" routerLink="/dashboard">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" routerLink="/view-users">
+                    <i class="bi bi-people"></i> View Users
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" routerLink="/view-buyers">
+                    <i class="bi bi-cart-check"></i> View Buyers
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" routerLink="/view-sellers">
+                    <i class="bi bi-shop"></i> View Sellers
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" routerLink="/view-profit">
+                    <i class="bi bi-graph-up"></i> View Profit
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" routerLink="/add-product">
+                    <i class="bi bi-plus-circle"></i> Add Product
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" routerLink="/view-products">
+                    <i class="bi bi-plus-circle"></i> View All Products
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content p-4 flex-grow-1">
+        <router-outlet></router-outlet>
+    </div>
+</div>

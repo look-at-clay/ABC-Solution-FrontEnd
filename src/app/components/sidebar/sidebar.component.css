@@ -1,0 +1,22 @@
+.sidebar {
+    width: 260px;
+    background: #212121;
+}
+
+.nav-link {
+    font-size: 16px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    text-decoration: none !important;
+    color: white !important;
+}
+
+.nav-link i {
+    margin-right: 8px;
+}
+
+.nav-link:hover {
+    background: #424242;
+    border-radius: 5px;
+}

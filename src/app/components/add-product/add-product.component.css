@@ -1,0 +1,17 @@
+.container-fluid {
+    background: #eef2f7;
+  }
+  
+  h2 {
+    font-size: 2rem;
+  }
+  
+  .form-label {
+    font-weight: 600;
+  }
+  
+  button {
+    font-size: 1.1rem;
+    border-radius: 50px;
+  }
+  

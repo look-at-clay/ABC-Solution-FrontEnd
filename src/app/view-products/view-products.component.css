@@ -1,0 +1,99 @@
+/* product-catalog.component.scss or product-catalog.component.css */
+
+/* Full screen container setup */
+.product-catalog-container {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1rem;
+  background-color: #f8f9fa;
+}
+
+/* Responsive table height calculations */
+.catalog-table {
+  height: calc(100vh - 200px); /* Subtract header + margins */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #6c757d #f8f9fa;
+}
+
+/* For smaller screens, adjust the height */
+@media (max-width: 768px) {
+  .catalog-table {
+    height: calc(100vh - 180px);
+  }
+}
+
+/* For very small screens */
+@media (max-width: 576px) {
+  .catalog-table {
+    height: calc(100vh - 160px);
+  }
+}
+
+/* Custom scrollbar styling */
+.catalog-table::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.catalog-table::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.catalog-table::-webkit-scrollbar-thumb {
+  background-color: #6c757d;
+  border-radius: 4px;
+  border: 2px solid #f8f9fa;
+}
+
+/* Sticky header enhancements */
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+thead.sticky-top::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 5px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1), transparent);
+}
+
+/* Empty state styling */
+.empty-state {
+  height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Helper class for loading state */
+.vh-75 {
+  height: 75vh;
+}
+
+/* Table cell visibility improvements */
+.table td, .table th {
+  padding: 0.75rem;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+/* Make sure the description doesn't stretch the table too wide */
+.table td:nth-child(3) {
+  max-width: 250px;
+}
+
+/* Responsive padding adjustments */
+@media (max-width: 992px) {
+  .container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
