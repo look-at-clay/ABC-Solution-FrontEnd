@@ -18,8 +18,9 @@ import { ViewSellersComponent } from './components/view-sellers/view-sellers.com
 import { ViewProfitComponent } from './components/view-profit/view-profit.component';
 import { AddProductComponent } from './components/add-product/add-product.component';
 import { DeleteProjectComponent } from './components/delete-project/delete-project.component';
-import { ViewProductComponent } from './view-products/view-products.component';
-import { EditProductComponent } from './edit-product/edit-product.component';
+import { EditProductComponent } from './components/edit-product/edit-product.component';
+import { SellerProductsComponent } from './components/seller-products/seller-products.component';
+import { ViewProductComponent } from './components/view-products/view-products.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { EditProductComponent } from './edit-product/edit-product.component';
     AddProductComponent,
     DeleteProjectComponent,
     ViewProductComponent,
-    EditProductComponent
+    EditProductComponent,
+    SellerProductsComponent
   ],
   imports: [
     BrowserModule,

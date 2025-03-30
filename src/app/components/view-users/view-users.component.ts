@@ -10,7 +10,7 @@ import { UserService } from '../../services/user.service';
   templateUrl: './view-users.component.html',
   styleUrl: './view-users.component.css'
 })
-export class ViewUsersComponent {
+export class ViewUsersComponent implements OnInit {
   users: User[] = [];
   loading = true;
   error = '';
@@ -25,17 +25,15 @@ export class ViewUsersComponent {
     this.loading = true;
     this.userService.getAllUsers()
       .subscribe({
-        next: (data) => {
-          this.users = data;
+        next: (data: User[]) => {
+          // Filter out users where level is null
+          this.users = data.filter(user => user.level !== null);
           this.loading = false;
         },
         error: (err) => {
           this.error = 'Failed to load users: ' + (err.message || 'Unknown error');
           this.loading = false;
           console.error('Error fetching users:', err);
-        },
-        complete: () => {
-          this.loading = false;
         }
       });
   }
@@ -46,5 +44,10 @@ export class ViewUsersComponent {
 
   refreshData(): void {
     this.fetchUsers();
+  }
+
+  editUser(user: User): void {
+    console.log('Editing user:', user);
+    // Add your edit logic here (e.g., navigate to edit form)
   }
 }

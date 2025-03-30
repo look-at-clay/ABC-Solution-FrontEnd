@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProductService } from '../services/product.services';
+import { ProductService } from '../../services/product.services';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LevelService } from '../services/level.services';
+import { LevelService } from '../../services/level.services';
 
 @Component({
   selector: 'app-edit-product',

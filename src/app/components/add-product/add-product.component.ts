@@ -16,7 +16,7 @@ export class AddProductComponent {
       name: ['', Validators.required],
       description: ['', Validators.required],
       createdByAdmin: this.fb.group({
-        id: [1, Validators.required]  // Assuming admin ID is always 1, change as needed
+        id: [4, Validators.required]  // Assuming admin ID is always 1, change as needed
       }),
       levelPrices: this.fb.array([
         this.createLevelPrice(1),

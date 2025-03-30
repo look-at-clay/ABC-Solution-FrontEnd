@@ -1,0 +1,42 @@
+<div class="container mt-4">
+    <div class="card shadow-sm">
+      <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">Products for Seller ID: {{ sellerId }}</h4>
+      </div>
+  
+      <div class="card-body">
+        <div *ngIf="loading" class="text-center">
+          <div class="spinner-border text-primary"></div>
+          <p>Loading products...</p>
+        </div>
+  
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error }}
+        </div>
+  
+        <div *ngIf="!loading && sellerProducts.length === 0" class="text-center">
+          <p>No products found for this seller.</p>
+        </div>
+  
+        <table *ngIf="sellerProducts.length > 0" class="table table-bordered mt-3">
+          <thead class="table-dark text-white">
+            <tr>
+              <th>Product Name</th>
+              <th>Description</th>
+              <th>Selling Price</th>
+              <th>Available Quantity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of sellerProducts">
+              <td>{{ product.productName }}</td>
+              <td>{{ product.productDesc }}</td>
+              <td>₹{{ product.sellingPrice | number:'1.2-2' }}</td>
+              <td>{{ product.availableQuantity }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  

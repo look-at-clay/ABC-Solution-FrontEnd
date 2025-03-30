@@ -8,8 +8,9 @@ import { ViewSellersComponent } from './components/view-sellers/view-sellers.com
 import { ViewProfitComponent } from './components/view-profit/view-profit.component';
 import { AddProductComponent } from './components/add-product/add-product.component';
 import { DeleteProjectComponent } from './components/delete-project/delete-project.component';
-import { ViewProductComponent } from './view-products/view-products.component';
-import { EditProductComponent } from './edit-product/edit-product.component';
+import { EditProductComponent } from './components/edit-product/edit-product.component';
+import { ViewProductComponent } from './components/view-products/view-products.component';
+import { SellerProductsComponent } from './components/seller-products/seller-products.component';
 
 
 const routes: Routes = [
@@ -24,7 +25,8 @@ const routes: Routes = [
   { path: 'delete-project', component: DeleteProjectComponent },
   { path: 'products', component: ViewProductComponent },
   { path: 'edit-product/:id', component: EditProductComponent },
-  { path: '', redirectTo: '/products', pathMatch: 'full' }
+  { path: '', redirectTo: '/products', pathMatch: 'full' },
+  { path: 'seller-produtcts/:sellerId', component: SellerProductsComponent},
 ];
 
 @NgModule({
