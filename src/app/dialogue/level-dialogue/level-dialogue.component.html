@@ -1,0 +1,71 @@
+<!-- level-dialog.component.html -->
+<h2 class="mb-3">Level Management</h2>
+<div class="container">
+  <div class="my-3">
+    <h3>Current Levels: {{ data.totalLevels }}</h3>
+  </div>
+
+  <!-- Add Level Form -->
+  <div class="mb-4">
+    <h4>Add New Level</h4>
+    <form [formGroup]="addLevelForm" (ngSubmit)="addLevel()">
+      <div class="mb-3">
+        <label for="levelName" class="form-label">Level Name</label>
+        <input 
+          id="levelName"
+          type="number" 
+          class="form-control" 
+          formControlName="name" 
+          min="1"
+          [ngClass]="{'is-invalid': addLevelForm.get('name')?.invalid && addLevelForm.get('name')?.touched}">
+        <div class="invalid-feedback" *ngIf="addLevelForm.get('name')?.hasError('required') && addLevelForm.get('name')?.touched">
+          Level name is required
+        </div>
+      </div>
+      <button 
+        class="btn btn-primary" 
+        type="submit" 
+        [disabled]="addLevelForm.invalid || isSubmitting">
+        <i class="bi bi-plus-circle me-1"></i> Add Level
+      </button>
+    </form>
+  </div>
+
+  <!-- Delete Level Section -->
+  <div>
+    <h4>Delete Level</h4>
+    <form [formGroup]="deleteLevelForm" (ngSubmit)="deleteLevel()">
+      <div class="mb-3">
+        <label for="levelId" class="form-label">Level ID</label>
+        <input 
+          id="levelId"
+          type="number" 
+          class="form-control" 
+          formControlName="levelId" 
+          min="1"
+          [ngClass]="{'is-invalid': deleteLevelForm.get('levelId')?.invalid && deleteLevelForm.get('levelId')?.touched}">
+        <div class="invalid-feedback" *ngIf="deleteLevelForm.get('levelId')?.hasError('required') && deleteLevelForm.get('levelId')?.touched">
+          Level ID is required
+        </div>
+      </div>
+      <button 
+        class="btn btn-danger" 
+        type="submit" 
+        [disabled]="deleteLevelForm.invalid || isSubmitting">
+        <i class="bi bi-trash me-1"></i> Delete Level
+      </button>
+    </form>
+  </div>
+
+  <!-- Status Messages -->
+  <div *ngIf="successMessage" class="alert alert-success mt-3">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+    {{ errorMessage }}
+  </div>
+  
+  <div class="mt-4 text-end">
+    <button class="btn btn-secondary" (click)="dialogRef.close()">Close</button>
+  </div>
+</div>

@@ -18,4 +18,12 @@ export class LevelService {
   getLevelById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
+
+  addLevel(levelData: { name: number }): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/add`, levelData);
+  }
+
+  deleteLevel(levelId: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${levelId}`);
+  }
 }

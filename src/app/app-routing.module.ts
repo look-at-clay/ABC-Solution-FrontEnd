@@ -11,22 +11,24 @@ import { DeleteProjectComponent } from './components/delete-project/delete-proje
 import { EditProductComponent } from './components/edit-product/edit-product.component';
 import { ViewProductComponent } from './components/view-products/view-products.component';
 import { SellerProductsComponent } from './components/seller-products/seller-products.component';
-
+import { LoginComponent } from './auth/login/login.component';
+import { AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'view-users', component: ViewUsersComponent },
-  { path: 'view-buyers', component: ViewBuyersComponent },
-  { path: 'view-sellers', component: ViewSellersComponent },
-  { path: 'view-profit', component: ViewProfitComponent },
-  { path: 'add-product', component: AddProductComponent },
-  { path: 'view-products', component: ViewProductComponent },
-  { path: 'delete-project', component: DeleteProjectComponent },
-  { path: 'products', component: ViewProductComponent },
-  { path: 'edit-product/:id', component: EditProductComponent },
-  { path: '', redirectTo: '/products', pathMatch: 'full' },
-  { path: 'seller-produtcts/:sellerId', component: SellerProductsComponent},
+  { path: 'auth/login', component: LoginComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'view-users', component: ViewUsersComponent, canActivate: [AuthGuard] },
+  { path: 'view-buyers', component: ViewBuyersComponent, canActivate: [AuthGuard] },
+  { path: 'view-sellers', component: ViewSellersComponent, canActivate: [AuthGuard] },
+  { path: 'view-profit', component: ViewProfitComponent, canActivate: [AuthGuard] },
+  { path: 'add-product', component: AddProductComponent, canActivate: [AuthGuard] },
+  { path: 'view-products', component: ViewProductComponent, canActivate: [AuthGuard] },
+  { path: 'delete-project', component: DeleteProjectComponent, canActivate: [AuthGuard] },
+  { path: 'products', component: ViewProductComponent, canActivate: [AuthGuard] },
+  { path: 'edit-product/:id', component: EditProductComponent, canActivate: [AuthGuard] },
+  { path: 'seller-produtcts/:sellerId', component: SellerProductsComponent, canActivate: [AuthGuard] },
+  { path: '**', redirectTo: '/dashboard' }
 ];
 
 @NgModule({
