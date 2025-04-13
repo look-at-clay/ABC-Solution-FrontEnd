@@ -1,7 +1,15 @@
 .sidebar {
     width: 260px;
     background: #212121;
+    height: 100vh; /* Make sidebar take full height */
+    display: flex;
+    flex-direction: column;
 }
+
+.sidebar-content {
+    overflow-y: auto; /* Enable scroll for sidebar content */
+}
+
 
 .nav-link {
     font-size: 16px;

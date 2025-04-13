@@ -10,7 +10,7 @@
         <p>Loading...</p>
       </div>
 
-      <div *ngIf="error" class="alert alert-danger">
+    <div *ngIf="error" class="alert alert-danger mt-3">
         {{ error }}
       </div>
 
@@ -24,7 +24,7 @@
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody style="max-height: 400px; overflow-y: auto;" class="bg-white">
             <tr *ngFor="let user of users">
               <td>{{ user.id }}</td>
               <td>{{ user.name }}</td>
