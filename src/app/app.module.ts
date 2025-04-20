@@ -26,6 +26,8 @@ import { ViewProductComponent } from './components/view-products/view-products.c
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { AuthModule } from './auth/auth.module';
 import { LevelDialogueComponent } from './dialogue/level-dialogue/level-dialogue.component';
+import { ConfirmDialogueComponent } from './dialogue/confirm-dialogue/confirm-dialogue.component';
+import { LevelAliasDialogueComponent } from './dialogue/level-alias-dialogue/level-alias-dialogue.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { LevelDialogueComponent } from './dialogue/level-dialogue/level-dialogue
     ViewProductComponent,
     EditProductComponent,
     SellerProductsComponent,
-    LevelDialogueComponent // Add this component
+    LevelDialogueComponent,
+    ConfirmDialogueComponent,
+    LevelAliasDialogueComponent
   ],
   imports: [
     BrowserModule,

@@ -4,6 +4,9 @@ import { LevelService } from '../../services/level.services';
 import { User } from '../../models/user.model';
 import { MatDialog } from '@angular/material/dialog';
 import { LevelDialogueComponent } from '../../dialogue/level-dialogue/level-dialogue.component';
+import { AuthService } from '../../services/auth.services';
+import { ConfirmDialogueComponent } from '../../dialogue/confirm-dialogue/confirm-dialogue.component';
+import { LevelAliasDialogueComponent } from '../../dialogue/level-alias-dialogue/level-alias-dialogue.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,7 +27,8 @@ export class DashboardComponent {
   constructor(
     private userService: UserService,
     private levelService: LevelService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -75,8 +79,36 @@ export class DashboardComponent {
     });
   }
 
+  openLevelAliasDialog(): void {
+    const dialogRef = this.dialog.open(LevelAliasDialogueComponent, {
+      width: '500px',
+      data: { levels: [] } // This will be populated in the dialog component
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // No need to refresh anything here as aliases don't affect dashboard stats
+    });
+  }
+
   refreshData(): void {
     this.fetchUserStats();
     this.fetchLevelCount();
+  }
+
+  onLogout(): void {
+    const dialogRef = this.dialog.open(ConfirmDialogueComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirm Logout',
+        message: 'Are you sure you want to log out?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // User confirmed logout
+        this.authService.logout();
+      }
+    });
   }
 }

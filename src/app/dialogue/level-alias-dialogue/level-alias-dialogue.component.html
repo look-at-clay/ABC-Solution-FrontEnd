@@ -1,0 +1,71 @@
+<!-- d:\Maven_Projects\ABC_Solution\abcsolution-frontend\src\app\dialogue\level-alias-dialogue\level-alias-dialogue.component.html -->
+
+<div class="container">
+    <h2 mat-dialog-title>Add Level Alias</h2>
+    
+    <div *ngIf="isLoading" class="text-center my-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+    
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+    
+    <form [formGroup]="aliasForm" (ngSubmit)="onSubmit()">
+      <mat-dialog-content>
+        <div class="mb-3">
+          <label for="levelSelect" class="form-label">Select Level</label>
+          <select 
+            id="levelSelect" 
+            class="form-select" 
+            formControlName="levelId"
+            [disabled]="isLoading">
+            <option value="">-- Select a Level --</option>
+            <option *ngFor="let level of levels" [value]="level.id">
+              {{ level.name }}
+            </option>
+          </select>
+          <div *ngIf="aliasForm.get('levelId')?.invalid && aliasForm.get('levelId')?.touched" class="text-danger">
+            Please select a level
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <label for="aliasName" class="form-label">Alias Name</label>
+          <input 
+            type="text" 
+            id="aliasName" 
+            class="form-control" 
+            formControlName="aliasName"
+            [disabled]="isLoading"
+            placeholder="Enter alias name">
+          <div *ngIf="aliasForm.get('aliasName')?.invalid && aliasForm.get('aliasName')?.touched" class="text-danger">
+            <div *ngIf="aliasForm.get('aliasName')?.errors?.['required']">Alias name is required</div>
+            <div *ngIf="aliasForm.get('aliasName')?.errors?.['minlength']">Alias name must be at least 3 characters</div>
+          </div>
+        </div>
+      </mat-dialog-content>
+      
+      <mat-dialog-actions align="end">
+        <button 
+          type="button" 
+          class="btn btn-secondary me-2" 
+          (click)="onClose()" 
+          [disabled]="isLoading">
+          Close
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary" 
+          [disabled]="aliasForm.invalid || isLoading">
+          Add Alias
+        </button>
+      </mat-dialog-actions>
+    </form>
+  </div>

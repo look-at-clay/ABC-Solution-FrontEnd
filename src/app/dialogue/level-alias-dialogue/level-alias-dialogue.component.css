@@ -1,0 +1,13 @@
+/* d:\Maven_Projects\ABC_Solution\abcsolution-frontend\src\app\dialogue\level-alias-dialogue\level-alias-dialogue.component.css */
+
+.container {
+    padding: 20px;
+  }
+  
+  mat-dialog-content {
+    min-height: 150px;
+  }
+  
+  .cursor-pointer {
+    cursor: pointer;
+  }

@@ -1,164 +1,220 @@
 <div class="container-fluid">
-    <div class="row">
-      <!-- Sidebar (optional, if you have one) -->
-      <!-- <div class="col-md-2 bg-light sidebar">
-            </div> -->
-  
-      <!-- Main Content -->
-      <div class="col-md-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <h2 class="text-primary fw-bold">Dashboard</h2>
-          <div>
-            <button
-              class="btn btn-outline-primary btn-sm"
-              (click)="refreshData()"
-              [disabled]="loading"
-            >
-              <i class="bi bi-arrow-clockwise me-1"></i>Refresh
-            </button>
-            <!-- Add any other actions here, like filters or date ranges -->
-          </div>
-        </div>
-  
-        <!-- Loading and Error Handling -->
-        <div *ngIf="loading" class="text-center py-5">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-          <p class="mt-3 text-muted">Loading dashboard data...</p>
-        </div>
-  
-        <div *ngIf="error" class="alert alert-danger d-flex align-items-center" role="alert">
-          <i class="bi bi-exclamation-triangle-fill me-2"></i>
-          <div>{{ error }}</div>
-        </div>
-  
-        <!-- Key Metrics -->
-        <div class="row" *ngIf="!loading && !error">
-          <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-              <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                  <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                      Total Users
-                    </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ totalUsers }}</div>
-                  </div>
-                  <div class="col-auto">
-                    <i class="bi bi-people-fill fa-2x text-gray-300"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-              <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                  <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                      Buyers
-                    </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ totalBuyers }}</div>
-                  </div>
-                  <div class="col-auto">
-                    <i class="bi bi-cart-fill fa-2x text-gray-300"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-              <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                  <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                      Sellers
-                    </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ totalSellers }}</div>
-                  </div>
-                  <div class="col-auto">
-                    <i class="bi bi-shop fa-2x text-gray-300"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
-              <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                  <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                      Total Profit
-                    </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                      Rs. {{ totalProfit.toLocaleString() }}
-                    </div>
-                  </div>
-                  <div class="col-auto">
-                    <i class="bi bi-currency-dollar fa-2x text-gray-300"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+  <div class="row">
+    <!-- Sidebar (optional, if you have one) -->
+    <!-- <div class="col-md-2 bg-light sidebar">
+    </div> -->
 
-          <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2 cursor-pointer" (click)="openLevelDialog()">
-              <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                  <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                      Total Levels
-                    </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                      {{ totalLevels }}
-                    </div>
-                  </div>
-                  <div class="col-auto">
-                    <i class="bi bi-layers fa-2x text-gray-300"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+    <!-- Main Content -->
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">Dashboard</h2>
 
+        <div class="d-flex align-items-center">
+          <button
+            class="btn btn-outline-primary btn-sm me-2"
+            (click)="refreshData()"
+            [disabled]="loading"
+          >
+            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            (click)="onLogout()"
+          >
+            Logout
+          </button>
         </div>
-  
-        <!-- Charts and Graphs -->
-        <div class="row" *ngIf="!loading && !error">
-          <div class="col-lg-6 mb-4">
-            <div class="card shadow mb-4">
-              <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Sales Overview</h6>
-              </div>
-              <div class="card-body">
-                <!-- Placeholder for a chart library like Chart.js -->
-                <p class="text-center">Chart data will be displayed here.</p>
-              </div>
-            </div>
-          </div>
-  
-          <div class="col-lg-6 mb-4">
-            <div class="card shadow mb-4">
-              <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">User Growth</h6>
-              </div>
-              <div class="card-body">
-                <!-- Placeholder for a chart library like Chart.js -->
-                <p class="text-center">Chart data will be displayed here.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-  
-        <!-- Add more sections as needed: Tables, Progress Bars, etc. -->
       </div>
+
+      <!-- Loading and Error Handling -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3 text-muted">Loading dashboard data...</p>
+      </div>
+
+      <div
+        *ngIf="error"
+        class="alert alert-danger d-flex align-items-center"
+        role="alert"
+      >
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <div>{{ error }}</div>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="row" *ngIf="!loading && !error">
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div
+                    class="text-xs font-weight-bold text-primary text-uppercase mb-1"
+                  >
+                    Total Users
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">
+                    {{ totalUsers }}
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="bi bi-people-fill fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div
+                    class="text-xs font-weight-bold text-success text-uppercase mb-1"
+                  >
+                    Buyers
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">
+                    {{ totalBuyers }}
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="bi bi-cart-fill fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div
+                    class="text-xs font-weight-bold text-warning text-uppercase mb-1"
+                  >
+                    Sellers
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">
+                    {{ totalSellers }}
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="bi bi-shop fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div
+                    class="text-xs font-weight-bold text-danger text-uppercase mb-1"
+                  >
+                    Total Profit
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">
+                    Rs. {{ totalProfit.toLocaleString() }}
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="bi bi-currency-dollar fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div
+            class="card border-left-danger shadow h-100 py-2 cursor-pointer"
+            (click)="openLevelDialog()"
+          >
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div
+                    class="text-xs font-weight-bold text-primary text-uppercase mb-1"
+                  >
+                    Total Levels
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">
+                    {{ totalLevels }}
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="bi bi-layers fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- New Card for Level Aliases -->
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div
+            class="card border-left-info shadow h-100 py-2 cursor-pointer"
+            (click)="openLevelAliasDialog()"
+          >
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div
+                    class="text-xs font-weight-bold text-info text-uppercase mb-1"
+                  >
+                    Level Aliases
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">
+                    Manage
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="bi bi-tag-fill fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts and Graphs -->
+      <div class="row" *ngIf="!loading && !error">
+        <div class="col-lg-6 mb-4">
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Sales Overview</h6>
+            </div>
+            <div class="card-body">
+              <!-- Placeholder for a chart library like Chart.js -->
+              <p class="text-center">Chart data will be displayed here.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">User Growth</h6>
+            </div>
+            <div class="card-body">
+              <!-- Placeholder for a chart library like Chart.js -->
+              <p class="text-center">Chart data will be displayed here.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add more sections as needed: Tables, Progress Bars, etc. -->
     </div>
   </div>
+</div>

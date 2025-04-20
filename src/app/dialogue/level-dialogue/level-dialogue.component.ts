@@ -1,6 +1,5 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LevelService } from '../../services/level.services';
 
 @Component({
@@ -9,44 +8,54 @@ import { LevelService } from '../../services/level.services';
   templateUrl: './level-dialogue.component.html',
   styleUrl: './level-dialogue.component.css'
 })
-export class LevelDialogueComponent {
-  addLevelForm: FormGroup;
-  deleteLevelForm: FormGroup;
+export class LevelDialogueComponent implements OnInit {
   isSubmitting = false;
   successMessage = '';
   errorMessage = '';
+  levels: any[] = [];
+  highestLevel: number = 0;
 
   constructor(
     public dialogRef: MatDialogRef<LevelDialogueComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { totalLevels: number },
-    private fb: FormBuilder,
     private levelService: LevelService
-  ) {
-    this.addLevelForm = this.fb.group({
-      name: ['', [Validators.required]]
-    });
+  ) {}
 
-    this.deleteLevelForm = this.fb.group({
-      levelId: ['', [Validators.required]]
+  ngOnInit(): void {
+    this.fetchLevels();
+  }
+
+  fetchLevels(): void {
+    this.isSubmitting = true;
+    this.levelService.getAllLevels().subscribe({
+      next: (levels) => {
+        this.levels = levels;
+        this.data.totalLevels = levels.length;
+        this.highestLevel = levels.length > 0 ? 
+          Math.max(...levels.map(level => level.name)) : 0;
+        this.isSubmitting = false;
+      },
+      error: (error) => {
+        console.error('Error fetching levels:', error);
+        this.errorMessage = 'Could not fetch levels';
+        this.isSubmitting = false;
+      }
     });
   }
 
   addLevel(): void {
-    if (this.addLevelForm.invalid) return;
-    
     this.isSubmitting = true;
     this.successMessage = '';
     this.errorMessage = '';
     
-    const levelData = this.addLevelForm.value;
+    const newLevelValue = this.highestLevel + 1;
+    const levelData = { name: newLevelValue };
     
     this.levelService.addLevel(levelData).subscribe({
       next: (response) => {
-        this.successMessage = 'Level added successfully!';
-        this.addLevelForm.reset();
+        this.successMessage = `Level ${newLevelValue} added successfully!`;
         this.isSubmitting = false;
-        // Update the total levels count
-        this.data.totalLevels++;
+        this.fetchLevels(); // Refresh the levels list
       },
       error: (error) => {
         this.errorMessage = 'Failed to add level. Please try again.';
@@ -56,27 +65,38 @@ export class LevelDialogueComponent {
     });
   }
 
-  deleteLevel(): void {
-    if (this.deleteLevelForm.invalid) return;
+  // d:\Maven_Projects\ABC_Solution\abcsolution-frontend\src\app\dialogue\level-dialogue\level-dialogue.component.ts
+  deleteHighestLevel(): void {
+    if (this.levels.length === 0) {
+      this.errorMessage = 'No levels to delete';
+      return;
+    }
     
     this.isSubmitting = true;
     this.successMessage = '';
     this.errorMessage = '';
     
-    const levelId = this.deleteLevelForm.get('levelId')?.value;
+    // Find the level with the highest name value
+    const highestLevelObj = this.levels.reduce((prev, current) => 
+      (prev.name > current.name) ? prev : current);
     
-    this.levelService.deleteLevel(levelId).subscribe({
-      next: (response) => {
-        this.successMessage = `Level ${levelId} deleted successfully!`;
-        this.deleteLevelForm.reset();
+    this.levelService.deleteLevel(highestLevelObj.id).subscribe({
+      next: (response: any) => {
+        this.successMessage = `Level ${highestLevelObj.name} deleted successfully!`;
         this.isSubmitting = false;
-        // Update the total levels count
-        this.data.totalLevels--;
+        this.fetchLevels(); // Refresh the levels list
       },
       error: (error) => {
-        this.errorMessage = `Failed to delete level ${levelId}. Please verify the ID and try again.`;
-        console.error('Error deleting level:', error);
-        this.isSubmitting = false;
+        // Check if it's actually a success (status 200) but being treated as an error
+        if (error && error.status === 200) {
+          this.successMessage = `Level ${highestLevelObj.name} deleted successfully!`;
+          this.isSubmitting = false;
+          this.fetchLevels(); // Refresh the levels list
+        } else {
+          this.errorMessage = `Failed to delete level. Please try again.`;
+          console.error('Error deleting level:', error);
+          this.isSubmitting = false;
+        }
       }
     });
   }

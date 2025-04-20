@@ -30,7 +30,7 @@
                 <div *ngIf="product.levelPrices">
                   <ul class="list-unstyled">
                     <li *ngFor="let level of product.levelPrices">
-                      Level {{ level.levelId }}: {{ level.minPrice }} - {{ level.maxPrice }}
+                      Level {{ level.name }}: {{ level.minPrice }} - {{ level.maxPrice }}
                     </li>
                   </ul>
                 </div>
@@ -39,7 +39,7 @@
                 <div *ngIf="product.levelPrices">
                   <ul class="list-unstyled">
                     <li *ngFor="let level of product.levelPrices">
-                      Level {{ level.levelId }}: {{ level.minQuantity }} - {{ level.maxQuantity }}
+                      Level {{ level.name }}: {{ level.minQuantity }} - {{ level.maxQuantity }}
                     </li>
                   </ul>
                 </div>

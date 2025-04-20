@@ -1,3 +1,4 @@
+<!-- d:\Maven_Projects\ABC_Solution\abcsolution-frontend\src\app\components\add-product\add-product.component.html -->
 <div class="container-fluid p-3">
   <div class="card shadow border-0">
     <div class="card-header bg-primary text-white py-3">
@@ -5,7 +6,7 @@
     </div>
     <div class="card-body" style="height: calc(100vh - 180px); overflow-y: auto;">
       <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
-        
+      
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="form-label">Product Name</label>
@@ -21,7 +22,7 @@
         <h5 class="mt-4 mb-3 text-secondary">Pricing & Quantity Levels</h5>
         <div formArrayName="levelPrices">
           <div *ngFor="let levelPrice of levelPrices.controls; let i = index" [formGroupName]="i" class="border p-3 mb-3 rounded">
-            <h6 class="text-secondary">Level {{ i + 1 }}</h6>
+            <h6 class="text-secondary">Level {{ levels.length > 0 ? levels[i].name : i + 1 }}</h6>
             
             <div class="row g-3">
               <div class="col-md-6">
