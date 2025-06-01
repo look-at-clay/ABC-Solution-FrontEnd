@@ -1,70 +1,47 @@
-.login-container {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    min-height: 100vh;
-  }
-  
-  .card {
-    border-radius: 10px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    }
-  }
-  
-  .card-header {
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-    border-bottom: none;
-  }
-  
-  .form-control {
-    border-radius: 5px;
-    
-    &:focus {
-      border-color: #007bff;
-      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    }
-  }
-  
-  .btn-primary {
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-    border: none;
-    border-radius: 5px;
-    padding: 12px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
-    }
-    
-    &:active {
-      transform: translateY(0);
-    }
-    
-    &:disabled {
-      background: #6c757d;
-      transform: none;
-      box-shadow: none;
-    }
-  }
-  
-  .form-check-input:checked {
-    background-color: #007bff;
-    border-color: #007bff;
-  }
-  
-  .alert {
-    border-radius: 5px;
-    border-left: 4px solid #dc3545;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 576px) {
-    .card-body {
-      padding: 1.5rem !important;
-    }
-  }
+/* Custom animation for pulse effect */
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.2); opacity: 0.3; }
+  100% { transform: scale(1); opacity: 0.7; }
+}
+
+/* Custom shadow for inputs on focus */
+.form-control:focus {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+/* Background gradient */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+}
+
+/* Hover scale effect for links */
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+/* Enhanced button styling */
+.btn-primary {
+  background: linear-gradient(to right, #4e73df, #224abe);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(to right, #224abe, #1a3a96);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom input styling */
+.form-control {
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  transform: translateY(-1px);
+}

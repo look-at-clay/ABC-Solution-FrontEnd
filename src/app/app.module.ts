@@ -28,6 +28,8 @@ import { AuthModule } from './auth/auth.module';
 import { LevelDialogueComponent } from './dialogue/level-dialogue/level-dialogue.component';
 import { ConfirmDialogueComponent } from './dialogue/confirm-dialogue/confirm-dialogue.component';
 import { LevelAliasDialogueComponent } from './dialogue/level-alias-dialogue/level-alias-dialogue.component';
+import { BuyerProductsComponent } from './components/buyer-products/buyer-products.component';
+import { ViewOngoingordersComponent } from './components/view-ongoingorders/view-ongoingorders.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import { LevelAliasDialogueComponent } from './dialogue/level-alias-dialogue/lev
     SellerProductsComponent,
     LevelDialogueComponent,
     ConfirmDialogueComponent,
-    LevelAliasDialogueComponent
+    LevelAliasDialogueComponent,
+    BuyerProductsComponent,
+    ViewOngoingordersComponent
   ],
   imports: [
     BrowserModule,

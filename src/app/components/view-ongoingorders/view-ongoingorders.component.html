@@ -1,0 +1,229 @@
+<!-- Page Header -->
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-shopping-cart"></i> Ongoing Orders Management
+      </h1>
+      <div class="d-flex">
+        <button class="btn btn-outline-secondary btn-sm me-2" (click)="clearFilters()">
+          <i class="fas fa-refresh"></i> Clear Filters
+        </button>
+      </div>
+    </div>
+  
+    <!-- Filters Section -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3 bg-gradient-primary">
+        <h6 class="m-0 font-weight-bold text-white">
+          <i class="fas fa-filter"></i> Search & Filters
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <!-- Search Input -->
+          <div class="col-md-4 mb-3">
+            <label for="search" class="form-label fw-bold">Search Orders</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fas fa-search"></i>
+              </span>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="search"
+                [formControl]="searchControl"
+                placeholder="Search by Order ID, Buyer, Seller, or Product..."
+              >
+            </div>
+          </div>
+  
+          <!-- Status Filter -->
+          <div class="col-md-2 mb-3">
+            <label for="statusFilter" class="form-label fw-bold">Status</label>
+            <select class="form-select" id="statusFilter" [formControl]="statusFilter">
+              <option value="">All Status</option>
+              <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+            </select>
+          </div>
+  
+          <!-- Order Type Filter -->
+          <div class="col-md-2 mb-3">
+            <label for="orderTypeFilter" class="form-label fw-bold">Order Type</label>
+            <select class="form-select" id="orderTypeFilter" [formControl]="orderTypeFilter">
+              <option value="">All Types</option>
+              <option *ngFor="let type of orderTypeOptions" [value]="type">{{ type }}</option>
+            </select>
+          </div>
+  
+          <!-- User ID Search -->
+          <div class="col-md-2 mb-3">
+            <label for="userId" class="form-label fw-bold">User ID</label>
+            <input 
+              type="number" 
+              class="form-control" 
+              id="userId"
+              [(ngModel)]="selectedUserId"
+              placeholder="Enter User ID"
+            >
+          </div>
+  
+          <!-- User Type -->
+          <div class="col-md-2 mb-3">
+            <label for="userType" class="form-label fw-bold">Search As</label>
+            <select class="form-select" id="userType" [(ngModel)]="selectedUserType" (ngModelChange)="loadOrders()">
+              <option value="all">All Orders</option>
+              <option value="buyer">Buyer</option>
+              <option value="seller">Seller</option>
+            </select>
+          </div>
+        </div>
+  
+        <!-- Action Buttons -->
+        <div class="row">
+          <div class="col-12">
+            <button 
+              class="btn btn-primary me-2" 
+              (click)="loadOrders()"
+              [disabled]="loading"
+            >
+              <i class="fas fa-search"></i> 
+              {{ loading ? 'Loading...' : 'Search Orders' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Error Alert -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ error }}
+      <button type="button" class="btn-close" (click)="error = null"></button>
+    </div>
+  
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading orders...</p>
+    </div>
+  
+    <!-- Orders Table -->
+    <div *ngIf="!loading && filteredOrders.length > 0" class="card shadow mb-4">
+      <div class="card-header py-3 bg-gradient-success">
+        <h6 class="m-0 font-weight-bold text-white">
+          <i class="fas fa-table"></i> Orders List ({{ totalItems }} orders found)
+        </h6>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-dark">
+              <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Buyer</th>
+                <th>Seller</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Order Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of getPaginatedOrders()" class="order-row">
+                <td class="fw-bold text-primary">#{{ order.id }}</td>
+                <td>
+                  <div class="product-info">
+                    <strong class="text-dark">{{ order.product.name }}</strong>
+                    <small class="text-muted d-block">{{ order.product.description }}</small>
+                  </div>
+                </td>
+                <td>
+                  <div class="user-info">
+                    <strong>{{ order.buyer.name }}</strong>
+                    <small class="text-muted d-block">{{ order.buyer.email }}</small>
+                    <small class="text-muted">{{ order.buyer.phoneNumber }}</small>
+                  </div>
+                </td>
+                <td>
+                  <div class="user-info">
+                    <strong>{{ order.seller.name }}</strong>
+                    <small class="text-muted d-block">{{ order.seller.email }}</small>
+                    <small class="text-muted">{{ order.seller.phoneNumber }}</small>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <span class="badge bg-info text-dark fs-6">{{ order.buyerQuantity }}</span>
+                </td>
+                <td class="fw-bold">{{ formatCurrency(order.sellerPrice) }}</td>
+                <td class="fw-bold text-success">{{ formatCurrency(order.totalAmount) }}</td>
+                <td>
+                  <span class="badge" [ngClass]="getStatusBadgeClass(order.status)">
+                    {{ order.status }}
+                  </span>
+                </td>
+                <td class="text-muted">{{ formatDate(order.orderDate) }}</td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-outline-primary" title="View Details">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" title="Edit">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+  
+      <!-- Pagination -->
+      <div class="card-footer d-flex justify-content-between align-items-center">
+        <div class="text-muted">
+          Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to 
+          {{ Math.min(currentPage * itemsPerPage, totalItems) }} of {{ totalItems }} orders
+        </div>
+        <nav>
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <button class="page-link" (click)="previousPage()">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+            </li>
+            <li 
+              *ngFor="let page of [].constructor(getTotalPages()); let i = index" 
+              class="page-item" 
+              [class.active]="currentPage === i + 1"
+            >
+              <button class="page-link" (click)="goToPage(i + 1)">{{ i + 1 }}</button>
+            </li>
+            <li class="page-item" [class.disabled]="currentPage === getTotalPages()">
+              <button class="page-link" (click)="nextPage()">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  
+    <!-- No Orders Found -->
+    <div *ngIf="!loading && filteredOrders.length === 0 && !error" class="card shadow">
+      <div class="card-body text-center py-5">
+        <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+        <h4 class="text-muted">No Orders Found</h4>
+        <p class="text-muted">
+          No orders match your current search criteria. Try adjusting your filters or search terms.
+        </p>
+        <button class="btn btn-primary" (click)="clearFilters()">
+          <i class="fas fa-refresh"></i> Clear All Filters
+        </button>
+      </div>
+    </div>
+  </div>

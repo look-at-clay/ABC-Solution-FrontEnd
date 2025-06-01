@@ -13,6 +13,8 @@ import { ViewProductComponent } from './components/view-products/view-products.c
 import { SellerProductsComponent } from './components/seller-products/seller-products.component';
 import { LoginComponent } from './auth/login/login.component';
 import { AuthGuard } from './auth/auth.guard';
+import { BuyerProductsComponent } from './components/buyer-products/buyer-products.component';
+import { ViewOngoingordersComponent } from './components/view-ongoingorders/view-ongoingorders.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
@@ -27,7 +29,9 @@ const routes: Routes = [
   { path: 'delete-project', component: DeleteProjectComponent, canActivate: [AuthGuard] },
   { path: 'products', component: ViewProductComponent, canActivate: [AuthGuard] },
   { path: 'edit-product/:id', component: EditProductComponent, canActivate: [AuthGuard] },
-  { path: 'seller-produtcts/:sellerId', component: SellerProductsComponent, canActivate: [AuthGuard] },
+  { path: 'seller-products/:sellerId', component: SellerProductsComponent, canActivate: [AuthGuard] },
+  { path: 'buyer-products/:buyerId', component: BuyerProductsComponent, canActivate: [AuthGuard] },
+  { path: 'view-ongoingorders', component: ViewOngoingordersComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '/dashboard' }
 ];
 

@@ -56,7 +56,7 @@ export class ViewSellersComponent {
 
   // Fetch and display products when "View" button is clicked
   viewProducts(sellerId: number): void {
-    this.router.navigate(['/seller-produtcts', sellerId]);
+    this.router.navigate(['/seller-products', sellerId]);
   }
 }
 

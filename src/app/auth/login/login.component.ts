@@ -13,6 +13,7 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   isSubmitting = false;
   loginError = '';
+  showPassword = false;
   
   constructor(
     private formBuilder: FormBuilder,
