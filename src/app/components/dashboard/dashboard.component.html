@@ -47,15 +47,20 @@
 
       <!-- Key Metrics -->
       <div class="row" *ngIf="!loading && !error">
+        <!-- Replace the existing Total Users card with this updated version -->
         <div class="col-xl-3 col-md-6 mb-4">
-          <div class="card border-left-primary shadow h-100 py-2">
+          <div 
+            class="card border-left-primary shadow h-100 py-2 cursor-pointer" 
+            (click)="openUserLevelStatsDialog()"
+            style="cursor: pointer; transition: transform 0.2s;"
+            onmouseover="this.style.transform='scale(1.02)'" 
+            onmouseout="this.style.transform='scale(1)'">
             <div class="card-body">
               <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
-                  <div
-                    class="text-xs font-weight-bold text-primary text-uppercase mb-1"
-                  >
+                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                     Total Users
+                    <i class="bi bi-info-circle ms-1" title="Click to view level statistics"></i>
                   </div>
                   <div class="h5 mb-0 font-weight-bold text-gray-800">
                     {{ totalUsers }}
@@ -63,6 +68,59 @@
                 </div>
                 <div class="col-auto">
                   <i class="bi bi-people-fill fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add this new Total Orders card after the Total Profit card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div 
+            class="card border-left-info shadow h-100 py-2 cursor-pointer" 
+            (click)="openOrderStatisticsDialog()"
+            style="cursor: pointer; transition: transform 0.2s;"
+            onmouseover="this.style.transform='scale(1.02)'" 
+            onmouseout="this.style.transform='scale(1)'">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                    Total Orders
+                    <i class="bi bi-info-circle ms-1" title="Click to view order statistics"></i>
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">
+                    {{ totalOrders }}
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="bi bi-bar-chart-fill fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div 
+            class="card border-left-purple shadow h-100 py-2 cursor-pointer" 
+            (click)="openCombinedRequestsDialog()"
+            style="cursor: pointer; transition: transform 0.2s;"
+            onmouseover="this.style.transform='scale(1.02)'" 
+            onmouseout="this.style.transform='scale(1)'">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-purple text-uppercase mb-1">
+                    Total Open Requests
+                    <i class="bi bi-info-circle ms-1" title="Click to view request statistics"></i>
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">
+                    {{ totalOpenRequests }}
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="bi bi-inbox-fill fa-2x text-gray-300"></i>
                 </div>
               </div>
             </div>

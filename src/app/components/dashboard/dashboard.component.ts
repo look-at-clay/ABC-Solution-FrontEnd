@@ -4,9 +4,16 @@ import { LevelService } from '../../services/level.services';
 import { User } from '../../models/user.model';
 import { MatDialog } from '@angular/material/dialog';
 import { LevelDialogueComponent } from '../../dialogue/level-dialogue/level-dialogue.component';
+import { UserLevelStatsDialogueComponent } from '../../dialogue/user-level-stats-dialogue/user-level-stats-dialogue.component';
+import { OrderStatsDialogueComponent } from '../../dialogue/order-stats-dialogue/order-stats-dialogue.component';
 import { AuthService } from '../../services/auth.services';
 import { ConfirmDialogueComponent } from '../../dialogue/confirm-dialogue/confirm-dialogue.component';
 import { LevelAliasDialogueComponent } from '../../dialogue/level-alias-dialogue/level-alias-dialogue.component';
+import { AdminService } from '../../services/admin.services';
+import { UserLevelStats } from '../../models/user-stats.mode';
+import { OrderStatistics } from '../../models/order-stat.model';
+import { CombinedRequestStats } from '../../models/request-stats.model';
+import { CombinedRequestsDialogueComponent } from '../../dialogue/combined-requests-dialogue/combined-requests-dialogue.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,8 +25,13 @@ export class DashboardComponent {
   totalUsers = 0;
   totalBuyers = 0;
   totalSellers = 0;
-  totalProfit = 52500; 
+  totalProfit = 52500;
   totalLevels = 0;
+  totalOrders = 0; 
+  userLevelStats: UserLevelStats | null = null;
+  orderStatistics: OrderStatistics | null = null;
+  combinedRequestStats: CombinedRequestStats | null = null;
+  totalOpenRequests = 0;
   
   loading = true;
   error = '';
@@ -28,19 +40,59 @@ export class DashboardComponent {
     private userService: UserService,
     private levelService: LevelService,
     private dialog: MatDialog,
-    private authService: AuthService
+    private authService: AuthService,
+    private adminService: AdminService,
   ) { }
 
   ngOnInit(): void {
     this.fetchUserStats();
+    this.fetchUserLevelStats();
     this.fetchLevelCount();
+    this.fetchOrderStatistics(); 
+    this.fetchCombinedRequestStats();
+  }
+
+  // Add this new method
+  fetchCombinedRequestStats(): void {
+    this.adminService.getCombinedRequestStats().subscribe({
+      next: (stats: CombinedRequestStats) => {
+        this.combinedRequestStats = stats;
+        this.totalOpenRequests = 
+          stats.buyerStats.totalBuyerRequests + 
+          stats.sellerStats.totalSellerRequests;
+        this.loading = false;
+      },
+      error: (error: any) => {
+        this.error = 'Failed to load request statistics';
+        this.loading = false;
+        console.error('Error fetching request stats:', error);
+      }
+    });
+  }
+
+  // Add this new method
+  openCombinedRequestsDialog(): void {
+    if (!this.combinedRequestStats) {
+      this.error = 'Request statistics not available';
+      return;
+    }
+
+    const dialogRef = this.dialog.open(CombinedRequestsDialogueComponent, {
+      width: '800px',
+      maxWidth: '90vw',
+      data: this.combinedRequestStats,
+      panelClass: 'custom-dialog-container'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // Handle any post-dialog actions if needed
+    });
   }
 
   fetchUserStats(): void {
     this.loading = true;
     this.userService.getAllUsers().subscribe({
       next: (users: User[]) => {
-        this.totalUsers = users.length;
         this.totalBuyers = users.filter(user => user.role === 'BUYER').length;
         this.totalSellers = users.filter(user => user.role === 'SELLER').length;
         this.loading = false;
@@ -52,7 +104,38 @@ export class DashboardComponent {
       }
     });
   }
-  
+
+  fetchUserLevelStats(): void {
+    this.adminService.getUserLevelStats().subscribe({
+      next: (stats: UserLevelStats) => {
+        this.userLevelStats = stats;
+        this.totalUsers = stats.totalUsers;
+        this.loading = false;
+      },
+      error: (error: any) => {
+        this.error = 'Failed to load user level statistics';
+        this.loading = false;
+        console.error('Error fetching user level stats:', error);
+      }
+    });
+  }
+
+  // Add this new method
+  fetchOrderStatistics(): void {
+    this.adminService.getOrderStatistics().subscribe({
+      next: (stats: OrderStatistics) => {
+        this.orderStatistics = stats;
+        this.totalOrders = stats.totalOrders;
+        this.loading = false;
+      },
+      error: (error: any) => {
+        this.error = 'Failed to load order statistics';
+        this.loading = false;
+        console.error('Error fetching order statistics:', error);
+      }
+    });
+  }
+
   fetchLevelCount(): void {
     this.levelService.getAllLevels().subscribe({
       next: (levels) => {
@@ -67,6 +150,42 @@ export class DashboardComponent {
     });
   }
 
+  openUserLevelStatsDialog(): void {
+    if (!this.userLevelStats) {
+      this.error = 'User level statistics not available';
+      return;
+    }
+
+    const dialogRef = this.dialog.open(UserLevelStatsDialogueComponent, {
+      width: '600px',
+      data: this.userLevelStats,
+      panelClass: 'custom-dialog-container'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // Handle any post-dialog actions if needed
+    });
+  }
+
+  // Add this new method
+  openOrderStatisticsDialog(): void {
+    if (!this.orderStatistics) {
+      this.error = 'Order statistics not available';
+      return;
+    }
+
+    const dialogRef = this.dialog.open(OrderStatsDialogueComponent, {
+      width: '800px',
+      maxWidth: '90vw',
+      data: this.orderStatistics,
+      panelClass: 'custom-dialog-container'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // Handle any post-dialog actions if needed
+    });
+  }
+
   openLevelDialog(): void {
     const dialogRef = this.dialog.open(LevelDialogueComponent, {
       width: '500px',
@@ -74,7 +193,6 @@ export class DashboardComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      // Refresh data after dialog is closed
       this.fetchLevelCount();
     });
   }
@@ -82,7 +200,7 @@ export class DashboardComponent {
   openLevelAliasDialog(): void {
     const dialogRef = this.dialog.open(LevelAliasDialogueComponent, {
       width: '500px',
-      data: { levels: [] } // This will be populated in the dialog component
+      data: { levels: [] }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -92,7 +210,10 @@ export class DashboardComponent {
 
   refreshData(): void {
     this.fetchUserStats();
+    this.fetchUserLevelStats();
     this.fetchLevelCount();
+    this.fetchOrderStatistics();
+    this.fetchCombinedRequestStats();
   }
 
   onLogout(): void {
@@ -106,7 +227,6 @@ export class DashboardComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // User confirmed logout
         this.authService.logout();
       }
     });

@@ -30,6 +30,10 @@ import { ConfirmDialogueComponent } from './dialogue/confirm-dialogue/confirm-di
 import { LevelAliasDialogueComponent } from './dialogue/level-alias-dialogue/level-alias-dialogue.component';
 import { BuyerProductsComponent } from './components/buyer-products/buyer-products.component';
 import { ViewOngoingordersComponent } from './components/view-ongoingorders/view-ongoingorders.component';
+import { UserLevelStatsDialogueComponent } from './dialogue/user-level-stats-dialogue/user-level-stats-dialogue.component';
+import { OrderStatsDialogueComponent } from './dialogue/order-stats-dialogue/order-stats-dialogue.component';
+import { FilterPipe } from './pipes/filter.pipes';
+import { CombinedRequestsDialogueComponent } from './dialogue/combined-requests-dialogue/combined-requests-dialogue.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +53,10 @@ import { ViewOngoingordersComponent } from './components/view-ongoingorders/view
     ConfirmDialogueComponent,
     LevelAliasDialogueComponent,
     BuyerProductsComponent,
-    ViewOngoingordersComponent
+    ViewOngoingordersComponent,
+    UserLevelStatsDialogueComponent,
+    OrderStatsDialogueComponent,
+    CombinedRequestsDialogueComponent,
   ],
   imports: [
     BrowserModule,

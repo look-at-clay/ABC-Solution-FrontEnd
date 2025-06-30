@@ -1,0 +1,36 @@
+.dialog-container {
+  padding: 1.5rem;
+  min-width: 600px;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.status-card {
+  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+}
+
+.status-card:hover {
+  background-color: #e9ecef;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.progress {
+  border-radius: 3px;
+  background-color: #e9ecef;
+}
+
+.buyer-stats, .seller-stats {
+  border-left: 3px solid;
+  padding-left: 1rem;
+}
+
+.buyer-stats {
+  border-left-color: #0d6efd;
+}
+
+.seller-stats {
+  border-left-color: #198754;
+}

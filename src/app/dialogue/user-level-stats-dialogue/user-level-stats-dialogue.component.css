@@ -1,0 +1,45 @@
+.dialog-container {
+  padding: 1.5rem;
+  min-width: 400px;
+  max-width: 600px;
+}
+
+.level-item {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: #f8f9fa;
+}
+
+.level-info {
+  display: flex;
+  align-items: center;
+}
+
+.progress {
+  border-radius: 4px;
+  background-color: #e9ecef;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.btn-close:hover {
+  opacity: 1;
+}
+
+.dialog-header {
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 1rem;
+}
+
+.dialog-footer {
+  border-top: 1px solid #e9ecef;
+  padding-top: 1rem;
+  text-align: right;
+}

@@ -1,0 +1,119 @@
+<div class="dialog-container">
+  <div class="dialog-header d-flex justify-content-between align-items-center mb-3">
+    <h4 class="modal-title text-primary fw-bold mb-0">
+      <i class="bi bi-inbox-fill me-2"></i>Open Requests Statistics
+    </h4>
+    <button 
+      type="button" 
+      class="btn-close" 
+      (click)="onClose()" 
+      aria-label="Close">
+    </button>
+  </div>
+
+  <div class="dialog-body">
+    <!-- Total Requests Summary -->
+    <div class="alert alert-info d-flex align-items-center mb-4">
+      <i class="bi bi-info-circle-fill me-2"></i>
+      <div>
+        <strong>Total Open Requests:</strong> 
+        {{ data.buyerStats.totalBuyerRequests + data.sellerStats.totalSellerRequests }}
+      </div>
+    </div>
+
+    <!-- Buyer Requests -->
+    <div class="buyer-stats mb-5">
+      <h5 class="text-primary mb-3 d-flex align-items-center">
+        <i class="bi bi-cart-fill me-2"></i>Buyer Requests
+        <span class="badge bg-primary ms-2">
+          Total: {{ data.buyerStats.totalBuyerRequests }}
+        </span>
+      </h5>
+      
+      <div class="row">
+        <div 
+          *ngFor="let statusCount of data.buyerStats.statusCounts" 
+          class="col-md-6 mb-3">
+          <div class="status-card border rounded p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div class="status-info d-flex align-items-center">
+                <i [class]="getStatusIcon(statusCount.status) + ' me-2 text-muted'"></i>
+                <span [class]="'badge ' + getStatusColor(statusCount.status) + ' me-2'">
+                  {{ formatStatusName(statusCount.status) }}
+                </span>
+                <span class="fw-bold">{{ statusCount.count }}</span>
+              </div>
+              <span class="text-muted small">
+                {{ getPercentage(statusCount.count, data.buyerStats.totalBuyerRequests) | number:'1.1-1' }}%
+              </span>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress" style="height: 6px;">
+              <div 
+                [class]="'progress-bar ' + getStatusColor(statusCount.status)"
+                role="progressbar" 
+                [style.width.%]="getPercentage(statusCount.count, data.buyerStats.totalBuyerRequests)"
+                [attr.aria-valuenow]="getPercentage(statusCount.count, data.buyerStats.totalBuyerRequests)"
+                aria-valuemin="0" 
+                aria-valuemax="100">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seller Requests -->
+    <div class="seller-stats">
+      <h5 class="text-success mb-3 d-flex align-items-center">
+        <i class="bi bi-shop me-2"></i>Seller Requests
+        <span class="badge bg-success ms-2">
+          Total: {{ data.sellerStats.totalSellerRequests }}
+        </span>
+      </h5>
+      
+      <div class="row">
+        <div 
+          *ngFor="let statusCount of data.sellerStats.statusCounts" 
+          class="col-md-6 mb-3">
+          <div class="status-card border rounded p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div class="status-info d-flex align-items-center">
+                <i [class]="getStatusIcon(statusCount.status) + ' me-2 text-muted'"></i>
+                <span [class]="'badge ' + getStatusColor(statusCount.status) + ' me-2'">
+                  {{ formatStatusName(statusCount.status) }}
+                </span>
+                <span class="fw-bold">{{ statusCount.count }}</span>
+              </div>
+              <span class="text-muted small">
+                {{ getPercentage(statusCount.count, data.sellerStats.totalSellerRequests) | number:'1.1-1' }}%
+              </span>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress" style="height: 6px;">
+              <div 
+                [class]="'progress-bar ' + getStatusColor(statusCount.status)"
+                role="progressbar" 
+                [style.width.%]="getPercentage(statusCount.count, data.sellerStats.totalSellerRequests)"
+                [attr.aria-valuenow]="getPercentage(statusCount.count, data.sellerStats.totalSellerRequests)"
+                aria-valuemin="0" 
+                aria-valuemax="100">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dialog-footer mt-4 d-flex justify-content-end">
+    <button 
+      type="button" 
+      class="btn btn-secondary" 
+      (click)="onClose()">
+      Close
+    </button>
+  </div>
+</div>
