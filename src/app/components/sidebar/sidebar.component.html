@@ -1,61 +1,71 @@
-<div class="d-flex" style="height: 100vh;">
+<div class="d-flex flex-column flex-md-row" style="min-height: 100vh;">
+    <!-- Mobile Header with Toggle Button -->
+    <div class="d-md-none bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">BioTradX Admin</h4>
+        <button class="btn btn-outline-light" type="button" (click)="toggleSidebar()">
+            <i class="bi" [ngClass]="{'bi-list': !isSidebarOpen, 'bi-x': isSidebarOpen}"></i>
+        </button>
+    </div>
+
     <!-- Sidebar -->
-    <div class="sidebar bg-dark text-white p-3" style="width: 280px; flex-shrink: 0; overflow-y: auto; height: 100%;">
+    <div class="sidebar bg-dark text-white" [ngClass]="{'sidebar-open': isSidebarOpen, 'sidebar-closed': !isSidebarOpen}">
         <div class="d-flex flex-column h-100">
-            <h4 class="mb-4 text-center">BioTradX Admin</h4>
+            <h4 class="mb-4 text-center d-none d-md-block">BioTradX Admin</h4>
             <ul class="nav flex-column list-unstyled flex-grow-1">
                 <li class="nav-item">
-                    <a class="nav-link text-white" routerLink="/dashboard" routerLinkActive="active">
+                    <a class="nav-link text-white" routerLink="/dashboard" routerLinkActive="active" (click)="closeSidebarOnMobile()">
                         <i class="bi bi-speedometer2 me-2"></i> Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" routerLink="/view-users" routerLinkActive="active">
+                    <a class="nav-link text-white" routerLink="/view-users" routerLinkActive="active" (click)="closeSidebarOnMobile()">
                         <i class="bi bi-people me-2"></i> View Users
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" routerLink="/view-buyers" routerLinkActive="active">
+                    <a class="nav-link text-white" routerLink="/view-buyers" routerLinkActive="active" (click)="closeSidebarOnMobile()">
                         <i class="bi bi-cart-check me-2"></i> View Buyers
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" routerLink="/view-sellers" routerLinkActive="active">
+                    <a class="nav-link text-white" routerLink="/view-sellers" routerLinkActive="active" (click)="closeSidebarOnMobile()">
                         <i class="bi bi-shop me-2"></i> View Sellers
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" routerLink="/view-profit" routerLinkActive="active">
+                    <a class="nav-link text-white" routerLink="/view-profit" routerLinkActive="active" (click)="closeSidebarOnMobile()">
                         <i class="bi bi-graph-up me-2"></i> View Profit
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" routerLink="/add-product" routerLinkActive="active">
+                    <a class="nav-link text-white" routerLink="/add-product" routerLinkActive="active" (click)="closeSidebarOnMobile()">
                         <i class="bi bi-plus-circle me-2"></i> Add Product
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" routerLink="/view-products" routerLinkActive="active">
+                    <a class="nav-link text-white" routerLink="/view-products" routerLinkActive="active" (click)="closeSidebarOnMobile()">
                         <i class="bi bi-box-seam me-2"></i> View All Products
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" routerLink="/view-ongoingorders" routerLinkActive="active">
+                    <a class="nav-link text-white" routerLink="/view-ongoingorders" routerLinkActive="active" (click)="closeSidebarOnMobile()">
                         <i class="bi bi-box-seam me-2"></i> View OnGoing Orders
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" routerLink="/news-management" routerLinkActive="active">
+                    <a class="nav-link text-white" routerLink="/news-management" routerLinkActive="active" (click)="closeSidebarOnMobile()">
                         <i class="bi bi-newspaper me-2"></i> News Management
                     </a>
                 </li>
-
             </ul>
         </div>
     </div>
 
     <!-- Content Area -->
-    <div class="content p-4 flex-grow-1">
+    <div class="content p-3 p-md-4 flex-grow-1">
         <router-outlet></router-outlet>
     </div>
+
+    <!-- Overlay for mobile -->
+    <div class="sidebar-overlay" *ngIf="isSidebarOpen" (click)="closeSidebarOnMobile()"></div>
 </div>

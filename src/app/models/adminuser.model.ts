@@ -1,23 +1,23 @@
-// models/user.model.ts
+
 export interface AdminUser {
   id: number;
   name: string;
   email: string;
   phone?: string;
   password: string;
-  isBlocked: boolean;
+  isBlocked: boolean; // Primary blocking status flag
   phoneNumber: string;
   level: Level;
   addresses: Address[];
   wallet?: Wallet;
   referralCode?: string;
   referredBy?: string;
-  blocked: boolean;
+  blocked?: boolean; // Legacy blocking status flag, kept for backward compatibility
 }
 
 export interface Level {
   id: number;
-  name: number;
+  name: string;
 }
 
 export interface Address {

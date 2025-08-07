@@ -1,21 +1,39 @@
-<div class="container-fluid p-3">
+<div class="container-fluid p-2 p-sm-3">
   <div class="card shadow border-0">
-    <div class="card-header bg-primary text-white py-3">
-      <h2 class="m-0 text-center">Add New Product</h2>
+    <div class="card-header bg-primary text-white py-2 py-sm-3">
+      <h2 class="m-0 text-center fs-5 fs-sm-4 fs-md-3">Add New Product</h2>
     </div>
-    <div class="card-body" style="height: calc(100vh - 180px); overflow-y: auto;">
-      <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <div class="card-body touch-scroll" style="height: calc(100vh - 180px); overflow-y: auto;">
+      <!-- Loading indicator -->
+      <div *ngIf="isLoading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading product levels...</p>
+      </div>
       
+      <!-- Error message -->
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+      
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
         <div class="row mb-3">
-          <div class="col-md-6">
+          <div class="col-12 col-md-6 mb-3 mb-md-0">
             <label class="form-label">Product Name</label>
             <input type="text" formControlName="name" class="form-control" placeholder="Enter product name">
+            <div *ngIf="productForm.get('name')?.touched && productForm.get('name')?.invalid" class="text-danger small mt-1">
+              Product name is required
+            </div>
           </div>
         </div>
 
         <div class="mb-3">
           <label class="form-label">Product Description</label>
           <textarea formControlName="description" class="form-control" rows="3" placeholder="Write a short description"></textarea>
+          <div *ngIf="productForm.get('description')?.touched && productForm.get('description')?.invalid" class="text-danger small mt-1">
+            Product description is required
+          </div>
         </div>
 
         <!-- Add file input for images -->
@@ -23,37 +41,61 @@
           <label class="form-label">Product Images</label>
           <input type="file" class="form-control" multiple accept="image/*" (change)="onFileSelected($event)">
           <div class="form-text">Select multiple images for the product</div>
+          <!-- Preview selected images -->
+          <div *ngIf="selectedFiles.length > 0" class="d-flex flex-wrap mt-2 gap-2">
+            <span class="badge bg-primary">{{ selectedFiles.length }} file(s) selected</span>
+          </div>
         </div>
 
-        <h5 class="mt-4 mb-3 text-secondary">Pricing & Quantity Levels</h5>
+        <h5 class="mt-4 mb-3 text-secondary fs-5">Pricing & Quantity Levels</h5>
         <div formArrayName="levelPrices">
-          <div *ngFor="let levelPrice of levelPrices.controls; let i = index" [formGroupName]="i" class="border p-3 mb-3 rounded">
-            <h6 class="text-secondary">Level {{ levels.length > 0 ? levels[i].name : i + 1 }}</h6>
+          <div *ngFor="let levelPrice of levelPrices.controls; let i = index" [formGroupName]="i" class="border p-2 p-sm-3 mb-3 rounded shadow-sm">
+            <h6 class="text-secondary mb-3">Level {{ levels.length > 0 ? levels[i].name : i + 1 }}</h6>
             
-            <div class="row g-3">
-              <div class="col-md-6">
+            <div class="row g-2 g-sm-3">
+              <div class="col-6 col-md-6 mb-2">
                 <label class="form-label">Min Quantity</label>
-                <input type="number" formControlName="minQuantity" class="form-control">
+                <input type="number" formControlName="minQuantity" class="form-control" min="0">
+                <div *ngIf="levelPrice.get('minQuantity')?.touched && levelPrice.get('minQuantity')?.invalid" class="text-danger small mt-1">
+                  Min quantity must be ≥ 0
+                </div>
               </div>
-              <div class="col-md-6">
+              <div class="col-6 col-md-6 mb-2">
                 <label class="form-label">Max Quantity</label>
-                <input type="number" formControlName="maxQuantity" class="form-control">
+                <input type="number" formControlName="maxQuantity" class="form-control" min="0">
+                <div *ngIf="levelPrice.get('maxQuantity')?.touched && levelPrice.get('maxQuantity')?.invalid" class="text-danger small mt-1">
+                  Max quantity must be ≥ 0
+                </div>
               </div>
 
-              <div class="col-md-6">
+              <div class="col-6 col-md-6 mb-2">
                 <label class="form-label">Min Price</label>
-                <input type="number" formControlName="minPrice" class="form-control">
+                <input type="number" formControlName="minPrice" class="form-control" min="0">
+                <div *ngIf="levelPrice.get('minPrice')?.touched && levelPrice.get('minPrice')?.invalid" class="text-danger small mt-1">
+                  Min price must be ≥ 0
+                </div>
               </div>
-              <div class="col-md-6">
+              <div class="col-6 col-md-6 mb-2">
                 <label class="form-label">Max Price</label>
-                <input type="number" formControlName="maxPrice" class="form-control">
+                <input type="number" formControlName="maxPrice" class="form-control" min="0">
+                <div *ngIf="levelPrice.get('maxPrice')?.touched && levelPrice.get('maxPrice')?.invalid" class="text-danger small mt-1">
+                  Max price must be ≥ 0
+                </div>
               </div>
+            </div>
+            
+            <!-- Range validation error -->
+            <div *ngIf="levelPrice.errors?.['invalidRange']" class="alert alert-warning mt-2 py-2 small">
+              Min values must be less than or equal to Max values
             </div>
           </div>
         </div>
 
         <div class="text-center mt-4 mb-3">
-          <button type="submit" class="btn btn-primary px-5 py-2">Add Product</button>
+          <button type="submit" class="btn btn-primary px-4 px-sm-5 py-2 w-100 w-sm-auto" [disabled]="productForm.invalid || isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Add Product
+          </button>
         </div>
       </form>
     </div>

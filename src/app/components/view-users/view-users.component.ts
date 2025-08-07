@@ -10,7 +10,7 @@ import { AdminUser } from '../../models/adminuser.model';
   selector: 'app-view-users',
   standalone: false,
   templateUrl: './view-users.component.html',
-  styleUrl: './view-users.component.css'
+  styleUrls: ['./view-users.component.css']
 })
 export class ViewUsersComponent implements OnInit {
   users: AdminUser[] = [];
@@ -69,17 +69,32 @@ export class ViewUsersComponent implements OnInit {
 
   extractRegionOptions(): void {
     const regions = new Set<string>();
+    
+    // Add 'All Regions' as the default option
+    regions.add('All Regions');
+    
+    // Extract unique regions from user addresses
     this.users.forEach(user => {
-      user.addresses.forEach(address => {
-        if (address.state) {
-          regions.add(address.state);
-        }
-      });
+      if (user.addresses && Array.isArray(user.addresses)) {
+        user.addresses.forEach(address => {
+          if (address && address.state) {
+            regions.add(address.state);
+          }
+        });
+      }
     });
-    this.regionOptions = ['All Regions', ...Array.from(regions).sort()];
+    
+    // Convert Set to sorted Array, ensuring 'All Regions' is first
+    this.regionOptions = Array.from(regions);
+    if (this.regionOptions.includes('All Regions')) {
+      // Remove 'All Regions' from its current position
+      this.regionOptions = this.regionOptions.filter(region => region !== 'All Regions');
+      // Add it back at the beginning
+      this.regionOptions.unshift('All Regions');
+    }
   }
 
-  onSearchChange(): void {
+  onSearchChange(event?: any): void {
     this.applyFilters();
   }
 
@@ -197,7 +212,8 @@ export class ViewUsersComponent implements OnInit {
     this.applyFilters();
   }
 
-  getLevelDisplay(level: Level): string {
+  getLevelDisplay(level: Level | null): string {
+    if (!level) return 'No Level';
     return `L${level.id}`;
   }
 

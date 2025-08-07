@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-view-profit',
   standalone: false,
   templateUrl: './view-profit.component.html',
-  styleUrl: './view-profit.component.css'
+  styleUrls: ['./view-profit.component.css']
 })
 export class ViewProfitComponent {
 

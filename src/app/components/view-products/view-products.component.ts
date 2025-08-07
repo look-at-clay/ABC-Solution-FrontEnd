@@ -6,7 +6,7 @@ import { ProductService } from '../../services/product.services';
   selector: 'app-view-products',
   standalone: false,
   templateUrl: './view-products.component.html',
-  styleUrl: './view-products.component.css'
+  styleUrls: ['./view-products.component.css']
 })
 
 export class ViewProductComponent implements OnInit {

@@ -19,7 +19,7 @@ import { CombinedRequestsDialogueComponent } from '../../dialogue/combined-reque
   selector: 'app-dashboard',
   standalone: false,
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent {
   totalUsers = 0;

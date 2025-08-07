@@ -8,7 +8,7 @@ import { LevelService } from '../../services/level.services';
   selector: 'app-edit-product',
   standalone: false,
   templateUrl: './edit-product.component.html',
-  styleUrl: './edit-product.component.css'
+  styleUrls: ['./edit-product.component.css']
 })
 export class EditProductComponent implements OnInit {
   productForm: FormGroup;

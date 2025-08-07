@@ -6,7 +6,7 @@ import { LevelService } from '../../services/level.services';
   selector: 'app-level-dialogue',
   standalone: false,
   templateUrl: './level-dialogue.component.html',
-  styleUrl: './level-dialogue.component.css'
+  styleUrls: ['./level-dialogue.component.css']
 })
 export class LevelDialogueComponent implements OnInit {
   isSubmitting = false;

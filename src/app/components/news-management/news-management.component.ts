@@ -7,7 +7,7 @@ import { NewsService } from '../../services/news.service';
   selector: 'app-news-management',
   standalone: false,
   templateUrl: './news-management.component.html',
-  styleUrl: './news-management.component.css'
+  styleUrls: ['./news-management.component.css']
 })
 export class NewsManagementComponent implements OnInit {
   news: News[] = [];

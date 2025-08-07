@@ -1,4 +1,58 @@
 /* You can add global styles to this file, and also import other style files */
 @import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+@import "./app/shared/responsive-utils.css";
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Global responsive styles */
+
+/* Responsive font sizes */
+@media (max-width: 576px) {
+  h1 { font-size: 1.8rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.3rem; }
+  h4 { font-size: 1.2rem; }
+  .display-1, .display-2, .display-3, .display-4 { font-size: calc(1.2rem + 1.5vw); }
+}
+
+/* Responsive padding and margins */
+@media (max-width: 768px) {
+  .container-fluid, .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .row {
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+  .col, [class*="col-"] {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+/* Utility classes for responsive design */
+.overflow-auto-mobile {
+  @media (max-width: 768px) {
+    overflow: auto;
+  }
+}
+
+.d-flex-wrap-mobile {
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+  }
+}
+
+/* Responsive tables */
+.table-responsive-sm {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}

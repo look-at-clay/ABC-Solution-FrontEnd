@@ -7,14 +7,15 @@ import { AuthService } from '../../services/auth.services';
   selector: 'app-login',
   standalone: false,
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   isSubmitting = false;
   loginError = '';
   showPassword = false;
-  
+  rememberMe = false;
+
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
@@ -22,11 +23,19 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.initializeForm();
+    this.checkAuthStatus();
+  }
+
+  private initializeForm(): void {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      rememberMe: [false]
     });
-    
+  }
+
+  private checkAuthStatus(): void {
     // Redirect if already logged in
     this.authService.isAuthenticated$.subscribe(isAuthenticated => {
       if (isAuthenticated) {
@@ -37,23 +46,38 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
+      this.markFormGroupTouched();
       return;
     }
-    
+
     this.isSubmitting = true;
     this.loginError = '';
     
-    const { email, password } = this.loginForm.value;
-    
-    this.authService.login(email, password).subscribe({
+    const { email, password, rememberMe } = this.loginForm.value;
+
+    this.authService.login(email, password, rememberMe).subscribe({
       next: () => {
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
         this.isSubmitting = false;
-        this.loginError = error.error?.message || 'Login failed. Please check your credentials.';
+        this.loginError = error.error?.message || 'Login failed. Please check your credentials and try again.';
       }
     });
   }
+
+  private markFormGroupTouched(): void {
+    Object.keys(this.loginForm.controls).forEach(key => {
+      const control = this.loginForm.get(key);
+      control?.markAsTouched();
+    });
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  // Getter methods for easier template access
+  get email() { return this.loginForm.get('email'); }
+  get password() { return this.loginForm.get('password'); }
 }

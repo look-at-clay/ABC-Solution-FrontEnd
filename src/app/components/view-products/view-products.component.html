@@ -1,5 +1,5 @@
-<div class="container-fluid mt-3">
-  <h2 class="mb-4">Product Catalog</h2>
+<div class="container-fluid mt-3 px-2 px-sm-3">
+  <h2 class="mb-3 mb-md-4">Product Catalog</h2>
 
   <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="height: 200px;">
     <div class="spinner-border text-primary" role="status">
@@ -7,9 +7,10 @@
     </div>
   </div>
 
-  <div *ngIf="!loading && products.length > 0" class="card">
-    <div class="card-body">
-      <div class="table-responsive" style="max-height: 500px;">
+  <!-- Desktop Table View (hidden on small screens) -->
+  <div *ngIf="!loading && products.length > 0" class="card d-none d-md-block">
+    <div class="card-body p-0 p-md-3">
+      <div class="table-responsive touch-scroll" style="max-height: 500px;">
         <table class="table table-bordered table-hover">
           <thead class="sticky-top bg-light">
             <tr>
@@ -28,7 +29,7 @@
               <td>{{ product.description }}</td>
               <td>
                 <div *ngIf="product.levelPrices">
-                  <ul class="list-unstyled">
+                  <ul class="list-unstyled mb-0">
                     <li *ngFor="let level of product.levelPrices">
                       Level {{ level.name }}: {{ level.minPrice }} - {{ level.maxPrice }}
                     </li>
@@ -37,7 +38,7 @@
               </td>
               <td>
                 <div *ngIf="product.levelPrices">
-                  <ul class="list-unstyled">
+                  <ul class="list-unstyled mb-0">
                     <li *ngFor="let level of product.levelPrices">
                       Level {{ level.name }}: {{ level.minQuantity }} - {{ level.maxQuantity }}
                     </li>
@@ -56,6 +57,46 @@
     </div>
   </div>
 
+  <!-- Mobile Card View (visible only on small screens) -->
+  <div *ngIf="!loading && products.length > 0" class="d-md-none">
+    <div class="row g-3">
+      <div *ngFor="let product of products; let i = index" class="col-12">
+        <div class="card h-100">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">{{ product.name }}</h5>
+            <span class="badge bg-secondary">#{{ i + 1 }}</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text"><strong>Description:</strong> {{ product.description }}</p>
+            
+            <div *ngIf="product.levelPrices" class="mb-3">
+              <h6>Price Levels:</h6>
+              <ul class="list-group list-group-flush">
+                <li *ngFor="let level of product.levelPrices" class="list-group-item px-0 py-1">
+                  Level {{ level.name }}: {{ level.minPrice }} - {{ level.maxPrice }}
+                </li>
+              </ul>
+            </div>
+            
+            <div *ngIf="product.levelPrices">
+              <h6>Quantity Levels:</h6>
+              <ul class="list-group list-group-flush">
+                <li *ngFor="let level of product.levelPrices" class="list-group-item px-0 py-1">
+                  Level {{ level.name }}: {{ level.minQuantity }} - {{ level.maxQuantity }}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary btn-sm w-100" (click)="editProduct(product)">
+              <i class="bi bi-pencil-square"></i> Edit
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div *ngIf="!loading && products.length === 0" class="alert alert-info" role="alert">
     No products found.
   </div>
@@ -65,4 +106,4 @@
       <i class="bi bi-plus-circle"></i> Add Product
     </button>
   </div>
-      </div>
+</div>

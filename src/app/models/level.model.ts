@@ -1,4 +1,4 @@
 export interface Level {
-    id: number;
-    name: number;
-  }
+  id: number;
+  name: string;
+}

@@ -9,7 +9,7 @@ import { of } from 'rxjs';
   selector: 'app-add-product',
   standalone: false,
   templateUrl: './add-product.component.html',
-  styleUrl: './add-product.component.css'
+  styleUrls: ['./add-product.component.css']
 })
 export class AddProductComponent implements OnInit {
   productForm!: FormGroup;
@@ -51,13 +51,21 @@ export class AddProductComponent implements OnInit {
     this.isLoading = true;
     this.levelService.getAllLevels().pipe(
       tap(levels => {
-        this.levels = levels;
+        if (levels && Array.isArray(levels) && levels.length > 0) {
+          this.levels = levels;
+        } else {
+          // If no levels returned, use default levels
+          this.levels = [];
+          this.errorMessage = 'No levels found. Using default levels.';
+        }
         this.createLevelPriceControls();
         this.isLoading = false;
       }),
       catchError(error => {
         console.error('Error fetching levels:', error);
-        this.errorMessage = 'Could not fetch levels. Using default.';
+        this.errorMessage = 'Could not fetch levels. Using default levels.';
+        this.levels = [];
+        this.createLevelPriceControls();
         this.isLoading = false;
         return of(null);
       })

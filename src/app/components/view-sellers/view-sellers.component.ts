@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
   selector: 'app-view-sellers',
   standalone: false,
   templateUrl: './view-sellers.component.html',
-  styleUrl: './view-sellers.component.css'
+  styleUrls: ['./view-sellers.component.css']
 })
 export class ViewSellersComponent {
   users: User[] = [];

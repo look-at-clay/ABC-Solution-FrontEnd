@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-delete-project',
   standalone: false,
   templateUrl: './delete-project.component.html',
-  styleUrl: './delete-project.component.css'
+  styleUrls: ['./delete-project.component.css']
 })
 export class DeleteProjectComponent {
 

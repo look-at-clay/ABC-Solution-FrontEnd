@@ -9,7 +9,7 @@ import { Level } from '../../models/level.model';
   selector: 'app-view-buyers',
   standalone: false,
   templateUrl: './view-buyers.component.html',
-  styleUrl: './view-buyers.component.css'
+  styleUrls: ['./view-buyers.component.css']
 })
 export class ViewBuyersComponent {
 

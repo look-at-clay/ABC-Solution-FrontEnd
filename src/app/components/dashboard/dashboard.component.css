@@ -1,15 +1,15 @@
-/* Add this to dashboard.component.css */
+/* Card hover effects */
 .card[style*="cursor: pointer"]:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-    transition: all 0.3s ease;
-  }
-  
-  .card[style*="cursor: pointer"] {
-    transition: all 0.3s ease;
-  }
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.3s ease;
+}
 
-  .cursor-pointer {
+.card[style*="cursor: pointer"] {
+  transition: all 0.3s ease;
+}
+
+.cursor-pointer {
   cursor: pointer !important;
 }
 
@@ -17,6 +17,7 @@
   box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.15) !important;
 }
 
+/* Dialog styling */
 ::ng-deep .custom-dialog-container {
   border-radius: 12px;
 }
@@ -24,4 +25,43 @@
 ::ng-deep .custom-dialog-container .mat-dialog-container {
   padding: 0;
   border-radius: 12px;
+}
+
+/* Responsive card adjustments */
+@media (max-width: 576px) {
+  .card {
+    margin-bottom: 1rem;
+  }
+  
+  .card-body {
+    padding: 0.75rem;
+  }
+  
+  .h5 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Chart container responsive styles */
+.chart-container {
+  width: 100%;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    height: 30vh !important;
+  }
+}
+
+/* Responsive spacing */
+@media (max-width: 576px) {
+  .container-fluid {
+    padding: 0.75rem;
+  }
+  
+  .row > [class*="col-"] {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
 }

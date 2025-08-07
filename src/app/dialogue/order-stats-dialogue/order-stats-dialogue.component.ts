@@ -6,7 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   selector: 'app-order-stats-dialogue',
   standalone: false,
   templateUrl: './order-stats-dialogue.component.html',
-  styleUrl: './order-stats-dialogue.component.css'
+  styleUrls: ['./order-stats-dialogue.component.css']
 })
 export class OrderStatsDialogueComponent {
 

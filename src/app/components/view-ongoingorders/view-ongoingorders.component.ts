@@ -8,7 +8,7 @@ import { Order, OrderResponse, OrderArrayResponse, OrderService } from '../../se
   selector: 'app-view-ongoingorders',
   standalone: false,
   templateUrl: './view-ongoingorders.component.html',
-  styleUrl: './view-ongoingorders.component.css'
+  styleUrls: ['./view-ongoingorders.component.css']
 })
 export class ViewOngoingordersComponent implements OnInit {
   orders: Order[] = [];

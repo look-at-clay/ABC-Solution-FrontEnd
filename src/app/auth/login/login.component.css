@@ -1,21 +1,223 @@
-/* Custom animation for pulse effect */
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 0.7; }
-  50% { transform: scale(1.2); opacity: 0.3; }
-  100% { transform: scale(1); opacity: 0.7; }
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Global Styles */
+.login-container {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
 }
 
-/* Custom shadow for inputs on focus */
-.form-control:focus {
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
-}
-
-/* Background gradient */
+/* Background Gradient */
 .bg-gradient-primary {
-  background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+  background: linear-gradient(135deg, #4e73df 0%, #224abe 50%, #1a237e 100%);
 }
 
-/* Hover scale effect for links */
+.bg-gradient-brand {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Background Animated Shapes */
+.bg-shapes {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.1;
+  animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.1);
+  top: -150px;
+  right: -150px;
+  animation-delay: 0s;
+}
+
+.shape-2 {
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.08);
+  bottom: -100px;
+  left: -100px;
+  animation-delay: 2s;
+}
+
+.shape-3 {
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.05);
+  top: 50%;
+  left: 10%;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+/* Card Styles */
+.card {
+  border: none !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15) !important;
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 1;
+}
+
+.shadow-2xl {
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Logo Styles */
+.brand-logo .logo-circle {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    transform: scale(1); 
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  }
+  50% { 
+    transform: scale(1.05); 
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* Feature List */
+.feature-item {
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+.feature-item i {
+  width: 16px;
+  opacity: 0.8;
+}
+
+/* Form Styles */
+.login-form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.custom-input {
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+}
+
+.custom-input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+.custom-input.is-valid {
+  border-color: #28a745;
+}
+
+.custom-input.is-invalid {
+  border-color: #dc3545;
+}
+
+/* Form Floating Labels */
+.form-floating > label {
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+  color: #667eea;
+  font-weight: 600;
+}
+
+/* Button Styles */
+.custom-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.custom-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.custom-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.custom-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Button Ripple Effect */
+.custom-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
+}
+
+.custom-btn:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Form Check */
+.form-check-input:checked {
+  background-color: #667eea;
+  border-color: #667eea;
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+}
+
+/* Links */
 .hover-scale:hover {
   transform: scale(1.05);
 }
@@ -24,24 +226,77 @@
   transition: all 0.3s ease;
 }
 
-/* Enhanced button styling */
-.btn-primary {
-  background: linear-gradient(to right, #4e73df, #224abe);
+/* Alert Styles */
+.alert-danger {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
   border: none;
-  transition: all 0.3s ease;
+  border-radius: 12px;
+  color: white;
+  border-left: 4px solid #c92432;
 }
 
-.btn-primary:hover {
-  background: linear-gradient(to right, #224abe, #1a3a96);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+/* Responsive Design */
+@media (max-width: 768px) {
+  .login-container .col-md-6:first-child {
+    display: none;
+  }
+  
+  .card-body {
+    padding: 2rem 1.5rem !important;
+  }
+  
+  .brand-logo {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .brand-logo h2 {
+    font-size: 2rem;
+    color: #667eea;
+    font-weight: 700;
+  }
+  
+  .login-form {
+    max-width: none;
+  }
+  
+  .shape-1, .shape-2, .shape-3 {
+    display: none;
+  }
 }
 
-/* Custom input styling */
-.form-control {
-  transition: all 0.3s ease;
+@media (max-width: 576px) {
+  .card-body {
+    padding: 1.5rem 1rem !important;
+  }
+  
+  .custom-btn {
+    padding: 14px 24px;
+  }
+  
+  .form-floating > .form-control {
+    height: calc(3.5rem + 2px);
+  }
 }
 
-.form-control:focus {
-  transform: translateY(-1px);
+/* Loading Animation */
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Additional Enhancements */
+.text-primary {
+  color: #667eea !important;
+}
+
+.btn-link:hover {
+  color: #5a67d8 !important;
+}
+
+/* Focus visible for accessibility */
+.custom-input:focus-visible,
+.custom-btn:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
 }

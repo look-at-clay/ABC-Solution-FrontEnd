@@ -7,7 +7,7 @@ import { SellerService } from '../../services/seller.service';
   selector: 'app-seller-products',
   standalone: false,
   templateUrl: './seller-products.component.html',
-  styleUrl: './seller-products.component.css'
+  styleUrls: ['./seller-products.component.css']
 })
 export class SellerProductsComponent {
   sellerProducts: SellerProduct[] = [];
