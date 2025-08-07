@@ -13,9 +13,10 @@ import { of } from 'rxjs';
 })
 export class AddProductComponent implements OnInit {
   productForm!: FormGroup;
-  levels: any[] = []; // Store actual level objects
+  levels: any[] = [];
   isLoading: boolean = false;
   errorMessage: string = '';
+  selectedFiles: File[] = []; // Add this for file handling
 
   constructor(
     private fb: FormBuilder, 
@@ -40,6 +41,12 @@ export class AddProductComponent implements OnInit {
     });
   }
 
+  // Add file selection handler
+  onFileSelected(event: any): void {
+    const files = event.target.files;
+    this.selectedFiles = Array.from(files);
+  }
+
   fetchLevels(): void {
     this.isLoading = true;
     this.levelService.getAllLevels().pipe(
@@ -58,17 +65,14 @@ export class AddProductComponent implements OnInit {
   }
 
   createLevelPriceControls(): void {
-    // Clear existing level prices
     const levelPricesArray = this.productForm.get('levelPrices') as FormArray;
     levelPricesArray.clear();
 
-    // Create level price controls based on actual levels from the database
     if (this.levels.length > 0) {
       this.levels.forEach(level => {
         levelPricesArray.push(this.createLevelPrice(level));
       });
     } else {
-      // Fallback if no levels are found
       for (let i = 1; i <= 3; i++) {
         levelPricesArray.push(this.createDefaultLevelPrice(i));
       }
@@ -87,7 +91,6 @@ export class AddProductComponent implements OnInit {
     }, { validators: this.priceQuantityValidator });
   }
 
-  // Fallback method for creating default level prices
   createDefaultLevelPrice(levelId: number): FormGroup {
     return this.fb.group({
       level: this.fb.group({ 
@@ -100,7 +103,6 @@ export class AddProductComponent implements OnInit {
     }, { validators: this.priceQuantityValidator });
   }
 
-  // Custom validator to ensure max is greater than min
   priceQuantityValidator(group: FormGroup): {[key: string]: any} | null {
     const minPrice = group.get('minPrice')?.value;
     const maxPrice = group.get('maxPrice')?.value;
@@ -119,11 +121,13 @@ export class AddProductComponent implements OnInit {
 
   onSubmit() {
     if (this.productForm.valid) {
-      this.productService.addProduct(this.productForm.value).subscribe({
+      // Pass both form data and selected files to service
+      this.productService.addProduct(this.productForm.value, this.selectedFiles).subscribe({
         next: () => {
           alert('Product added successfully!');
           this.productForm.reset();
-          this.fetchLevels(); // Recreate level prices after reset
+          this.selectedFiles = []; // Clear selected files
+          this.fetchLevels();
         },
         error: (err) => {
           alert('Error adding product.');
@@ -131,16 +135,13 @@ export class AddProductComponent implements OnInit {
         }
       });
     } else {
-      // Mark all fields as touched to show validation errors
       this.markFormGroupTouched(this.productForm);
     }
   }
 
-  // Helper method to mark all controls as touched
   markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach(control => {
       control.markAsTouched();
-
       if (control instanceof FormGroup) {
         this.markFormGroupTouched(control);
       }

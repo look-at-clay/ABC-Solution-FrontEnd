@@ -15,6 +15,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { AuthGuard } from './auth/auth.guard';
 import { BuyerProductsComponent } from './components/buyer-products/buyer-products.component';
 import { ViewOngoingordersComponent } from './components/view-ongoingorders/view-ongoingorders.component';
+import { NewsManagementComponent } from './components/news-management/news-management.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
@@ -32,6 +33,7 @@ const routes: Routes = [
   { path: 'seller-products/:sellerId', component: SellerProductsComponent, canActivate: [AuthGuard] },
   { path: 'buyer-products/:buyerId', component: BuyerProductsComponent, canActivate: [AuthGuard] },
   { path: 'view-ongoingorders', component: ViewOngoingordersComponent, canActivate: [AuthGuard] },
+  { path: 'news-management', component: NewsManagementComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '/dashboard' }
 ];
 

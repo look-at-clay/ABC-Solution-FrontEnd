@@ -1,4 +1,3 @@
-<!-- d:\Maven_Projects\ABC_Solution\abcsolution-frontend\src\app\components\add-product\add-product.component.html -->
 <div class="container-fluid p-3">
   <div class="card shadow border-0">
     <div class="card-header bg-primary text-white py-3">
@@ -17,6 +16,13 @@
         <div class="mb-3">
           <label class="form-label">Product Description</label>
           <textarea formControlName="description" class="form-control" rows="3" placeholder="Write a short description"></textarea>
+        </div>
+
+        <!-- Add file input for images -->
+        <div class="mb-3">
+          <label class="form-label">Product Images</label>
+          <input type="file" class="form-control" multiple accept="image/*" (change)="onFileSelected($event)">
+          <div class="form-text">Select multiple images for the product</div>
         </div>
 
         <h5 class="mt-4 mb-3 text-secondary">Pricing & Quantity Levels</h5>

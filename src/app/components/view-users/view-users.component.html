@@ -1,13 +1,95 @@
-<div class="container mt-4">
+<!-- view-users.component.html -->
+<div class="container-fluid mt-4">
   <div class="card shadow-sm">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-      <h4 class="mb-0">User List</h4>
+      <h4 class="mb-0">
+        <i class="bi bi-people-fill me-2"></i>User Management
+      </h4>
       <button class="btn btn-light btn-sm refresh-button" (click)="refreshData()" [disabled]="loading">
         <i class="bi bi-arrow-clockwise me-1"></i> Refresh
       </button>
     </div>
     
-    <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+    <!-- Search and Filter Section -->
+    <div class="card-body border-bottom bg-light">
+      <!-- Search Bar -->
+      <div class="row mb-3">
+        <div class="col-md-8">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+              <i class="bi bi-search text-muted"></i>
+            </span>
+            <input 
+              type="text" 
+              class="form-control border-start-0" 
+              placeholder="Search by name, email, phone, ID, or referral code..."
+              [(ngModel)]="searchTerm"
+              (input)="onSearchChange()"
+            >
+            <button 
+              class="btn btn-outline-secondary" 
+              type="button" 
+              (click)="searchTerm = ''; onSearchChange()"
+              *ngIf="searchTerm"
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-4 d-flex align-items-center justify-content-end">
+          <button class="btn btn-outline-secondary btn-sm" (click)="clearFilters()">
+            <i class="bi bi-funnel me-1"></i> Clear Filters
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Dropdowns -->
+      <div class="row">
+        <div class="col-md-3">
+          <label class="form-label small text-muted">Region</label>
+          <select 
+            class="form-select form-select-sm" 
+            [(ngModel)]="selectedRegion"
+            (change)="onFilterChange()"
+          >
+            <option *ngFor="let region of regionOptions" [value]="region">
+              {{ region }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small text-muted">Level</label>
+          <select 
+            class="form-select form-select-sm" 
+            [(ngModel)]="selectedLevel"
+            (change)="onFilterChange()"
+          >
+            <option *ngFor="let level of levelOptions" [value]="level.value">
+              {{ level.label }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small text-muted">Status</label>
+          <select 
+            class="form-select form-select-sm" 
+            [(ngModel)]="selectedStatus"
+            (change)="onFilterChange()"
+          >
+            <option *ngFor="let status of statusOptions" [value]="status.value">
+              {{ status.label }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+          <small class="text-muted">
+            Showing {{ filteredUsers.length }} of {{ users.length }} users
+          </small>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card-body p-0">
       <!-- Loading spinner -->
       <div *ngIf="loading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status">
@@ -17,39 +99,146 @@
       </div>
       
       <!-- Error message -->
-      <div *ngIf="error" class="alert alert-danger d-flex align-items-center" role="alert">
+      <div *ngIf="error" class="alert alert-danger m-3 d-flex align-items-center" role="alert">
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
         <div>{{ error }}</div>
       </div>
       
       <!-- User table -->
-      <div *ngIf="!loading && !error" class="table-responsive">
-        <table class="table table-striped table-hover border">
-          <thead class="table-light">
+      <div *ngIf="!loading && !error" class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+        <table class="table table-striped table-hover mb-0">
+          <thead class="table-dark sticky-top">
             <tr>
-              <th scope="col" class="border-end">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Email</th>
-              <th scope="col" class="text-center">Level</th>
+              <th scope="col" class="text-center">#</th>
+              <th scope="col" class="sortable-header" (click)="sortBy('name')">
+                User Info
+                <i class="bi ms-1" [ngClass]="getSortIcon('name')"></i>
+              </th>
+              <th scope="col" class="sortable-header" (click)="sortBy('email')">
+                Contact
+                <i class="bi ms-1" [ngClass]="getSortIcon('email')"></i>
+              </th>
+              <th scope="col" class="text-center sortable-header" (click)="sortBy('level')">
+                Level
+                <i class="bi ms-1" [ngClass]="getSortIcon('level')"></i>
+              </th>
+              <th scope="col" class="text-center sortable-header" (click)="sortBy('status')">
+                Status
+                <i class="bi ms-1" [ngClass]="getSortIcon('status')"></i>
+              </th>
+              <th scope="col">Region</th>
+              <th scope="col" class="text-center sortable-header" (click)="sortBy('wallet')">
+                Wallet
+                <i class="bi ms-1" [ngClass]="getSortIcon('wallet')"></i>
+              </th>
+              <th scope="col">Referral Info</th>
               <th scope="col" class="text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let user of users">
-              <td class="border-end">{{ user.id }}</td>
-              <td>{{ user.name }}</td>
-              <td>
-                <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+            <tr *ngFor="let user of filteredUsers; trackBy: trackByUserId">
+              <!-- User ID -->
+              <td class="text-center align-middle">
+                <span class="badge bg-secondary">{{ user.id }}</span>
               </td>
-              <td class="text-center">
-                <span class="badge rounded-pill bg-secondary">
-                  L{{ user.level.id }}
+              
+              <!-- User Info -->
+              <td class="align-middle">
+                <div class="d-flex flex-column">
+                  <strong class="text-primary">{{ user.name }}</strong>
+                  <small class="text-muted">{{ user.email }}</small>
+                </div>
+              </td>
+              
+              <!-- Contact -->
+              <td class="align-middle">
+                <div class="d-flex flex-column">
+                  <span class="fw-medium">{{ user.phoneNumber }}</span>
+                  <small class="text-muted" *ngIf="user.phone && user.phone !== user.phoneNumber">
+                    Alt: {{ user.phone }}
+                  </small>
+                </div>
+              </td>
+              
+              <!-- Level -->
+              <td class="text-center align-middle">
+                <span class="badge rounded-pill" 
+                      [ngClass]="{
+                        'bg-success': user.level.id === 1,
+                        'bg-warning text-dark': user.level.id === 2,
+                        'bg-info': user.level.id === 3
+                      }">
+                  {{ getLevelDisplay(user.level) }}
                 </span>
               </td>
-              <td class="text-center">
-                <button class="btn btn-sm btn-primary edit-button" (click)="editUser(user)">
-                  <i class="bi bi-pencil-square"></i> Edit
-                </button>
+              
+              <!-- Status -->
+              <td class="text-center align-middle">
+                <span [ngClass]="getBlockedStatusClass(user)">
+                  {{ getBlockedStatus(user) }}
+                </span>
+              </td>
+              
+              <!-- Region -->
+              <td class="align-middle">
+                <div class="d-flex flex-column">
+                  <span class="fw-medium">{{ getDefaultAddress(user) }}</span>
+                  <small class="text-muted" *ngIf="user.addresses.length > 1">
+                    +{{ user.addresses.length - 1 }} more
+                  </small>
+                  <small class="text-muted" *ngIf="user.addresses.length === 0">
+                    No addresses
+                  </small>
+                </div>
+              </td>
+              
+              <!-- Wallet -->
+              <td class="text-center align-middle">
+                <span class="fw-bold" 
+                      [ngClass]="{
+                        'text-success': user.wallet && user.wallet.balance > 0,
+                        'text-muted': !user.wallet || user.wallet.balance === 0,
+                        'text-danger': user.wallet && user.wallet.balance < 0
+                      }">
+                  {{ getWalletBalance(user) }}
+                </span>
+              </td>
+              
+              <!-- Referral Info -->
+              <td class="align-middle">
+                <div class="d-flex flex-column">
+                  <small *ngIf="user.referralCode" class="text-primary">
+                    <i class="bi bi-qr-code me-1"></i>{{ user.referralCode }}
+                  </small>
+                  <small *ngIf="user.referredBy" class="text-info">
+                    <i class="bi bi-person-plus me-1"></i>{{ user.referredBy }}
+                  </small>
+                  <small *ngIf="!user.referralCode && !user.referredBy" class="text-muted">
+                    No referral data
+                  </small>
+                </div>
+              </td>
+              
+              <!-- Actions -->
+              <td class="text-center align-middle">
+                <div class="btn-group btn-group-sm" role="group">
+                  <button class="btn btn-outline-primary" 
+                          (click)="viewUserDetails(user)"
+                          title="View Details">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button class="btn btn-outline-secondary" 
+                          (click)="editUser(user)"
+                          title="Edit User">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button class="btn" 
+                          [ngClass]="user.isBlocked || user.blocked ? 'btn-outline-success' : 'btn-outline-danger'"
+                          (click)="toggleUserBlock(user)"
+                          [title]="user.isBlocked || user.blocked ? 'Unblock User' : 'Block User'">
+                    <i [ngClass]="user.isBlocked || user.blocked ? 'bi bi-unlock' : 'bi bi-lock'"></i>
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -57,6 +246,15 @@
       </div>
       
       <!-- No users message -->
+      <div *ngIf="!loading && !error && filteredUsers.length === 0 && users.length > 0" class="text-center py-5">
+        <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-3">No users found matching your search criteria</p>
+        <button class="btn btn-outline-primary btn-sm" (click)="clearFilters()">
+          Clear Filters
+        </button>
+      </div>
+      
+      <!-- No users at all -->
       <div *ngIf="!loading && !error && users.length === 0" class="text-center py-5">
         <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
         <p class="text-muted mt-3">No users found in the system</p>
@@ -67,32 +265,3 @@
     </div>
   </div>
 </div>
-
-<style>
-  .container {
-    max-width: 100%;
-    padding: 15px;
-  }
-
-  .card-header {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-  }
-
-  .refresh-button {
-    white-space: nowrap;
-  }
-
-  .table-responsive {
-    overflow-x: auto;
-  }
-
-  .table thead th {
-    white-space: nowrap;
-  }
-
-  .edit-button {
-    white-space: nowrap;
-    background-color: #007bff;
-    border-color: #007bff;
-  }
-</style>

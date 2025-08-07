@@ -12,8 +12,20 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
-  addProduct(product: Product): Observable<any> {
-    return this.http.post(`${this.baseUrl}/addProduct`, product);
+  addProduct(product: Product, images: File[]): Observable<any> {
+    const formData = new FormData();
+    
+    // Add product data as JSON string
+    formData.append('product', new Blob([JSON.stringify(product)], { 
+      type: 'application/json' 
+    }));
+    
+    // Add images
+    images.forEach(image => {
+      formData.append('images', image);
+    });
+    
+    return this.http.post(`${this.baseUrl}/addProduct`, formData);
   }
 
   getAllProducts(): Observable<any>{

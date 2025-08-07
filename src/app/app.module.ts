@@ -34,6 +34,7 @@ import { UserLevelStatsDialogueComponent } from './dialogue/user-level-stats-dia
 import { OrderStatsDialogueComponent } from './dialogue/order-stats-dialogue/order-stats-dialogue.component';
 import { FilterPipe } from './pipes/filter.pipes';
 import { CombinedRequestsDialogueComponent } from './dialogue/combined-requests-dialogue/combined-requests-dialogue.component';
+import { NewsManagementComponent } from './components/news-management/news-management.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { CombinedRequestsDialogueComponent } from './dialogue/combined-requests-
     UserLevelStatsDialogueComponent,
     OrderStatsDialogueComponent,
     CombinedRequestsDialogueComponent,
+    NewsManagementComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,7 +68,7 @@ import { CombinedRequestsDialogueComponent } from './dialogue/combined-requests-
     MatListModule,
     MatTableModule,
     MatButtonModule,
-    MatDialogModule, // Add this module
+    MatDialogModule,
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule,
