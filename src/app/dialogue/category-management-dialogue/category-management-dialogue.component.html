@@ -1,0 +1,191 @@
+<div class="category-management-dialog">
+  <div class="dialog-header">
+    <h2 mat-dialog-title class="dialog-title">
+      <i class="bi bi-tags-fill me-2"></i>
+      Category Management
+    </h2>
+    <button mat-icon-button (click)="onClose()" class="close-btn">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div mat-dialog-content class="dialog-content">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center py-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2 text-muted">Loading categories...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="alert alert-danger" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      {{ error }}
+    </div>
+
+    <!-- Add Category Button -->
+    <div class="mb-4" *ngIf="!loading">
+      <button 
+        class="btn btn-primary" 
+        (click)="showAddCategoryForm()" 
+        *ngIf="!showAddForm">
+        <i class="bi bi-plus-circle me-2"></i>
+        Add New Category
+      </button>
+    </div>
+
+    <!-- Add Category Form -->
+    <div *ngIf="showAddForm" class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h6 class="mb-0">
+          <i class="bi bi-plus-circle me-2"></i>
+          Add New Category
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label for="newCategoryName" class="form-label">Category Name</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="newCategoryName"
+            [(ngModel)]="newCategoryName" 
+            placeholder="Enter category name"
+            (keyup.enter)="addCategory()">
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-success" (click)="addCategory()">
+            <i class="bi bi-check-circle me-1"></i>
+            Add Category
+          </button>
+          <button class="btn btn-secondary" (click)="cancelAddCategory()">
+            <i class="bi bi-x-circle me-1"></i>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories List -->
+    <div *ngIf="!loading && categories.length > 0" class="categories-grid">
+      <div *ngFor="let category of categories" class="category-card">
+        <div class="card h-100 shadow-sm">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="category-info">
+              <h6 class="mb-0 fw-bold text-primary" *ngIf="editingCategory?.id !== category.id">
+                <i class="bi bi-tag-fill me-2"></i>
+                {{ category.name }}
+              </h6>
+              
+              <!-- Edit Form -->
+              <div *ngIf="editingCategory?.id === category.id" class="edit-form">
+                <input 
+                  type="text" 
+                  class="form-control form-control-sm" 
+                  [(ngModel)]="editCategoryName"
+                  (keyup.enter)="updateCategory()"
+                  placeholder="Category name">
+              </div>
+            </div>
+            
+            <div class="category-actions" *ngIf="editingCategory?.id !== category.id">
+              <button 
+                class="btn btn-sm btn-outline-primary me-1" 
+                (click)="startEditCategory(category)"
+                title="Edit Category">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button 
+                class="btn btn-sm btn-outline-danger" 
+                (click)="deleteCategory(category)"
+                title="Delete Category">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+            
+            <!-- Edit Actions -->
+            <div class="edit-actions" *ngIf="editingCategory?.id === category.id">
+              <button 
+                class="btn btn-sm btn-success me-1" 
+                (click)="updateCategory()"
+                title="Save">
+                <i class="bi bi-check"></i>
+              </button>
+              <button 
+                class="btn btn-sm btn-secondary" 
+                (click)="cancelEditCategory()"
+                title="Cancel">
+                <i class="bi bi-x"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <div class="category-stats mb-3">
+              <div class="stat-item">
+                <span class="stat-label">Products:</span>
+                <span class="stat-value badge bg-info">{{ category.productCount }}</span>
+              </div>
+              <div class="stat-item mt-2">
+                <span class="stat-label text-muted">Created:</span>
+                <span class="stat-value text-muted">{{ category.createdAt | date:'short' }}</span>
+              </div>
+            </div>
+            
+            <button 
+              class="btn btn-outline-success btn-sm w-100" 
+              (click)="showAssignProductForm(category)">
+              <i class="bi bi-box-arrow-in-right me-2"></i>
+              Assign Product
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Categories State -->
+    <div *ngIf="!loading && categories.length === 0" class="text-center py-5">
+      <i class="bi bi-tags display-1 text-muted"></i>
+      <h5 class="mt-3 text-muted">No Categories Found</h5>
+      <p class="text-muted">Start by adding your first category</p>
+    </div>
+
+    <!-- Assign Product Modal -->
+    <div *ngIf="showAssignForm" class="assign-product-overlay">
+      <div class="assign-product-modal">
+        <div class="modal-header">
+          <h6 class="modal-title">
+            <i class="bi bi-box-arrow-in-right me-2"></i>
+            Assign Product to "{{ selectedCategoryForAssign?.name }}"
+          </h6>
+          <button class="btn-close" (click)="cancelAssignProduct()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="productSelect" class="form-label">Select Product</label>
+            <select 
+              class="form-select" 
+              id="productSelect"
+              [(ngModel)]="selectedProductId">
+              <option value="">Choose a product...</option>
+              <option *ngFor="let product of products" [value]="product.id">
+                {{ product.name || product.productName }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success" (click)="assignProduct()">
+            <i class="bi bi-check-circle me-1"></i>
+            Assign Product
+          </button>
+          <button class="btn btn-secondary" (click)="cancelAssignProduct()">
+            <i class="bi bi-x-circle me-1"></i>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

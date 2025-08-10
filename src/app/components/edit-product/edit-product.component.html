@@ -1,121 +1,130 @@
-<!-- d:\Maven_Projects\ABC_Solution\abcsolution-frontend\src\app\components\edit-product\edit-product.component.html -->
+<div class="container-fluid p-2 p-sm-3">
+  <div class="card shadow border-0">
+    <div class="card-header bg-primary text-white py-2 py-sm-3">
+      <h2 class="m-0 text-center fs-5 fs-sm-4 fs-md-3">Update Product</h2>
+    </div>
+    <div class="card-body touch-scroll" style="height: calc(100vh - 180px); overflow-y: auto;">
+      <!-- Loading indicator -->
+      <div *ngIf="isLoading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading product details...</p>
+      </div>
 
-<div class="container mt-4">
-  <div class="card">
-    <div class="card-header bg-primary text-white">
-    <h2>Update Product</h2>
-    </div>
-    <div class="card-body" style="height: calc(100vh - 180px); overflow-y: auto;">
-    <div *ngIf="isLoading" class="text-center">
-    <div class="spinner-border text-primary" role="status">
-    <span class="visually-hidden">Loading...</span>
-    </div>
-    </div>
+      <!-- Error message -->
+      <div *ngIf="submitError" class="alert alert-danger d-flex align-items-center" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <div>{{ submitError }}</div>
+      </div>
 
-    <div *ngIf="submitError" class="alert alert-danger">{{ submitError }}</div>
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+        <!-- Basic Product Info -->
+        <div class="row mb-3">
+          <div class="col-12 col-md-6 mb-3 mb-md-0">
+            <label for="name" class="form-label">Product Name</label>
+            <input type="text" class="form-control" id="name" formControlName="name" placeholder="Enter product name">
+            <div *ngIf="isFieldInvalid(productForm, 'name')" class="text-danger small mt-1">
+              Product name is required
+            </div>
+          </div>
+        </div>
 
-    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
-    <!-- Basic Product Info -->
-    <div class="mb-3">
-    <label for="name" class="form-label">Product Name</label>
-    <input type="text" class="form-control" id="name" formControlName="name">
-    <div *ngIf="isFieldInvalid(productForm, 'name')" class="text-danger">
-    Product name is required
-    </div>
-    </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Product Description</label>
+          <textarea class="form-control" id="description" rows="3" formControlName="description" placeholder="Write a short description"></textarea>
+          <div *ngIf="isFieldInvalid(productForm, 'description')" class="text-danger small mt-1">
+            Product description is required
+          </div>
+        </div>
 
-    <div class="mb-3">
-    <label for="description" class="form-label">Description</label>
-    <textarea class="form-control" id="description" rows="3" formControlName="description"></textarea>
-    <div *ngIf="isFieldInvalid(productForm, 'description')" class="text-danger">
-    Product description is required
-    </div>
-    </div>
+        <!-- Level Prices Section -->
+        <h5 class="mt-4 mb-3 text-secondary fs-5">Pricing & Quantity Levels</h5>
+        <div class="card mb-3">
+          <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <h6 class="mb-0">Pricing Levels</h6>
+              <button type="button" class="btn btn-success btn-sm" (click)="addLevelPrice()">
+                <i class="bi bi-plus-circle me-1"></i> Add Level
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div formArrayName="levelPrices">
+              <div *ngFor="let levelPrice of levelPricesFormArray.controls; let i = index" [formGroupName]="i" 
+                   class="border p-2 p-sm-3 mb-3 rounded shadow-sm">
+                
+                <h6 class="text-secondary mb-3">{{ getLevelText(levelPrice.get('level')) }}</h6>
+                
+                <div class="row g-2 g-sm-3 mb-3">
+                  <!-- Level Alias Dropdown -->
+                  <div class="col-12 col-md-6">
+                    <label [for]="'levelAlias-' + i" class="form-label">Level Alias</label>
+                    <select class="form-select" [id]="'levelAlias-' + i" formControlName="aliasId">
+                      <option [value]="null">Select an alias</option>
+                      <option *ngFor="let alias of levelAliases[getLevelId(levelPrice.get('level'))]" [value]="alias.id">
+                        {{ alias.aliasName }}
+                      </option>
+                    </select>
+                  </div>
+                  
+                  <!-- Remove Button -->
+                  <div class="col-12 col-md-6 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger btn-sm w-100 w-md-auto" (click)="removeLevelPrice(i)">
+                      <i class="bi bi-trash me-1"></i> Remove Level
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="row g-2 g-sm-3">
+                  <!-- Min Price -->
+                  <div class="col-6 col-md-3">
+                    <label [for]="'minPrice-' + i" class="form-label">Min Price</label>
+                    <input type="number" class="form-control" [id]="'minPrice-' + i" formControlName="minPrice" min="0">
+                  </div>
+                  
+                  <!-- Max Price -->
+                  <div class="col-6 col-md-3">
+                    <label [for]="'maxPrice-' + i" class="form-label">Max Price</label>
+                    <input type="number" class="form-control" [id]="'maxPrice-' + i" formControlName="maxPrice" min="0">
+                  </div>
+                  
+                  <!-- Min Quantity -->
+                  <div class="col-6 col-md-3">
+                    <label [for]="'minQuantity-' + i" class="form-label">Min Quantity</label>
+                    <input type="number" class="form-control" [id]="'minQuantity-' + i" formControlName="minQuantity" min="0">
+                  </div>
+                  
+                  <!-- Max Quantity -->
+                  <div class="col-6 col-md-3">
+                    <label [for]="'maxQuantity-' + i" class="form-label">Max Quantity</label>
+                    <input type="number" class="form-control" [id]="'maxQuantity-' + i" formControlName="maxQuantity" min="0">
+                  </div>
+                </div>
+              </div>
 
-    <!-- Level Prices Section -->
-    <div class="card mb-3">
-    <div class="card-header">
-    <div class="d-flex justify-content-between align-items-center">
-    <h3 class="mb-0">Pricing Levels</h3>
-    <button type="button" class="btn btn-success" (click)="addLevelPrice()">
-    Add Price Level
-    </button>
-    </div>
-    </div>
-    <div class="card-body">
-    <div formArrayName="levelPrices">
-    <div *ngFor="let levelPrice of levelPricesFormArray.controls; let i = index" [formGroupName]="i" 
-    class="mb-4 pb-3 border-bottom">
-    
-    <div class="row mb-3">
-    <!-- Level Label -->
-    <div class="col-md-2" formGroupName="level">
-    <label class="form-label">Level</label>
-    <div class="fw-bold">{{ getLevelText(levelPrice.get('level')) }}</div>
-    </div>
-    
-    <!-- Level Alias Dropdown -->
-    <div class="col-md-3">
-    <label [for]="'levelAlias-' + i" class="form-label">Level Alias</label>
-    <select class="form-select" [id]="'levelAlias-' + i" formControlName="aliasId">
-        <option [value]="null">Select an alias</option>
-        <option *ngFor="let alias of levelAliases[getLevelId(levelPrice.get('level'))]" [value]="alias.id">
-            {{ alias.aliasName }}
-        </option>
-    </select>
-    </div>
-    
-    <!-- Min Price -->
-    <div class="col-md-3">
-    <label [for]="'minPrice-' + i" class="form-label">Min Price</label>
-    <input type="number" class="form-control" [id]="'minPrice-' + i" formControlName="minPrice">
-    </div>
-    
-    <!-- Max Price -->
-    <div class="col-md-3">
-    <label [for]="'maxPrice-' + i" class="form-label">Max Price</label>
-    <input type="number" class="form-control" [id]="'maxPrice-' + i" formControlName="maxPrice">
-    </div>
-    </div>
+              <!-- No Price Levels Message -->
+              <div *ngIf="levelPricesFormArray.length === 0" class="text-center text-muted py-4">
+                <i class="bi bi-info-circle fs-1 text-secondary mb-3"></i>
+                <p class="mb-0">No pricing levels added yet.</p>
+                <small class="text-muted">Click "Add Level" to get started.</small>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    <div class="row mb-3">
-    <!-- Min Quantity -->
-    <div class="col-md-3">
-    <label [for]="'minQuantity-' + i" class="form-label">Min Quantity</label>
-    <input type="number" class="form-control" [id]="'minQuantity-' + i" formControlName="minQuantity">
-    </div>
-    
-    <!-- Max Quantity -->
-    <div class="col-md-3">
-    <label [for]="'maxQuantity-' + i" class="form-label">Max Quantity</label>
-    <input type="number" class="form-control" [id]="'maxQuantity-' + i" formControlName="maxQuantity">
-    </div>
-    
-    <!-- Remove Button -->
-    <div class="col-md-3 d-flex align-items-end">
-    <button type="button" class="btn btn-danger" (click)="removeLevelPrice(i)">
-    Remove
-    </button>
-    </div>
-    </div>
-    </div>
-
-    <!-- No Price Levels Message -->
-    <div *ngIf="levelPricesFormArray.length === 0" class="alert alert-info">
-    No price levels added yet. Click "Add Price Level" to add one.
-    </div>
-    </div>
-    </div>
-    </div>
-
-    <!-- Form Controls -->
-    <div class="d-flex justify-content-between">
-    <button type="button" class="btn btn-secondary" [routerLink]="['/products']">Cancel</button>
-    <button type="submit" class="btn btn-primary" [disabled]="isLoading">
-    Update Product
-    </button>
-    </div>
-    </form>
+        <!-- Action Buttons -->
+        <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4">
+          <button type="button" class="btn btn-secondary order-2 order-sm-1" (click)="cancel()">
+            <i class="bi bi-x-circle me-1"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-primary order-1 order-sm-2" [disabled]="productForm.invalid || isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+            <i *ngIf="!isLoading" class="bi bi-check-circle me-1"></i>
+            Update Product
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

@@ -11,6 +11,7 @@ import { LevelService } from '../../services/level.services';
   styleUrls: ['./edit-product.component.css']
 })
 export class EditProductComponent implements OnInit {
+[x: string]: any;
   productForm: FormGroup;
   productId: number;
   isLoading = false;
@@ -200,5 +201,9 @@ export class EditProductComponent implements OnInit {
   getLevelId(levelControl: AbstractControl | null): number {
     if (!levelControl || !(levelControl instanceof FormGroup)) return 0;
     return levelControl.get('id')?.value || 0;
+  }
+
+  cancel(): void {
+    this.router.navigate(['/products']);
   }
 }

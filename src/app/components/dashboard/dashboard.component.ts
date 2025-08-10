@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { LevelService } from '../../services/level.services';
+import { CategoryService } from '../../services/category.services';
 import { User } from '../../models/user.model';
 import { MatDialog } from '@angular/material/dialog';
 import { LevelDialogueComponent } from '../../dialogue/level-dialogue/level-dialogue.component';
 import { UserLevelStatsDialogueComponent } from '../../dialogue/user-level-stats-dialogue/user-level-stats-dialogue.component';
 import { OrderStatsDialogueComponent } from '../../dialogue/order-stats-dialogue/order-stats-dialogue.component';
+import { CategoryManagementDialogueComponent } from '../../dialogue/category-management-dialogue/category-management-dialogue.component';
 import { AuthService } from '../../services/auth.services';
 import { ConfirmDialogueComponent } from '../../dialogue/confirm-dialogue/confirm-dialogue.component';
 import { LevelAliasDialogueComponent } from '../../dialogue/level-alias-dialogue/level-alias-dialogue.component';
@@ -27,7 +29,8 @@ export class DashboardComponent {
   totalSellers = 0;
   totalProfit = 52500;
   totalLevels = 0;
-  totalOrders = 0; 
+  totalOrders = 0;
+  totalCategories = 0;
   userLevelStats: UserLevelStats | null = null;
   orderStatistics: OrderStatistics | null = null;
   combinedRequestStats: CombinedRequestStats | null = null;
@@ -39,6 +42,7 @@ export class DashboardComponent {
   constructor(
     private userService: UserService,
     private levelService: LevelService,
+    private categoryService: CategoryService,
     private dialog: MatDialog,
     private authService: AuthService,
     private adminService: AdminService,
@@ -50,6 +54,7 @@ export class DashboardComponent {
     this.fetchLevelCount();
     this.fetchOrderStatistics(); 
     this.fetchCombinedRequestStats();
+    this.fetchCategoryCount();
   }
 
   // Add this new method
@@ -208,12 +213,39 @@ export class DashboardComponent {
     });
   }
 
+  fetchCategoryCount(): void {
+    this.categoryService.getAllCategories().subscribe({
+      next: (categories) => {
+        this.totalCategories = categories.length;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load category data';
+        this.loading = false;
+        console.error('Error fetching category data:', err);
+      }
+    });
+  }
+
+  openCategoryManagementDialog(): void {
+    const dialogRef = this.dialog.open(CategoryManagementDialogueComponent, {
+      width: '1000px',
+      maxWidth: '95vw',
+      panelClass: 'custom-dialog-container'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.fetchCategoryCount(); // Refresh category count after dialog closes
+    });
+  }
+
   refreshData(): void {
     this.fetchUserStats();
     this.fetchUserLevelStats();
     this.fetchLevelCount();
     this.fetchOrderStatistics();
     this.fetchCombinedRequestStats();
+    this.fetchCategoryCount();
   }
 
   onLogout(): void {

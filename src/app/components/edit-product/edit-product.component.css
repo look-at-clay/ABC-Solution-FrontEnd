@@ -1,0 +1,101 @@
+/* Responsive styles for edit-product component */
+.container-fluid {
+  background: #eef2f7;
+  padding: 15px;
+}
+
+h2 {
+  font-size: 2rem;
+  color: #4e73df;
+}
+
+.form-label {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+button {
+  font-size: 1.1rem;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Touch scrolling for mobile */
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Responsive styles */
+@media (max-width: 767.98px) {
+  .container-fluid {
+    padding: 10px;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  button {
+    font-size: 1rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+  
+  .form-control, .form-select {
+    font-size: 0.9rem;
+  }
+  
+  .card-header {
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .container-fluid {
+    padding: 8px;
+  }
+  
+  h2 {
+    font-size: 1.3rem;
+  }
+  
+  .card-body {
+    padding: 0.75rem;
+  }
+  
+  button {
+    font-size: 0.9rem;
+  }
+  
+  .form-control, .form-select {
+    font-size: 0.85rem;
+  }
+  
+  .card-header {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  /* Stack form elements vertically on very small screens */
+  .row .col-md-6 {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Level pricing section responsive */
+@media (max-width: 576px) {
+  .border.p-3 {
+    padding: 0.75rem !important;
+  }
+  
+  .row.g-3 {
+    --bs-gutter-x: 0.5rem;
+    --bs-gutter-y: 0.5rem;
+  }
+}

@@ -1,42 +1,87 @@
-<div class="container mt-4">
-    <div class="card shadow-sm">
-      <div class="card-header bg-dark text-white">
-        <h4 class="mb-0">Products for Buyer ID: {{ buyerId }}</h4>
+<div class="container-fluid mt-3 px-2 px-sm-3">
+  <div class="card shadow-sm">
+    <div class="card-header bg-dark text-white py-2 py-md-3">
+      <h4 class="mb-0 fs-5 fs-md-4">Products for Buyer ID: {{ buyerId }}</h4>
+    </div>
+
+    <div class="card-body p-2 p-md-3">
+      <!-- Loading State -->
+      <div *ngIf="loading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading products...</p>
       </div>
-  
-      <div class="card-body">
-        <div *ngIf="loading" class="text-center">
-          <div class="spinner-border text-primary"></div>
-          <p>Loading products...</p>
+
+      <!-- Error State -->
+      <div *ngIf="error" class="alert alert-danger d-flex align-items-center" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <div>{{ error }}</div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && buyerProducts.length === 0" class="text-center py-4">
+        <i class="bi bi-inbox text-muted" style="font-size: 2.5rem;"></i>
+        <p class="text-muted mt-3">No products found for this Buyer.</p>
+      </div>
+
+      <!-- Desktop Table View (hidden on small screens) -->
+      <div *ngIf="!loading && buyerProducts.length > 0" class="d-none d-md-block">
+        <div class="table-responsive" style="max-height: 500px;">
+          <table class="table table-bordered table-hover mb-0">
+            <thead class="table-dark sticky-top">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Request Buying Price</th>
+                <th scope="col">Requested Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of buyerProducts; let i = index">
+                <th scope="row">{{ i + 1 }}</th>
+                <td>{{ product.productName }}</td>
+                <td>{{ product.productDesc }}</td>
+                <td class="text-success fw-bold">₹{{ product.buyingPrice }}</td>
+                <td class="text-primary fw-medium">{{ product.buyingQuantity }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-  
-        <div *ngIf="error" class="alert alert-danger">
-          {{ error }}
+      </div>
+
+      <!-- Mobile Card View (visible only on small screens) -->
+      <div *ngIf="!loading && buyerProducts.length > 0" class="d-md-none">
+        <div class="row g-3">
+          <div *ngFor="let product of buyerProducts; let i = index" class="col-12">
+            <div class="card h-100 border">
+              <div class="card-header d-flex justify-content-between align-items-center py-2">
+                <h5 class="card-title mb-0 text-primary">{{ product.productName }}</h5>
+                <span class="badge bg-secondary">#{{ i + 1 }}</span>
+              </div>
+              <div class="card-body py-2">
+                <div class="mb-3">
+                  <h6 class="text-muted mb-1">Description:</h6>
+                  <p class="card-text mb-0">{{ product.productDesc }}</p>
+                </div>
+                
+                <div class="row g-2">
+                  <div class="col-6">
+                    <h6 class="text-muted mb-1">Buying Price:</h6>
+                    <span class="fw-bold text-success fs-5">₹{{ product.buyingPrice }}</span>
+                  </div>
+                  <div class="col-6">
+                    <h6 class="text-muted mb-1">Quantity:</h6>
+                    <span class="fw-medium text-primary fs-5">{{ product.buyingQuantity }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-  
-        <div *ngIf="!loading && buyerProducts.length === 0" class="text-center">
-          <p>No products found for this Buyer.</p>
-        </div>
-  
-        <table *ngIf="buyerProducts.length > 0" class="table table-bordered mt-3">
-          <thead class="table-dark text-white">
-            <tr>
-              <th>Product Name</th>
-              <th>Description</th>
-              <th>Request Buying Price</th>
-              <th>Requested Quantity</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let product of buyerProducts">
-              <td>{{ product.productName }}</td>
-              <td>{{ product.productDesc }}</td>
-              <td>₹{{ product.buyingPrice}}</td>
-              <td>{{ product.buyingQuantity }}</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
+</div>
   

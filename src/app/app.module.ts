@@ -5,7 +5,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog'; // Add this import
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
@@ -34,7 +35,9 @@ import { UserLevelStatsDialogueComponent } from './dialogue/user-level-stats-dia
 import { OrderStatsDialogueComponent } from './dialogue/order-stats-dialogue/order-stats-dialogue.component';
 import { FilterPipe } from './pipes/filter.pipes';
 import { CombinedRequestsDialogueComponent } from './dialogue/combined-requests-dialogue/combined-requests-dialogue.component';
+import { CategoryManagementDialogueComponent } from './dialogue/category-management-dialogue/category-management-dialogue.component';
 import { NewsManagementComponent } from './components/news-management/news-management.component';
+import { ProductCategoryComponent } from './components/product-category/product-category.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +61,9 @@ import { NewsManagementComponent } from './components/news-management/news-manag
     UserLevelStatsDialogueComponent,
     OrderStatsDialogueComponent,
     CombinedRequestsDialogueComponent,
+    CategoryManagementDialogueComponent,
     NewsManagementComponent,
+    ProductCategoryComponent,
   ],
   imports: [
     BrowserModule,
@@ -69,6 +74,7 @@ import { NewsManagementComponent } from './components/news-management/news-manag
     MatTableModule,
     MatButtonModule,
     MatDialogModule,
+    MatSnackBarModule,
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule,

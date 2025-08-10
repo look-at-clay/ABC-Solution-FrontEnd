@@ -1,36 +1,38 @@
-<h2 class="mb-3">Level Management</h2>
 <div class="container">
-  <div class="my-3">
-    <h3>Current Levels: {{ data.totalLevels }}</h3>
-    <!-- <p *ngIf="highestLevel > 0">Highest Level: {{ highestLevel }}</p> -->
-  </div>
-
-  <!-- Simple Add/Delete Buttons -->
-  <div class="d-flex gap-3 mb-4">
-    <button 
-      class="btn btn-danger" 
-      (click)="deleteHighestLevel()"
-      [disabled]="isSubmitting || levels.length === 0">
-      <i class="bi bi-trash me-1"></i> Delete Level
-    </button>
-
-    <button 
-      class="btn btn-primary" 
-      (click)="addLevel()"
-      [disabled]="isSubmitting">
-      <i class="bi bi-plus-circle me-1"></i> Add Level
-    </button>
-  </div>
-
-  <!-- Status Messages -->
-  <div *ngIf="successMessage" class="alert alert-success mt-3">
-    {{ successMessage }}
-  </div>
-  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
-    {{ errorMessage }}
+  <h2>Manage Levels</h2>
+  
+  <!-- Current Level Display -->
+  <div *ngIf="currentLevel" class="level-item mb-3">
+    <div>
+      <strong>Current Level:</strong>
+      <span class="ms-2">{{ currentLevel.levelName }}</span>
+    </div>
   </div>
   
-  <div class="mt-4 text-end">
-    <button class="btn btn-secondary" (click)="dialogRef.close()">Close</button>
+  <!-- Level Actions -->
+  <div class="level-actions mb-4">
+    <button class="btn btn-primary" (click)="addLevel()" [disabled]="isLoading">
+      <i class="bi bi-plus-circle me-1"></i>
+      Add Level
+    </button>
+    
+    <button class="btn btn-danger" (click)="deleteLevel()" [disabled]="isLoading || !currentLevel">
+      <i class="bi bi-trash me-1"></i>
+      Delete Current Level
+    </button>
+  </div>
+  
+  <!-- Status Messages -->
+  <div *ngIf="message" class="alert mb-3" [ngClass]="{'alert-success': !isError, 'alert-danger': isError}">
+    <i class="bi" [ngClass]="{'bi-check-circle': !isError, 'bi-exclamation-triangle': isError}" class="me-2"></i>
+    {{ message }}
+  </div>
+  
+  <!-- Dialog Actions -->
+  <div class="dialog-actions">
+    <button class="btn btn-secondary" (click)="close()">
+      <i class="bi bi-x-circle me-1"></i>
+      Close
+    </button>
   </div>
 </div>

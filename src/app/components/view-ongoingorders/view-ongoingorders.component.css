@@ -189,14 +189,20 @@
   }
   
   /* Responsive Design */
-  @media (max-width: 768px) {
-    .table-responsive {
-      font-size: 0.75rem;
-    }
-    
-    .card-header h6 {
-      font-size: 0.875rem;
-    }
+@media (max-width: 768px) {
+  .table-responsive {
+    font-size: 0.75rem;
+  }
+  
+  .card-header h6 {
+    font-size: 0.875rem;
+  }
+  
+  /* Fix content spacing on mobile */
+  .row > [class*="col-"] {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
     
     .user-info, .product-info {
       font-size: 0.75rem;
@@ -282,21 +288,42 @@
   }
   
   /* Custom Scrollbar */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #858796;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5a5c69;
+}
+
+/* Layout consistency with dashboard */
+@media (max-width: 576px) {
+  .row > [class*="col-"] {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
   }
-  
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
+}
+
+/* Ensure proper spacing */
+.row {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+/* Header responsive adjustments */
+@media (max-width: 576px) {
+  h2 {
+    font-size: 1.5rem;
   }
-  
-  ::-webkit-scrollbar-thumb {
-    background: #858796;
-    border-radius: 4px;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: #5a5c69;
-  }
+}

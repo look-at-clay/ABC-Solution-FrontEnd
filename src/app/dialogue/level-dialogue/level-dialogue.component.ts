@@ -9,11 +9,21 @@ import { LevelService } from '../../services/level.services';
   styleUrls: ['./level-dialogue.component.css']
 })
 export class LevelDialogueComponent implements OnInit {
+deleteLevel() {
+throw new Error('Method not implemented.');
+}
+close() {
+throw new Error('Method not implemented.');
+}
   isSubmitting = false;
   successMessage = '';
   errorMessage = '';
   levels: any[] = [];
   highestLevel: number = 0;
+currentLevel: any;
+isLoading: any;
+message: any;
+isError: any;
 
   constructor(
     public dialogRef: MatDialogRef<LevelDialogueComponent>,
