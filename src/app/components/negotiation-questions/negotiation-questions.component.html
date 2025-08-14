@@ -1,0 +1,364 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">
+            <i class="bi bi-chat-square-text me-2"></i>
+            Negotiation Questions Management
+          </h4>
+          <button class="btn btn-light btn-sm" (click)="openCategoryModal()">
+            <i class="bi bi-plus-circle me-1"></i>
+            Add Category
+          </button>
+        </div>
+        
+        <div class="card-body">
+          <div *ngIf="loading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+
+          <div *ngIf="!loading && categories.length === 0" class="text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <h5 class="text-muted mt-3">No categories found</h5>
+            <p class="text-muted">Start by creating your first category</p>
+            <button class="btn btn-primary" (click)="openCategoryModal()">
+              <i class="bi bi-plus-circle me-1"></i>
+              Create Category
+            </button>
+          </div>
+
+          <div *ngIf="!loading && categories.length > 0" class="negotiation-tree">
+            <div *ngFor="let category of categories" class="category-item mb-3">
+              <div class="card border-start border-primary border-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center">
+                    <button 
+                      class="btn btn-sm btn-outline-secondary me-2" 
+                      (click)="toggleCategory(category.id)"
+                      [attr.aria-expanded]="expandedCategories.has(category.id)">
+                      <i class="bi" [class.bi-chevron-down]="expandedCategories.has(category.id)" 
+                         [class.bi-chevron-right]="!expandedCategories.has(category.id)"></i>
+                    </button>
+                    <div>
+                      <h6 class="mb-0 fw-bold text-primary">{{ category.categoryName }}</h6>
+                      <small class="text-muted">
+                        Order: {{ category.displayOrder }} | 
+                        Status: <span [class]="category.isActive ? 'text-success' : 'text-danger'">
+                          {{ category.isActive ? 'Active' : 'Inactive' }}
+                        </span> | 
+                        Questions: {{ (category.questions && category.questions.length) || 0 }}
+                      </small>
+                    </div>
+                  </div>
+                  <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-success" (click)="openQuestionModal(category.id)">
+                      <i class="bi bi-plus me-1"></i>Add Question
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary" (click)="openCategoryModal(category)">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" (click)="deleteCategory(category)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="card-body" *ngIf="expandedCategories.has(category.id)">
+                  <div *ngIf="category.questions && category.questions.length === 0" class="text-center py-3">
+                    <i class="bi bi-question-circle text-muted"></i>
+                    <p class="text-muted mb-2">No questions in this category</p>
+                    <button class="btn btn-sm btn-primary" (click)="openQuestionModal(category.id)">
+                      <i class="bi bi-plus me-1"></i>Add First Question
+                    </button>
+                  </div>
+                  
+                  <div *ngFor="let question of category.questions" class="question-item mb-3">
+                    <div class="card border-start border-success border-3">
+                      <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                          <button 
+                            class="btn btn-sm btn-outline-secondary me-2" 
+                            (click)="toggleQuestion(question.id)"
+                            [attr.aria-expanded]="expandedQuestions.has(question.id)">
+                            <i class="bi" [class.bi-chevron-down]="expandedQuestions.has(question.id)" 
+                               [class.bi-chevron-right]="!expandedQuestions.has(question.id)"></i>
+                          </button>
+                          <div>
+                            <h6 class="mb-0 text-success">{{ question.questionText }}</h6>
+                            <small class="text-muted">
+                              Template: {{ question.templateKey }} | 
+                              Order: {{ question.displayOrder }} | 
+                              Status: <span [class]="question.isActive ? 'text-success' : 'text-danger'">
+                                {{ question.isActive ? 'Active' : 'Inactive' }}
+                              </span> | 
+                              Responses: {{ (question.responses && question.responses.length) || 0 }}
+                            </small>
+                          </div>
+                        </div>
+                        <div class="btn-group">
+                          <button class="btn btn-sm btn-outline-info" (click)="openResponseModal(question.id)">
+                            <i class="bi bi-plus me-1"></i>Add Response
+                          </button>
+                          <button class="btn btn-sm btn-outline-primary" (click)="openQuestionModal(category.id, question)">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger" (click)="deleteQuestion(question)">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div class="card-body" *ngIf="expandedQuestions.has(question.id)">
+                        <div *ngIf="question.responses && question.responses.length === 0" class="text-center py-3">
+                          <i class="bi bi-chat-dots text-muted"></i>
+                          <p class="text-muted mb-2">No responses for this question</p>
+                          <button class="btn btn-sm btn-info" (click)="openResponseModal(question.id)">
+                            <i class="bi bi-plus me-1"></i>Add First Response
+                          </button>
+                        </div>
+                        
+                        <div *ngFor="let response of question.responses" class="response-item mb-2">
+                          <div class="card border-start border-info border-2">
+                            <div class="card-body py-2">
+                              <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                  <span class="fw-medium text-info">{{ response.responseText }}</span>
+                                  <br>
+                                  <small class="text-muted">
+                                    Template: {{ response.templateKey }} | 
+                                    Order: {{ response.displayOrder }} | 
+                                    Status: <span [class]="response.isActive ? 'text-success' : 'text-danger'">
+                                      {{ response.isActive ? 'Active' : 'Inactive' }}
+                                    </span>
+                                  </small>
+                                </div>
+                                <div class="btn-group">
+                                  <button class="btn btn-sm btn-outline-primary" (click)="openResponseModal(question.id, response)">
+                                    <i class="bi bi-pencil"></i>
+                                  </button>
+                                  <button class="btn btn-sm btn-outline-danger" (click)="deleteResponse(response)">
+                                    <i class="bi bi-trash"></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Category Modal -->
+<div class="modal fade" [class.show]="showCategoryModal" [style.display]="showCategoryModal ? 'block' : 'none'" 
+     tabindex="-1" *ngIf="showCategoryModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-folder-plus me-2"></i>
+          {{ editingCategory ? 'Edit Category' : 'Add New Category' }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeCategoryModal()"></button>
+      </div>
+      <form [formGroup]="categoryForm" (ngSubmit)="saveCategoryForm()">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="categoryName" class="form-label">Category Name *</label>
+            <input type="text" class="form-control" id="categoryName" formControlName="categoryName" 
+                   placeholder="Enter category name">
+            <div *ngIf="categoryForm.get('categoryName')?.invalid && categoryForm.get('categoryName')?.touched" 
+                 class="text-danger small mt-1">
+              Category name is required (minimum 2 characters)
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="displayOrder" class="form-label">Display Order *</label>
+            <input type="number" class="form-control" id="displayOrder" formControlName="displayOrder" 
+                   placeholder="Enter display order" min="1">
+            <div *ngIf="categoryForm.get('displayOrder')?.invalid && categoryForm.get('displayOrder')?.touched" 
+                 class="text-danger small mt-1">
+              Display order is required (minimum 1)
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="isActive" formControlName="isActive">
+              <label class="form-check-label" for="isActive">
+                Active
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeCategoryModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="categoryForm.invalid">
+            <i class="bi bi-check-circle me-1"></i>
+            {{ editingCategory ? 'Update' : 'Create' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Question Modal -->
+<div class="modal fade" [class.show]="showQuestionModal" [style.display]="showQuestionModal ? 'block' : 'none'" 
+     tabindex="-1" *ngIf="showQuestionModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-question-circle me-2"></i>
+          {{ editingQuestion ? 'Edit Question' : 'Add New Question' }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeQuestionModal()"></button>
+      </div>
+      <form [formGroup]="questionForm" (ngSubmit)="saveQuestionForm()">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="questionText" class="form-label">Question Text *</label>
+            <textarea class="form-control" id="questionText" formControlName="questionText" 
+                      rows="3" placeholder="Enter question text"></textarea>
+            <div *ngIf="questionForm.get('questionText')?.invalid && questionForm.get('questionText')?.touched" 
+                 class="text-danger small mt-1">
+              Question text is required (minimum 5 characters)
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="templateKey" class="form-label">Template Key *</label>
+            <input type="text" class="form-control" id="templateKey" formControlName="templateKey" 
+                   placeholder="Enter template key">
+            <div *ngIf="questionForm.get('templateKey')?.invalid && questionForm.get('templateKey')?.touched" 
+                 class="text-danger small mt-1">
+              Template key is required (minimum 2 characters)
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <label for="questionDisplayOrder" class="form-label">Display Order *</label>
+              <input type="number" class="form-control" id="questionDisplayOrder" formControlName="displayOrder" 
+                     placeholder="Enter display order" min="1">
+              <div *ngIf="questionForm.get('displayOrder')?.invalid && questionForm.get('displayOrder')?.touched" 
+                   class="text-danger small mt-1">
+                Display order is required (minimum 1)
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="questionCategory" class="form-label">Category *</label>
+              <select class="form-select" id="questionCategory" formControlName="categoryId">
+                <option value="">Select Category</option>
+                <option *ngFor="let category of categories" [value]="category.id">
+                  {{ category.categoryName }}
+                </option>
+              </select>
+              <div *ngIf="questionForm.get('categoryId')?.invalid && questionForm.get('categoryId')?.touched" 
+                   class="text-danger small mt-1">
+                Category is required
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-3 mt-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="questionIsActive" formControlName="isActive">
+              <label class="form-check-label" for="questionIsActive">
+                Active
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeQuestionModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="questionForm.invalid">
+            <i class="bi bi-check-circle me-1"></i>
+            {{ editingQuestion ? 'Update' : 'Create' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Response Modal -->
+<div class="modal fade" [class.show]="showResponseModal" [style.display]="showResponseModal ? 'block' : 'none'" 
+     tabindex="-1" *ngIf="showResponseModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-chat-dots me-2"></i>
+          {{ editingResponse ? 'Edit Response' : 'Add New Response' }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeResponseModal()"></button>
+      </div>
+      <form [formGroup]="responseForm" (ngSubmit)="saveResponseForm()">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="responseText" class="form-label">Response Text *</label>
+            <textarea class="form-control" id="responseText" formControlName="responseText" 
+                      rows="3" placeholder="Enter response text"></textarea>
+            <div *ngIf="responseForm.get('responseText')?.invalid && responseForm.get('responseText')?.touched" 
+                 class="text-danger small mt-1">
+              Response text is required (minimum 2 characters)
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="responseTemplateKey" class="form-label">Template Key *</label>
+            <input type="text" class="form-control" id="responseTemplateKey" formControlName="templateKey" 
+                   placeholder="Enter template key">
+            <div *ngIf="responseForm.get('templateKey')?.invalid && responseForm.get('templateKey')?.touched" 
+                 class="text-danger small mt-1">
+              Template key is required (minimum 2 characters)
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="responseDisplayOrder" class="form-label">Display Order *</label>
+            <input type="number" class="form-control" id="responseDisplayOrder" formControlName="displayOrder" 
+                   placeholder="Enter display order" min="1">
+            <div *ngIf="responseForm.get('displayOrder')?.invalid && responseForm.get('displayOrder')?.touched" 
+                 class="text-danger small mt-1">
+              Display order is required (minimum 1)
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="responseIsActive" formControlName="isActive">
+              <label class="form-check-label" for="responseIsActive">
+                Active
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeResponseModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="responseForm.invalid">
+            <i class="bi bi-check-circle me-1"></i>
+            {{ editingResponse ? 'Update' : 'Create' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade show" *ngIf="showCategoryModal || showQuestionModal || showResponseModal"></div>

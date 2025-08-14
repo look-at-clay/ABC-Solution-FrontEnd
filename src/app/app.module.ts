@@ -38,6 +38,7 @@ import { CombinedRequestsDialogueComponent } from './dialogue/combined-requests-
 import { CategoryManagementDialogueComponent } from './dialogue/category-management-dialogue/category-management-dialogue.component';
 import { NewsManagementComponent } from './components/news-management/news-management.component';
 import { ProductCategoryComponent } from './components/product-category/product-category.component';
+import { NegotiationQuestionsComponent } from './components/negotiation-questions/negotiation-questions.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { ProductCategoryComponent } from './components/product-category/product-
     CategoryManagementDialogueComponent,
     NewsManagementComponent,
     ProductCategoryComponent,
+    NegotiationQuestionsComponent,
   ],
   imports: [
     BrowserModule,
