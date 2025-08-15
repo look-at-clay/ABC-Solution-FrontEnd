@@ -1,35 +1,93 @@
-/* view-users.component.css */
+/* BioTradX view-users.component.css */
 .container-fluid {
   max-width: 100%;
-  padding: 15px;
+  padding: var(--spacing-md);
+}
+
+.card {
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--biotradx-shadow);
+  background-color: var(--biotradx-bg-card);
 }
 
 .card-header {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  background: linear-gradient(135deg, var(--biotradx-primary), var(--biotradx-secondary)) !important;
+  border-bottom: none;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  color: white !important;
+  padding: var(--spacing-md);
+}
+
+.card-header h4 {
+  color: white !important;
+  font-family: var(--font-family-primary);
+  font-weight: 600;
 }
 
 .refresh-button {
   white-space: nowrap;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+  transition: all var(--transition-normal);
+}
+
+.refresh-button:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(-2px);
 }
 
 .table-responsive {
   overflow-x: auto;
+  border-radius: var(--border-radius);
+}
+
+.table {
+  margin-bottom: 0;
+  font-family: var(--font-family-secondary);
 }
 
 .table thead th {
+  background: linear-gradient(135deg, var(--biotradx-bg-secondary), var(--biotradx-bg-card));
+  color: var(--biotradx-text-primary);
   white-space: nowrap;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.875rem;
+  border-bottom: 2px solid var(--biotradx-primary);
+  padding: var(--spacing-md);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .table tbody td {
   vertical-align: middle;
   font-size: 0.875rem;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--biotradx-border);
+  transition: all var(--transition-normal);
+}
+
+.table tbody tr:hover {
+  background-color: rgba(46, 125, 50, 0.05);
+  transform: translateX(2px);
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: var(--biotradx-bg-secondary);
 }
 
 .btn-group-sm > .btn {
   padding: 0.25rem 0.5rem;
   font-size: 0.75rem;
+  border-radius: calc(var(--border-radius) / 2);
+  transition: all var(--transition-normal);
+}
+
+.btn-group-sm > .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--biotradx-shadow);
 }
 
 .sticky-top {
@@ -38,38 +96,63 @@
   z-index: 10;
 }
 
+/* BioTradX Form controls */
 .input-group-text {
-  background-color: #f8f9fa;
+  background-color: var(--biotradx-bg-secondary);
+  border-color: var(--biotradx-border);
+  color: var(--biotradx-text-primary);
+}
+
+.form-control {
+  border-color: var(--biotradx-border);
+  transition: all var(--transition-normal);
 }
 
 .form-control:focus {
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  border-color: var(--biotradx-primary);
+  box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+  background-color: var(--biotradx-bg-card);
+}
+
+.form-select {
+  border-color: var(--biotradx-border);
+  transition: all var(--transition-normal);
 }
 
 .form-select:focus {
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  border-color: var(--biotradx-primary);
+  box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+  background-color: var(--biotradx-bg-card);
 }
 
-.badge {
-  font-size: 0.75rem;
+.btn-outline-secondary {
+  border-color: var(--biotradx-border);
+  color: var(--biotradx-text-muted);
+  transition: all var(--transition-normal);
 }
 
+.btn-outline-secondary:hover {
+  background-color: var(--biotradx-text-muted);
+  border-color: var(--biotradx-text-muted);
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* BioTradX Text colors */
 .text-primary {
-  color: #0d6efd !important;
+  color: var(--biotradx-primary) !important;
 }
 
 .text-success {
-  color: #198754 !important;
+  color: var(--biotradx-accent) !important;
 }
 
 .text-info {
-  color: #0dcaf0 !important;
+  color: var(--biotradx-secondary) !important;
 }
 
 .text-muted {
-  color: #6c757d !important;
+  color: var(--biotradx-text-muted) !important;
 }
 
 .fw-medium {
@@ -78,6 +161,29 @@
 
 .fw-bold {
   font-weight: 700;
+}
+
+/* Badge styling */
+.badge {
+  font-size: 0.75rem;
+  padding: 0.4em 0.8em;
+  border-radius: calc(var(--border-radius) / 2);
+  font-weight: 600;
+}
+
+.badge-primary {
+  background-color: var(--biotradx-primary);
+  color: white;
+}
+
+.badge-success {
+  background-color: var(--biotradx-accent);
+  color: white;
+}
+
+.badge-info {
+  background-color: var(--biotradx-secondary);
+  color: white;
 }
 
 /* Sortable header styles */
@@ -186,22 +292,34 @@
   }
 }
 
-/* Custom scrollbar for table */
+/* BioTradX Custom scrollbar for table */
 .table-responsive::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 .table-responsive::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
+  background: var(--biotradx-bg-secondary);
+  border-radius: calc(var(--border-radius) / 2);
 }
 
 .table-responsive::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
+  background: linear-gradient(135deg, var(--biotradx-primary), var(--biotradx-secondary));
+  border-radius: calc(var(--border-radius) / 2);
+  transition: all var(--transition-normal);
 }
 
 .table-responsive::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: linear-gradient(135deg, var(--biotradx-secondary), var(--biotradx-primary));
+  transform: scale(1.1);
+}
+
+/* Card body styling */
+.card-body {
+  background-color: var(--biotradx-bg-card);
+  padding: var(--spacing-lg);
+}
+
+.bg-light {
+  background-color: var(--biotradx-bg-secondary) !important;
 }

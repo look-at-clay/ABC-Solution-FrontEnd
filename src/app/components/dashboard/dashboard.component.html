@@ -1,25 +1,38 @@
-<div class="container-fluid">
-  <div class="row">
+<div class="container-fluid full-height">
+  <div class="row h-100">
     <!-- Main Content -->
     <div class="col-12">
-      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-3 gap-sm-0">
-        <h2 class="text-primary fw-bold mb-3 mb-sm-0">Dashboard</h2>
+      <!-- Enhanced Dashboard Header -->
+      <div class="dashboard-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 p-3 rounded-3 bg-gradient">
+        <div class="d-flex align-items-center mb-3 mb-sm-0">
+          <div class="dashboard-icon me-3">
+            <i class="bi bi-speedometer2 icon-2xl icon-primary"></i>
+          </div>
+          <div>
+            <h1 class="h2 mb-1 fw-bold tracking-tight">Dashboard</h1>
+            <p class="text-sm text-muted mb-0 fw-medium">Welcome to BioTradX Admin Portal</p>
+          </div>
+        </div>
 
-        <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center gap-2">
           <button
-            class="btn btn-outline-primary btn-sm me-2"
+            class="btn btn-outline-primary btn-sm d-flex align-items-center"
             (click)="refreshData()"
             [disabled]="loading"
           >
-            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+            <i class="bi bi-arrow-clockwise me-2"></i>
+            <span class="d-none d-md-inline">Refresh Data</span>
+            <span class="d-md-none">Refresh</span>
           </button>
 
           <button
             type="button"
-            class="btn btn-danger btn-sm"
+            class="btn btn-danger btn-sm d-flex align-items-center"
             (click)="onLogout()"
           >
-            Logout
+            <i class="bi bi-box-arrow-right me-2"></i>
+            <span class="d-none d-md-inline">Logout</span>
+            <span class="d-md-none">Exit</span>
           </button>
         </div>
       </div>
@@ -41,34 +54,42 @@
         <div>{{ error }}</div>
       </div>
 
-      <!-- Key Metrics -->
-      <div class="row g-3" *ngIf="!loading && !error">
-        <!-- Total Users card -->
-        <div class="col-12 col-sm-6 col-md-4 col-xl-3">
-          <div 
-            class="card border-left-primary shadow h-100 py-2 cursor-pointer" 
-            (click)="openUserLevelStatsDialog()"
-            style="cursor: pointer; transition: transform 0.2s;"
-            onmouseover="this.style.transform='scale(1.02)'" 
-            onmouseout="this.style.transform='scale(1)'">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                    Total Users
-                    <i class="bi bi-info-circle ms-1" title="Click to view level statistics"></i>
+      <!-- Enhanced Key Metrics Section -->
+      <div class="metrics-section mb-5" *ngIf="!loading && !error">
+        <div class="row g-4">
+          <!-- Total Users card -->
+          <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+            <div 
+              class="metric-card card border-0 shadow-sm h-100 cursor-pointer" 
+              (click)="openUserLevelStatsDialog()"
+              title="Click to view detailed user statistics">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="metric-content flex-grow-1">
+                    <div class="metric-label text-xs fw-semibold text-uppercase tracking-wide mb-2">
+                      <i class="bi bi-people-fill me-2 icon-sm icon-primary"></i>
+                      Total Users
+                    </div>
+                    <div class="metric-value h3 fw-bold mb-1">
+                      {{ totalUsers }}
+                    </div>
+                    <div class="metric-trend text-xs text-muted">
+                      <i class="bi bi-info-circle me-1"></i>
+                      Click for details
+                    </div>
                   </div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">
-                    {{ totalUsers }}
+                  <div class="metric-icon">
+                    <div class="icon-wrapper bg-primary bg-opacity-10 rounded-circle p-3">
+                      <i class="bi bi-people-fill icon-xl icon-primary"></i>
+                    </div>
                   </div>
                 </div>
-                <div class="col-auto">
-                  <i class="bi bi-people-fill fa-2x text-gray-300"></i>
-                </div>
+              </div>
+              <div class="card-footer bg-transparent border-0 p-0">
+                <div class="metric-border bg-primary"></div>
               </div>
             </div>
           </div>
-        </div>
 
         <!-- Total Orders card -->
         <div class="col-12 col-sm-6 col-md-4 col-xl-3">

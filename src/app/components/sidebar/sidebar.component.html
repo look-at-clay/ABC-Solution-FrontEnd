@@ -1,17 +1,23 @@
 <div class="d-flex flex-column flex-md-row" style="min-height: 100vh;">
     <!-- Mobile Header with Toggle Button -->
-    <div class="d-md-none bg-dark text-white p-3 d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">BioTradX Admin</h4>
-        <button class="btn btn-outline-light" type="button" (click)="toggleSidebar()">
+    <div class="mobile-header d-md-none d-flex justify-content-between align-items-center">
+        <h4>BioTradX Admin</h4>
+        <button class="mobile-toggle-btn" type="button" (click)="toggleSidebar()">
             <i class="bi" [ngClass]="{'bi-list': !isSidebarOpen, 'bi-x': isSidebarOpen}"></i>
         </button>
     </div>
 
     <!-- Sidebar -->
-    <div class="sidebar bg-dark text-white" [ngClass]="{'sidebar-open': isSidebarOpen, 'sidebar-closed': !isSidebarOpen}">
+    <div class="sidebar" [ngClass]="{'sidebar-open': isSidebarOpen, 'sidebar-closed': !isSidebarOpen}">
         <div class="d-flex flex-column h-100">
-            <h4 class="mb-4 text-center d-none d-md-block">BioTradX Admin</h4>
-            <ul class="nav flex-column list-unstyled flex-grow-1">
+            <!-- Brand/Logo Section -->
+            <div class="sidebar-brand d-none d-md-block">
+                <h4>BioTradX Admin</h4>
+            </div>
+            
+            <!-- Navigation Container -->
+            <div class="nav-container">
+                <ul class="nav flex-column list-unstyled">
                 <li class="nav-item">
                     <a class="nav-link text-white" routerLink="/dashboard" routerLinkActive="active" (click)="closeSidebarOnMobile()">
                         <i class="bi bi-speedometer2 me-2"></i> Dashboard
@@ -63,6 +69,7 @@
                     </a>
                 </li>
             </ul>
+            </div>
         </div>
     </div>
 
@@ -72,5 +79,5 @@
     </div>
 
     <!-- Overlay for mobile -->
-    <div class="sidebar-overlay" *ngIf="isSidebarOpen" (click)="closeSidebarOnMobile()"></div>
+    <div class="sidebar-overlay" [ngClass]="{'show': isSidebarOpen}" *ngIf="isSidebarOpen" (click)="closeSidebarOnMobile()"></div>
 </div>

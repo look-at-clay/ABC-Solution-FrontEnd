@@ -20,7 +20,6 @@ import { ViewBuyersComponent } from './components/view-buyers/view-buyers.compon
 import { ViewSellersComponent } from './components/view-sellers/view-sellers.component';
 import { ViewProfitComponent } from './components/view-profit/view-profit.component';
 import { AddProductComponent } from './components/add-product/add-product.component';
-import { DeleteProjectComponent } from './components/delete-project/delete-project.component';
 import { EditProductComponent } from './components/edit-product/edit-product.component';
 import { SellerProductsComponent } from './components/seller-products/seller-products.component';
 import { ViewProductComponent } from './components/view-products/view-products.component';
@@ -52,7 +51,6 @@ import { ProductTradingSidePanelComponent } from './components/product-trading-s
     ViewSellersComponent,
     ViewProfitComponent,
     AddProductComponent,
-    DeleteProjectComponent,
     ViewProductComponent,
     EditProductComponent,
     SellerProductsComponent,

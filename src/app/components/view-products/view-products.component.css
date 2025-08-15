@@ -1,12 +1,41 @@
-/* product-catalog.component.scss or product-catalog.component.css */
+/* BioTradX product-catalog.component.css */
 
 /* Full screen container setup */
 .product-catalog-container {
   min-height: 80vh;
   display: flex;
   flex-direction: column;
-  padding-bottom: 1rem;
-  background-color: #f8f9fa;
+  padding-bottom: var(--spacing-md);
+  background-color: var(--biotradx-bg-primary);
+}
+
+.container-fluid {
+  padding: var(--spacing-md);
+}
+
+h2 {
+  color: var(--biotradx-primary);
+  font-family: var(--font-family-primary);
+  font-weight: 700;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Card styling */
+.card {
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--biotradx-shadow);
+  background-color: var(--biotradx-bg-card);
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  box-shadow: var(--biotradx-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.card-body {
+  padding: var(--spacing-lg);
 }
 
 /* Responsive table height calculations */
@@ -14,7 +43,7 @@
   height: calc(100vh - 200px); /* Subtract header + margins */
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #6c757d #f8f9fa;
+  scrollbar-color: var(--biotradx-primary) var(--biotradx-bg-secondary);
 }
 
 /* For smaller screens, adjust the height */
@@ -31,6 +60,47 @@
   }
 }
 
+/* BioTradX Table styling */
+.table {
+  font-family: var(--font-family-secondary);
+  margin-bottom: 0;
+}
+
+.table thead th {
+  background: linear-gradient(135deg, var(--biotradx-primary), var(--biotradx-secondary));
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: none;
+  padding: var(--spacing-md);
+}
+
+.table tbody td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--biotradx-border);
+  transition: all var(--transition-normal);
+}
+
+.table tbody tr:hover {
+  background-color: rgba(46, 125, 50, 0.05);
+  transform: translateX(2px);
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: var(--biotradx-bg-secondary);
+}
+
+.table-bordered {
+  border: 1px solid var(--biotradx-border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(46, 125, 50, 0.08);
+}
+
 /* Custom scrollbar styling */
 .catalog-table::-webkit-scrollbar {
   width: 8px;
@@ -38,14 +108,19 @@
 }
 
 .catalog-table::-webkit-scrollbar-track {
-  background: #f8f9fa;
-  border-radius: 4px;
+  background: var(--biotradx-bg-secondary);
+  border-radius: calc(var(--border-radius) / 2);
 }
 
 .catalog-table::-webkit-scrollbar-thumb {
-  background-color: #6c757d;
-  border-radius: 4px;
-  border: 2px solid #f8f9fa;
+  background: linear-gradient(135deg, var(--biotradx-primary), var(--biotradx-secondary));
+  border-radius: calc(var(--border-radius) / 2);
+  border: 2px solid var(--biotradx-bg-secondary);
+  transition: all var(--transition-normal);
+}
+
+.catalog-table::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--biotradx-secondary), var(--biotradx-primary));
 }
 
 /* Sticky header enhancements */
@@ -55,6 +130,10 @@
   z-index: 1;
 }
 
+.bg-light {
+  background: linear-gradient(135deg, var(--biotradx-bg-secondary), var(--biotradx-bg-card)) !important;
+}
+
 thead.sticky-top::after {
   content: '';
   position: absolute;
@@ -62,7 +141,12 @@ thead.sticky-top::after {
   right: 0;
   bottom: -5px;
   height: 5px;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.1), transparent);
+  background: linear-gradient(to bottom, rgba(46, 125, 50, 0.1), transparent);
+}
+
+/* Loading spinner */
+.spinner-border {
+  color: var(--biotradx-primary) !important;
 }
 
 /* Empty state styling */
