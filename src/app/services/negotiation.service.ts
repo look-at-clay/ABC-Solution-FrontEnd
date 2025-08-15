@@ -29,11 +29,16 @@ export class NegotiationService {
   }
 
   updateCategory(id: number, category: CreateCategoryRequest): Observable<NegotiationCategory> {
-    return this.http.put<NegotiationCategory>(`${this.apiUrl}/api/negotiation-config/categories/${id}`, category);
+    const url = `${this.apiUrl}/api/negotiation-config/categories/${id}`;
+    console.log('PUT Category URL:', url);
+    console.log('PUT Category Data:', category);
+    return this.http.put<NegotiationCategory>(url, category);
   }
 
   deleteCategory(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/api/negotiation-config/categories/${id}`);
+    const url = `${this.apiUrl}/api/negotiation-config/categories/${id}`;
+    console.log('DELETE Category URL:', url);
+    return this.http.delete<void>(url);
   }
 
   // Questions APIs
@@ -46,11 +51,16 @@ export class NegotiationService {
   }
 
   updateQuestion(id: number, question: CreateQuestionRequest): Observable<NegotiationQuestion> {
-    return this.http.put<NegotiationQuestion>(`${this.apiUrl}/api/negotiation-config/questions/${id}`, question);
+    const url = `${this.apiUrl}/api/negotiation-config/questions/${id}`;
+    console.log('PUT Question URL:', url);
+    console.log('PUT Question Data:', question);
+    return this.http.put<NegotiationQuestion>(url, question);
   }
 
   deleteQuestion(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/api/negotiation-config/questions/${id}`);
+    const url = `${this.apiUrl}/api/negotiation-config/questions/${id}`;
+    console.log('DELETE Question URL:', url);
+    return this.http.delete<void>(url);
   }
 
   // Responses APIs
@@ -63,10 +73,15 @@ export class NegotiationService {
   }
 
   updateResponse(id: number, response: CreateResponseRequest): Observable<NegotiationResponse> {
-    return this.http.put<NegotiationResponse>(`${this.apiUrl}/api/negotiation-config/responses/${id}`, response);
+    const url = `${this.apiUrl}/api/negotiation-config/responses/${id}`;
+    console.log('PUT Response URL:', url);
+    console.log('PUT Response Data:', response);
+    return this.http.put<NegotiationResponse>(url, response);
   }
 
   deleteResponse(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/api/negotiation-config/responses/${id}`);
+    const url = `${this.apiUrl}/api/negotiation-config/responses/${id}`;
+    console.log('DELETE Response URL:', url);
+    return this.http.delete<void>(url);
   }
 }

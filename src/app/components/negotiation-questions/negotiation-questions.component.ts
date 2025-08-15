@@ -121,30 +121,42 @@ export class NegotiationQuestionsComponent implements OnInit {
 
   saveCategoryForm(): void {
     if (this.categoryForm.valid) {
-      const categoryData: CreateCategoryRequest = this.categoryForm.value;
+      const categoryData: CreateCategoryRequest = {
+        categoryName: this.categoryForm.value.categoryName,
+        displayOrder: this.categoryForm.value.displayOrder,
+        isActive: this.categoryForm.value.isActive
+      };
+      
+      console.log('Category data being sent:', categoryData);
       
       if (this.editingCategory) {
         this.negotiationService.updateCategory(this.editingCategory.id, categoryData).subscribe({
-          next: () => {
+          next: (response) => {
+            console.log('Category update response:', response);
             this.loadCategories();
             this.closeCategoryModal();
             Swal.fire('Success', 'Category updated successfully', 'success');
           },
           error: (error) => {
             console.error('Error updating category:', error);
-            Swal.fire('Error', 'Failed to update category', 'error');
+            console.error('Error details:', error.error);
+            const errorMessage = error.error?.message || error.message || 'Failed to update category';
+            Swal.fire('Error', errorMessage, 'error');
           }
         });
       } else {
         this.negotiationService.createCategory(categoryData).subscribe({
-          next: () => {
+          next: (response) => {
+            console.log('Category create response:', response);
             this.loadCategories();
             this.closeCategoryModal();
             Swal.fire('Success', 'Category created successfully', 'success');
           },
           error: (error) => {
             console.error('Error creating category:', error);
-            Swal.fire('Error', 'Failed to create category', 'error');
+            console.error('Error details:', error.error);
+            const errorMessage = error.error?.message || error.message || 'Failed to create category';
+            Swal.fire('Error', errorMessage, 'error');
           }
         });
       }
@@ -162,14 +174,18 @@ export class NegotiationQuestionsComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result: any) => {
       if (result.isConfirmed) {
+        console.log('Deleting category with ID:', category.id);
         this.negotiationService.deleteCategory(category.id).subscribe({
           next: () => {
+            console.log('Category deleted successfully');
             this.loadCategories();
             Swal.fire('Deleted!', 'Category has been deleted.', 'success');
           },
           error: (error) => {
             console.error('Error deleting category:', error);
-            Swal.fire('Error', 'Failed to delete category', 'error');
+            console.error('Error details:', error.error);
+            const errorMessage = error.error?.message || error.message || 'Failed to delete category';
+            Swal.fire('Error', errorMessage, 'error');
           }
         });
       }
@@ -215,28 +231,36 @@ export class NegotiationQuestionsComponent implements OnInit {
         category: { id: formValue.categoryId }
       };
       
+      console.log('Question data being sent:', questionData);
+      
       if (this.editingQuestion) {
         this.negotiationService.updateQuestion(this.editingQuestion.id, questionData).subscribe({
-          next: () => {
+          next: (response) => {
+            console.log('Question update response:', response);
             this.loadCategories();
             this.closeQuestionModal();
             Swal.fire('Success', 'Question updated successfully', 'success');
           },
           error: (error) => {
             console.error('Error updating question:', error);
-            Swal.fire('Error', 'Failed to update question', 'error');
+            console.error('Error details:', error.error);
+            const errorMessage = error.error?.message || error.message || 'Failed to update question';
+            Swal.fire('Error', errorMessage, 'error');
           }
         });
       } else {
         this.negotiationService.createQuestion(questionData).subscribe({
-          next: () => {
+          next: (response) => {
+            console.log('Question create response:', response);
             this.loadCategories();
             this.closeQuestionModal();
             Swal.fire('Success', 'Question created successfully', 'success');
           },
           error: (error) => {
             console.error('Error creating question:', error);
-            Swal.fire('Error', 'Failed to create question', 'error');
+            console.error('Error details:', error.error);
+            const errorMessage = error.error?.message || error.message || 'Failed to create question';
+            Swal.fire('Error', errorMessage, 'error');
           }
         });
       }
@@ -254,14 +278,18 @@ export class NegotiationQuestionsComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result: any) => {
       if (result.isConfirmed) {
+        console.log('Deleting question with ID:', question.id);
         this.negotiationService.deleteQuestion(question.id).subscribe({
           next: () => {
+            console.log('Question deleted successfully');
             this.loadCategories();
             Swal.fire('Deleted!', 'Question has been deleted.', 'success');
           },
           error: (error) => {
             console.error('Error deleting question:', error);
-            Swal.fire('Error', 'Failed to delete question', 'error');
+            console.error('Error details:', error.error);
+            const errorMessage = error.error?.message || error.message || 'Failed to delete question';
+            Swal.fire('Error', errorMessage, 'error');
           }
         });
       }
@@ -307,28 +335,36 @@ export class NegotiationQuestionsComponent implements OnInit {
         question: { id: formValue.questionId }
       };
       
+      console.log('Response data being sent:', responseData);
+      
       if (this.editingResponse) {
         this.negotiationService.updateResponse(this.editingResponse.id, responseData).subscribe({
-          next: () => {
+          next: (response) => {
+            console.log('Response update response:', response);
             this.loadCategories();
             this.closeResponseModal();
             Swal.fire('Success', 'Response updated successfully', 'success');
           },
           error: (error) => {
             console.error('Error updating response:', error);
-            Swal.fire('Error', 'Failed to update response', 'error');
+            console.error('Error details:', error.error);
+            const errorMessage = error.error?.message || error.message || 'Failed to update response';
+            Swal.fire('Error', errorMessage, 'error');
           }
         });
       } else {
         this.negotiationService.createResponse(responseData).subscribe({
-          next: () => {
+          next: (response) => {
+            console.log('Response create response:', response);
             this.loadCategories();
             this.closeResponseModal();
             Swal.fire('Success', 'Response created successfully', 'success');
           },
           error: (error) => {
             console.error('Error creating response:', error);
-            Swal.fire('Error', 'Failed to create response', 'error');
+            console.error('Error details:', error.error);
+            const errorMessage = error.error?.message || error.message || 'Failed to create response';
+            Swal.fire('Error', errorMessage, 'error');
           }
         });
       }
@@ -346,14 +382,18 @@ export class NegotiationQuestionsComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result: any) => {
       if (result.isConfirmed) {
+        console.log('Deleting response with ID:', response.id);
         this.negotiationService.deleteResponse(response.id).subscribe({
           next: () => {
+            console.log('Response deleted successfully');
             this.loadCategories();
             Swal.fire('Deleted!', 'Response has been deleted.', 'success');
           },
           error: (error) => {
             console.error('Error deleting response:', error);
-            Swal.fire('Error', 'Failed to delete response', 'error');
+            console.error('Error details:', error.error);
+            const errorMessage = error.error?.message || error.message || 'Failed to delete response';
+            Swal.fire('Error', errorMessage, 'error');
           }
         });
       }
