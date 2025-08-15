@@ -271,6 +271,11 @@
             </div>
           </div>
         </div>
+
+        <!-- Product Trading card -->
+        <app-product-trading-card 
+          (productSelected)="onProductSelected($event)">
+        </app-product-trading-card>
       </div>
 
       <!-- Charts and Graphs -->
@@ -307,4 +312,11 @@
       <!-- Add more sections as needed: Tables, Progress Bars, etc. -->
     </div>
   </div>
+
+  <!-- Product Trading Side Panel -->
+  <app-product-trading-side-panel
+    [isOpen]="showProductTradingSidePanel"
+    [selectedProduct]="selectedProductForTrading"
+    (closePanel)="onCloseTradingSidePanel()">
+  </app-product-trading-side-panel>
 </div>

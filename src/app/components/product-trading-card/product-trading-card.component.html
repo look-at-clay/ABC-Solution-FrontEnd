@@ -1,0 +1,62 @@
+<div class="col-12 col-sm-6 col-md-4 col-xl-3">
+  <div class="card border-left-success shadow h-100 py-2">
+    <div class="card-body">
+      <div class="row no-gutters align-items-center">
+        <div class="col mr-2">
+          <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+            Product Trading
+            <i class="bi bi-info-circle ms-1" title="Click to view product trading statistics"></i>
+          </div>
+          <div class="h6 mb-2 font-weight-bold text-gray-800">
+            Select Product
+          </div>
+          
+          <!-- Loading State -->
+          <div *ngIf="loading" class="text-center py-2">
+            <div class="spinner-border spinner-border-sm text-success" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <small class="d-block mt-1 text-muted">Loading products...</small>
+          </div>
+          
+          <!-- Error State -->
+          <div *ngIf="error" class="alert alert-danger alert-sm py-1 px-2 mb-2" role="alert">
+            <small>{{ error }}</small>
+          </div>
+          
+          <!-- Product Selection Dropdown -->
+          <div *ngIf="!loading && !error" class="mb-2">
+            <select 
+              class="form-select form-select-sm" 
+              (change)="onProductSelect($event)"
+              [disabled]="products.length === 0">
+              <option value="" selected>Choose a product...</option>
+              <option 
+                *ngFor="let product of products" 
+                [value]="product.id">
+                {{ product.name }}
+              </option>
+            </select>
+          </div>
+          
+          <!-- No Products Message -->
+          <div *ngIf="!loading && !error && products.length === 0" class="text-muted">
+            <small>No products available</small>
+          </div>
+          
+          <!-- Refresh Button -->
+          <button 
+            class="btn btn-outline-success btn-sm mt-1" 
+            (click)="refreshProducts()"
+            [disabled]="loading">
+            <i class="bi bi-arrow-clockwise me-1"></i>
+            <small>Refresh</small>
+          </button>
+        </div>
+        <div class="col-auto">
+          <i class="bi bi-graph-up-arrow fa-2x text-gray-300"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

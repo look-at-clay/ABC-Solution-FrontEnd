@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { LevelService } from '../../services/level.services';
 import { CategoryService } from '../../services/category.services';
+import { ProductService } from '../../services/product.services';
 import { User } from '../../models/user.model';
 import { MatDialog } from '@angular/material/dialog';
 import { LevelDialogueComponent } from '../../dialogue/level-dialogue/level-dialogue.component';
@@ -36,6 +37,10 @@ export class DashboardComponent {
   combinedRequestStats: CombinedRequestStats | null = null;
   totalOpenRequests = 0;
   
+  // Product trading side panel properties
+  showProductTradingSidePanel = false;
+  selectedProductForTrading: any = null;
+  
   loading = true;
   error = '';
 
@@ -43,6 +48,7 @@ export class DashboardComponent {
     private userService: UserService,
     private levelService: LevelService,
     private categoryService: CategoryService,
+    private productService: ProductService,
     private dialog: MatDialog,
     private authService: AuthService,
     private adminService: AdminService,
@@ -262,5 +268,27 @@ export class DashboardComponent {
         this.authService.logout();
       }
     });
+  }
+
+  // Product trading methods
+  onProductSelected(event: any): void {
+    const productId = event.target?.value || event;
+    if (productId) {
+      // Find the selected product from the products list
+      this.productService.getProductById(productId).subscribe({
+        next: (product) => {
+          this.selectedProductForTrading = product;
+          this.showProductTradingSidePanel = true;
+        },
+        error: (error) => {
+          console.error('Error fetching product details:', error);
+        }
+      });
+    }
+  }
+
+  onCloseTradingSidePanel(): void {
+    this.showProductTradingSidePanel = false;
+    this.selectedProductForTrading = null;
   }
 }

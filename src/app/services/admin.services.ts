@@ -32,4 +32,13 @@ export class AdminService {
   getCombinedRequestStats(): Observable<CombinedRequestStats> {
   return this.http.get<CombinedRequestStats>(`${this.baseUrl}/buyerseller-combined-request-statistics`);
 }
+
+  // Product trading statistics methods
+  getProductTotalAmount(productId: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/delivered/total-amount/${productId}`);
+  }
+
+  getProductTotalVolume(productId: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/delivered/total-volume/${productId}`);
+  }
 }
