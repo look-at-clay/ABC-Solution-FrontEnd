@@ -16,6 +16,7 @@ import { BuyerProductsComponent } from './components/buyer-products/buyer-produc
 import { ViewOngoingordersComponent } from './components/view-ongoingorders/view-ongoingorders.component';
 import { NewsManagementComponent } from './components/news-management/news-management.component';
 import { NegotiationQuestionsComponent } from './components/negotiation-questions/negotiation-questions.component';
+import { ReportsStatsComponent } from './components/reports-stats/reports-stats.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
@@ -34,6 +35,7 @@ const routes: Routes = [
   { path: 'view-ongoingorders', component: ViewOngoingordersComponent, canActivate: [AuthGuard] },
   { path: 'news-management', component: NewsManagementComponent, canActivate: [AuthGuard] },
   { path: 'negotiation-questions', component: NegotiationQuestionsComponent, canActivate: [AuthGuard] },
+  { path: 'reports-stats', component: ReportsStatsComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '/dashboard' }
 ];
 

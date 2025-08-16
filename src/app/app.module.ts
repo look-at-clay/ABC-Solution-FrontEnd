@@ -40,6 +40,7 @@ import { ProductCategoryComponent } from './components/product-category/product-
 import { NegotiationQuestionsComponent } from './components/negotiation-questions/negotiation-questions.component';
 import { ProductTradingCardComponent } from './components/product-trading-card/product-trading-card.component';
 import { ProductTradingSidePanelComponent } from './components/product-trading-side-panel/product-trading-side-panel.component';
+import { ReportsStatsComponent } from './components/reports-stats/reports-stats.component';
 
 @NgModule({
   declarations: [
@@ -68,6 +69,8 @@ import { ProductTradingSidePanelComponent } from './components/product-trading-s
     NegotiationQuestionsComponent,
     ProductTradingCardComponent,
     ProductTradingSidePanelComponent,
+    ReportsStatsComponent,
+    FilterPipe,
   ],
   imports: [
     BrowserModule,

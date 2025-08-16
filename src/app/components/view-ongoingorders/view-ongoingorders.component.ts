@@ -14,6 +14,7 @@ export class ViewOngoingordersComponent implements OnInit {
   orders: Order[] = [];
   filteredOrders: Order[] = [];
   loading = false;
+  exporting = false;
   error: string | null = null;
 
   Math = Math;
@@ -196,5 +197,38 @@ export class ViewOngoingordersComponent implements OnInit {
     if (this.currentPage < this.getTotalPages()) {
       this.currentPage++;
     }
+  }
+
+  exportToExcel(): void {
+    this.exporting = true;
+    this.error = null;
+    
+    this.orderService.exportOrdersToExcel().subscribe({
+      next: (blob: Blob) => {
+        // Create a download link
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        
+        // Generate filename with current date
+        const currentDate = new Date().toISOString().split('T')[0];
+        link.download = `orders-export-${currentDate}.xlsx`;
+        
+        // Trigger download
+        document.body.appendChild(link);
+        link.click();
+        
+        // Cleanup
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        this.exporting = false;
+      },
+      error: (error) => {
+        console.error('Export failed:', error);
+        this.error = 'Failed to export orders to Excel. Please try again.';
+        this.exporting = false;
+      }
+    });
   }
 }

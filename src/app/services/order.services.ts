@@ -122,4 +122,14 @@ export class OrderService {
     }
     return this.http.get<OrderResponse | OrderArrayResponse>(`${this.baseUrl}/getSellerOrders`, { params });
   }
+
+  exportOrdersToExcel(): Observable<Blob> {
+    const adminUrl = `${environment.baseUrl}/admin/v1/order-excel`;
+    return this.http.get(adminUrl, { 
+      responseType: 'blob',
+      headers: {
+        'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }
+    });
+  }
 }
