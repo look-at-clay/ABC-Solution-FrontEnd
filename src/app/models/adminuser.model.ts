@@ -12,6 +12,7 @@ export interface AdminUser {
   companyName?: string;
   addresses: Address[];
   wallet?: Wallet;
+  rating?: number | null; // User rating
   referralCode?: string;
   referredBy?: string;
   rewardsAsReferrer?: any[];

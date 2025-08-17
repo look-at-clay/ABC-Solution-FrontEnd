@@ -181,6 +181,10 @@ export class ViewUsersComponent implements OnInit {
           valueA = a.wallet ? a.wallet.balance : 0;
           valueB = b.wallet ? b.wallet.balance : 0;
           break;
+        case 'rating':
+          valueA = a.rating !== null && a.rating !== undefined ? a.rating : -1;
+          valueB = b.rating !== null && b.rating !== undefined ? b.rating : -1;
+          break;
         case 'status':
           valueA = a.isBlocked || a.blocked ? 1 : 0;
           valueB = b.isBlocked || b.blocked ? 1 : 0;
