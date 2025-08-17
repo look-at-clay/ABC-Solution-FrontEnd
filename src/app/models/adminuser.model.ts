@@ -14,7 +14,7 @@ export interface AdminUser {
   wallet?: Wallet;
   rating?: number | null; // User rating
   referralCode?: string;
-  referredBy?: string;
+  referredBy?: AdminUser;
   rewardsAsReferrer?: any[];
   rewardsAsReferredUser?: any[];
   bankAccounts?: BankAccount[];

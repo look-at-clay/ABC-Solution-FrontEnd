@@ -118,7 +118,7 @@ export class ViewUsersComponent implements OnInit {
         user.phoneNumber.includes(searchLower) ||
         user.id.toString().includes(searchLower) ||
         (user.referralCode && user.referralCode.toLowerCase().includes(searchLower)) ||
-        (user.referredBy && user.referredBy.toLowerCase().includes(searchLower))
+        (user.referredBy && (user.referredBy.name.toLowerCase().includes(searchLower) || user.referredBy.email.toLowerCase().includes(searchLower)))
       );
     }
 

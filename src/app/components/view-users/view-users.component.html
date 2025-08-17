@@ -229,9 +229,14 @@
                   <small *ngIf="user.referralCode" class="text-primary">
                     <i class="bi bi-qr-code me-1"></i>{{ user.referralCode }}
                   </small>
-                  <small *ngIf="user.referredBy" class="text-info">
-                    <i class="bi bi-person-plus me-1"></i>{{ user.referredBy }}
-                  </small>
+                  <div *ngIf="user.referredBy" class="text-info">
+                    <small class="d-block">
+                      <i class="bi bi-person-plus me-1"></i>{{ user.referredBy.name }}
+                    </small>
+                    <small class="d-block text-muted">
+                      <i class="bi bi-envelope me-1"></i>{{ user.referredBy.email }}
+                    </small>
+                  </div>
                   <small *ngIf="!user.referralCode && !user.referredBy" class="text-muted">
                     No referral data
                   </small>
@@ -635,7 +640,12 @@
                   </div>
                   <div class="col-12" *ngIf="selectedUser.referredBy">
                     <label class="form-label fw-bold text-muted">Referred By</label>
-                    <p class="mb-0">{{ selectedUser.referredBy }}</p>
+                    <div class="mb-0">
+                      <p class="mb-1 fw-semibold">{{ selectedUser.referredBy.name }}</p>
+                      <p class="mb-0 text-muted small">
+                        <i class="bi bi-envelope me-1"></i>{{ selectedUser.referredBy.email }}
+                      </p>
+                    </div>
                   </div>
                   <div class="col-12" *ngIf="selectedUser.rewardsAsReferrer && selectedUser.rewardsAsReferrer.length > 0">
                     <label class="form-label fw-bold text-muted">Rewards as Referrer</label>
