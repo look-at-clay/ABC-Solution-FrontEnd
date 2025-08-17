@@ -8,10 +8,20 @@ export interface AdminUser {
   isBlocked: boolean; // Primary blocking status flag
   phoneNumber: string;
   level: Level;
+  levelAlias?: string;
+  companyName?: string;
   addresses: Address[];
   wallet?: Wallet;
   referralCode?: string;
   referredBy?: string;
+  rewardsAsReferrer?: any[];
+  rewardsAsReferredUser?: any[];
+  bankAccounts?: BankAccount[];
+  kycVerification?: any;
+  createdAt?: string;
+  updatedAt?: string;
+  isEmailVerified?: boolean;
+  emailVerified?: boolean;
   blocked?: boolean; // Legacy blocking status flag, kept for backward compatibility
 }
 
@@ -35,4 +45,22 @@ export interface Address {
 export interface Wallet {
   id: number;
   balance: number;
+}
+
+export interface BankAccount {
+  id: number;
+  accountHolderName: string;
+  accountNumber: string;
+  bankName: string;
+  branchName: string;
+  ifscCode: string;
+  accountType: string;
+  upiId?: string;
+  isPrimary?: boolean;
+  isActive?: boolean;
+  beneficiaryRegistered?: boolean;
+  beneficiaryId?: string;
+  updatedAt?: string;
+  active?: boolean; // Legacy field
+  primary?: boolean; // Legacy field
 }

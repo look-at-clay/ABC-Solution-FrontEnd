@@ -17,6 +17,12 @@ export class ViewOngoingordersComponent implements OnInit {
   exporting = false;
   error: string | null = null;
 
+  // Modal properties
+  selectedOrder: Order | null = null;
+  loadingQualityProof = false;
+  qualityProofImage: string | null = null;
+  qualityProofError: string | null = null;
+
   Math = Math;
   
   // Filters
@@ -32,7 +38,7 @@ export class ViewOngoingordersComponent implements OnInit {
   totalItems = 0;
   
   // Status options
-  statusOptions = ['PENDING', 'ACCEPTED', 'REJECTED', 'COMPLETED', 'CANCELLED'];
+  statusOptions = ['ACCEPTED', 'REJECTED', 'CANCELLED', 'INTRANSIT', 'DELIVERED'];
   orderTypeOptions = ['BUYER_REQUEST', 'SELLER_REQUEST'];
 
   constructor(private orderService: OrderService) { }
@@ -228,6 +234,41 @@ export class ViewOngoingordersComponent implements OnInit {
         console.error('Export failed:', error);
         this.error = 'Failed to export orders to Excel. Please try again.';
         this.exporting = false;
+      }
+    });
+  }
+
+  viewOrderDetails(order: Order): void {
+    this.selectedOrder = order;
+    this.qualityProofImage = null;
+    this.qualityProofError = null;
+    this.loadQualityProof(order.id);
+    
+    // Show the modal
+    const modal = document.getElementById('orderDetailsModal');
+    if (modal) {
+      const bootstrapModal = new (window as any).bootstrap.Modal(modal);
+      bootstrapModal.show();
+    }
+  }
+
+  loadQualityProof(orderId: number): void {
+    this.loadingQualityProof = true;
+    this.qualityProofError = null;
+    
+    this.orderService.getQualityProof(orderId).subscribe({
+      next: (response) => {
+        this.loadingQualityProof = false;
+        if (response && response.link && response.status === 200) {
+          this.qualityProofImage = response.link.trim();
+        } else {
+          this.qualityProofError = 'No quality proof available for this order.';
+        }
+      },
+      error: (error) => {
+        this.loadingQualityProof = false;
+        console.error('Failed to load quality proof:', error);
+        this.qualityProofError = 'Failed to load quality proof. Please try again.';
       }
     });
   }

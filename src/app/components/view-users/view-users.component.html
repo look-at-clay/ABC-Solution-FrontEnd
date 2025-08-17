@@ -364,3 +364,296 @@
     </div>
   </div>
 </div>
+  
+<!-- User Details Modal -->
+<div class="modal fade" [class.show]="showUserModal" [style.display]="showUserModal ? 'block' : 'none'" 
+     tabindex="-1" role="dialog" aria-labelledby="userDetailsModalLabel" aria-hidden="true"
+     *ngIf="showUserModal && selectedUser">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="userDetailsModalLabel">
+          <i class="bi bi-person-circle me-2"></i>User Details - {{ selectedUser.name }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeUserModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-4">
+          <!-- Personal Information -->
+          <div class="col-12 col-lg-6">
+            <div class="card h-100">
+              <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-person-fill me-2"></i>Personal Information</h6>
+              </div>
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label fw-bold text-muted">User ID</label>
+                    <p class="mb-0"><span class="badge bg-secondary">{{ selectedUser.id }}</span></p>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label fw-bold text-muted">Full Name</label>
+                    <p class="mb-0">{{ selectedUser.name }}</p>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label fw-bold text-muted">Email Address</label>
+                    <p class="mb-0">
+                      {{ selectedUser.email }}
+                      <span class="badge bg-success ms-2" *ngIf="selectedUser.emailVerified || selectedUser.isEmailVerified">
+                        <i class="bi bi-check-circle me-1"></i>Verified
+                      </span>
+                    </p>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label fw-bold text-muted">Phone Number</label>
+                    <p class="mb-0">{{ selectedUser.phoneNumber }}</p>
+                  </div>
+                  <div class="col-12" *ngIf="selectedUser.companyName">
+                    <label class="form-label fw-bold text-muted">Company Name</label>
+                    <p class="mb-0">{{ selectedUser.companyName }}</p>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label fw-bold text-muted">Level</label>
+                    <p class="mb-0">
+                      <span *ngIf="selectedUser.level" class="badge rounded-pill" 
+                            [ngClass]="{
+                              'bg-success': selectedUser.level.id === 1,
+                              'bg-warning text-dark': selectedUser.level.id === 2,
+                              'bg-info': selectedUser.level.id === 3
+                            }">
+                        {{ getLevelDisplay(selectedUser.level) }}
+                      </span>
+                      <span *ngIf="selectedUser.levelAlias" class="text-muted ms-2">({{ selectedUser.levelAlias }})</span>
+                    </p>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label fw-bold text-muted">Status</label>
+                    <p class="mb-0">
+                      <span [ngClass]="getBlockedStatusClass(selectedUser)">
+                        {{ getBlockedStatus(selectedUser) }}
+                      </span>
+                    </p>
+                  </div>
+                  <div class="col-12" *ngIf="selectedUser.createdAt">
+                    <label class="form-label fw-bold text-muted">Account Created</label>
+                    <p class="mb-0">{{ formatDate(selectedUser.createdAt) }}</p>
+                  </div>
+                  <div class="col-12" *ngIf="selectedUser.updatedAt">
+                    <label class="form-label fw-bold text-muted">Last Updated</label>
+                    <p class="mb-0">{{ formatDate(selectedUser.updatedAt) }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Addresses -->
+          <div class="col-12 col-lg-6">
+            <div class="card h-100">
+              <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="bi bi-geo-alt-fill me-2"></i>Addresses</h6>
+                <span class="badge bg-primary">{{ selectedUser.addresses?.length || 0 }}</span>
+              </div>
+              <div class="card-body">
+                <div *ngIf="selectedUser.addresses && selectedUser.addresses.length > 0; else noAddresses">
+                  <div *ngFor="let address of selectedUser.addresses; let i = index" 
+                       class="border rounded p-3 mb-3" [class.border-primary]="address.defaultAddress">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <h6 class="mb-0">Address {{ i + 1 }}</h6>
+                      <span *ngIf="address.defaultAddress" class="badge bg-primary">Default</span>
+                    </div>
+                    <p class="mb-1"><strong>{{ address.address }}</strong></p>
+                    <p class="mb-1">{{ address.landmark }}, {{ address.city }}</p>
+                    <p class="mb-1">{{ address.state }} - {{ address.pincode }}</p>
+                    <small class="text-muted">
+                      <i class="bi bi-geo me-1"></i>{{ address.latitude }}, {{ address.longitude }}
+                    </small>
+                  </div>
+                </div>
+                <ng-template #noAddresses>
+                  <div class="text-center text-muted py-3">
+                    <i class="bi bi-geo-alt" style="font-size: 2rem;"></i>
+                    <p class="mt-2 mb-0">No addresses found</p>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+
+          <!-- Wallet Information -->
+          <div class="col-12 col-lg-6">
+            <div class="card h-100">
+              <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-wallet2 me-2"></i>Wallet Information</h6>
+              </div>
+              <div class="card-body">
+                <div *ngIf="selectedUser.wallet; else noWallet">
+                  <div class="text-center py-3">
+                    <h3 class="mb-2" 
+                        [ngClass]="{
+                          'text-success': selectedUser.wallet.balance > 0,
+                          'text-muted': selectedUser.wallet.balance === 0,
+                          'text-danger': selectedUser.wallet.balance < 0
+                        }">
+                      ₹{{ selectedUser.wallet.balance | number:'1.2-2' }}
+                    </h3>
+                    <p class="text-muted mb-0">Current Balance</p>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-6">
+                      <label class="form-label fw-bold text-muted">Wallet ID</label>
+                      <p class="mb-0">{{ selectedUser.wallet.id }}</p>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #noWallet>
+                  <div class="text-center text-muted py-3">
+                    <i class="bi bi-wallet2" style="font-size: 2rem;"></i>
+                    <p class="mt-2 mb-0">No wallet information</p>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bank Accounts -->
+          <div class="col-12 col-lg-6">
+            <div class="card h-100">
+              <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="bi bi-bank me-2"></i>Bank Accounts</h6>
+                <span class="badge bg-primary">{{ selectedUser.bankAccounts?.length || 0 }}</span>
+              </div>
+              <div class="card-body">
+                <div *ngIf="selectedUser.bankAccounts && selectedUser.bankAccounts.length > 0; else noBankAccounts">
+                  <div *ngFor="let account of selectedUser.bankAccounts; let i = index" 
+                       class="border rounded p-3 mb-3" [class.border-success]="account.isPrimary || account.primary">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <h6 class="mb-0">Account {{ i + 1 }}</h6>
+                      <div>
+                        <span *ngIf="account.isPrimary || account.primary" class="badge bg-success me-1">Primary</span>
+                        <span *ngIf="account.isActive || account.active" class="badge bg-info">Active</span>
+                      </div>
+                    </div>
+                    <div class="row g-2">
+                      <div class="col-12">
+                        <label class="form-label fw-bold text-muted small">Account Holder</label>
+                        <p class="mb-1">{{ account.accountHolderName }}</p>
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label fw-bold text-muted small">Account Number</label>
+                        <p class="mb-1 font-monospace">{{ account.accountNumber }}</p>
+                      </div>
+                      <div class="col-6">
+                        <label class="form-label fw-bold text-muted small">Bank</label>
+                        <p class="mb-1">{{ account.bankName }}</p>
+                      </div>
+                      <div class="col-6">
+                        <label class="form-label fw-bold text-muted small">Branch</label>
+                        <p class="mb-1">{{ account.branchName }}</p>
+                      </div>
+                      <div class="col-6">
+                        <label class="form-label fw-bold text-muted small">IFSC Code</label>
+                        <p class="mb-1 font-monospace">{{ account.ifscCode }}</p>
+                      </div>
+                      <div class="col-6">
+                        <label class="form-label fw-bold text-muted small">Account Type</label>
+                        <p class="mb-1">{{ getBankAccountType(account.accountType) }}</p>
+                      </div>
+                      <div class="col-12" *ngIf="account.upiId">
+                        <label class="form-label fw-bold text-muted small">UPI ID</label>
+                        <p class="mb-1">{{ account.upiId }}</p>
+                      </div>
+                      <div class="col-12" *ngIf="account.beneficiaryRegistered">
+                        <label class="form-label fw-bold text-muted small">Beneficiary Status</label>
+                        <p class="mb-1">
+                          <span class="badge bg-success">Registered</span>
+                          <span *ngIf="account.beneficiaryId" class="text-muted ms-2">ID: {{ account.beneficiaryId }}</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #noBankAccounts>
+                  <div class="text-center text-muted py-3">
+                    <i class="bi bi-bank" style="font-size: 2rem;"></i>
+                    <p class="mt-2 mb-0">No bank accounts found</p>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+
+          <!-- Referral Information -->
+          <div class="col-12 col-lg-6">
+            <div class="card h-100">
+              <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-share me-2"></i>Referral Information</h6>
+              </div>
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-12" *ngIf="selectedUser.referralCode">
+                    <label class="form-label fw-bold text-muted">Referral Code</label>
+                    <p class="mb-0">
+                      <span class="badge bg-primary fs-6">{{ selectedUser.referralCode }}</span>
+                    </p>
+                  </div>
+                  <div class="col-12" *ngIf="selectedUser.referredBy">
+                    <label class="form-label fw-bold text-muted">Referred By</label>
+                    <p class="mb-0">{{ selectedUser.referredBy }}</p>
+                  </div>
+                  <div class="col-12" *ngIf="selectedUser.rewardsAsReferrer && selectedUser.rewardsAsReferrer.length > 0">
+                    <label class="form-label fw-bold text-muted">Rewards as Referrer</label>
+                    <div class="badge bg-success">{{ selectedUser.rewardsAsReferrer.length }} rewards</div>
+                  </div>
+                  <div class="col-12" *ngIf="selectedUser.rewardsAsReferredUser && selectedUser.rewardsAsReferredUser.length > 0">
+                    <label class="form-label fw-bold text-muted">Rewards as Referred User</label>
+                    <div class="badge bg-info">{{ selectedUser.rewardsAsReferredUser.length }} rewards</div>
+                  </div>
+                  <div class="col-12" *ngIf="!selectedUser.referralCode && !selectedUser.referredBy">
+                    <div class="text-center text-muted py-3">
+                      <i class="bi bi-share" style="font-size: 2rem;"></i>
+                      <p class="mt-2 mb-0">No referral information</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KYC Verification -->
+          <div class="col-12 col-lg-6">
+            <div class="card h-100">
+              <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-shield-check me-2"></i>KYC Verification</h6>
+              </div>
+              <div class="card-body">
+                <div *ngIf="selectedUser.kycVerification; else noKyc">
+                  <!-- KYC details would go here if available -->
+                  <p class="mb-0">KYC verification details available</p>
+                </div>
+                <ng-template #noKyc>
+                  <div class="text-center text-muted py-3">
+                    <i class="bi bi-shield-x" style="font-size: 2rem;"></i>
+                    <p class="mt-2 mb-0">No KYC verification data</p>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeUserModal()">
+          <i class="bi bi-x-circle me-1"></i>Close
+        </button>
+        <button type="button" class="btn btn-primary" (click)="editUser(selectedUser)">
+          <i class="bi bi-pencil-square me-1"></i>Edit User
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade" [class.show]="showUserModal" *ngIf="showUserModal" (click)="closeUserModal()"></div>

@@ -28,6 +28,10 @@ export class ViewUsersComponent implements OnInit {
   sortColumn = '';
   sortDirection: 'asc' | 'desc' = 'asc';
   
+  // Modal properties
+  showUserModal = false;
+  selectedUser: AdminUser | null = null;
+  
   // Filter options
   regionOptions: string[] = [];
   levelOptions = [
@@ -42,7 +46,7 @@ export class ViewUsersComponent implements OnInit {
     { value: 'blocked', label: 'Blocked' }
   ];
 
-  constructor(private userService: AdminService) {}
+  constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {
     this.fetchUsers();
@@ -50,7 +54,7 @@ export class ViewUsersComponent implements OnInit {
 
   fetchUsers(): void {
     this.loading = true;
-    this.userService.getAllUsers()
+    this.adminService.getAllUsers()
       .subscribe({
         next: (data: AdminUser[]) => {
           // Filter out users where level is null
@@ -248,13 +252,65 @@ export class ViewUsersComponent implements OnInit {
   }
 
   viewUserDetails(user: AdminUser): void {
-    console.log('Viewing user details:', user);
-    // Add logic to show detailed user information
+    this.selectedUser = user;
+    this.showUserModal = true;
+  }
+
+  closeUserModal(): void {
+    this.showUserModal = false;
+    this.selectedUser = null;
+  }
+
+  formatDate(dateString: string | null): string {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  getBankAccountType(type: string): string {
+    return type ? type.charAt(0).toUpperCase() + type.slice(1).toLowerCase() : 'N/A';
   }
 
   toggleUserBlock(user: AdminUser): void {
-    console.log('Toggling block status for user:', user);
-    // Add logic to block/unblock user
+    const isCurrentlyBlocked = user.isBlocked || user.blocked;
+    const action = isCurrentlyBlocked ? 'unblock' : 'block';
+    
+    if (confirm(`Are you sure you want to ${action} this user?`)) {
+      const apiCall = isCurrentlyBlocked 
+        ? this.adminService.unblockUser(user.id)
+        : this.adminService.blockUser(user.id);
+      
+      apiCall.subscribe({
+        next: (response) => {
+          if (response.status === 200) {
+            // Update the user's blocked status in the local array
+            const userIndex = this.users.findIndex(u => u.id === user.id);
+            if (userIndex !== -1) {
+              this.users[userIndex].isBlocked = response.data.isBlocked;
+              this.users[userIndex].blocked = response.data.blocked;
+            }
+            
+            // Update filtered users as well
+            const filteredUserIndex = this.filteredUsers.findIndex(u => u.id === user.id);
+            if (filteredUserIndex !== -1) {
+              this.filteredUsers[filteredUserIndex].isBlocked = response.data.isBlocked;
+              this.filteredUsers[filteredUserIndex].blocked = response.data.blocked;
+            }
+            
+            console.log(`User ${action}ed successfully:`, response.message);
+          }
+        },
+        error: (error) => {
+          console.error(`Error ${action}ing user:`, error);
+          alert(`Failed to ${action} user. Please try again.`);
+        }
+      });
+    }
   }
 
   trackByUserId(index: number, user: AdminUser): number {

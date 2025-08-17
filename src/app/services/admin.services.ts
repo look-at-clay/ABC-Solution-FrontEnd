@@ -41,4 +41,13 @@ export class AdminService {
   getProductTotalVolume(productId: number): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/delivered/total-volume/${productId}`);
   }
+
+  // User block/unblock methods
+  blockUser(userId: number): Observable<any> {
+    return this.http.put<any>(`${environment.baseUrl}/api/users/${userId}/block`, {});
+  }
+
+  unblockUser(userId: number): Observable<any> {
+    return this.http.put<any>(`${environment.baseUrl}/api/users/${userId}/unblock`, {});
+  }
 }

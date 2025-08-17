@@ -132,4 +132,8 @@ export class OrderService {
       }
     });
   }
+
+  getQualityProof(orderId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/preview-proof-file?orderId=${orderId}`);
+  }
 }
