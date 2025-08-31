@@ -172,7 +172,7 @@
                         'bg-warning text-dark': user.level.id === 2,
                         'bg-info': user.level.id === 3
                       }">
-                  {{ getLevelDisplay(user.level) }}
+                  {{ user.level?.name || 'No Level' }}
                 </span>
                 <span *ngIf="!user.level" class="badge bg-secondary">No Level</span>
               </td>
@@ -285,7 +285,7 @@
                         'bg-warning text-dark': user.level.id === 2,
                         'bg-info': user.level.id === 3
                       }">
-                  {{ getLevelDisplay(user.level) }}
+{{ user.level?.name || 'No Level' }}
                 </span>
                 <span *ngIf="!user.level" class="badge bg-secondary">No Level</span>
               </div>
@@ -461,7 +461,7 @@
                               'bg-warning text-dark': selectedUser.level.id === 2,
                               'bg-info': selectedUser.level.id === 3
                             }">
-                        {{ getLevelDisplay(selectedUser.level) }}
+{{ selectedUser.level?.name || 'No Level' }}
                       </span>
                       <span *ngIf="selectedUser.levelAlias" class="text-muted ms-2">({{ selectedUser.levelAlias }})</span>
                     </p>
