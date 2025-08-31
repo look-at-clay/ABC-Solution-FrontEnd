@@ -20,30 +20,87 @@
       <form [formGroup]="productForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
         <div class="row mb-3">
           <div class="col-12 col-md-6 mb-3 mb-md-0">
-            <label class="form-label">Product Name</label>
+            <label class="form-label">Product Name *</label>
             <input type="text" formControlName="name" class="form-control" placeholder="Enter product name">
             <div *ngIf="productForm.get('name')?.touched && productForm.get('name')?.invalid" class="text-danger small mt-1">
-              Product name is required
+              <div *ngIf="productForm.get('name')?.errors?.['required']">Product name is required</div>
+              <div *ngIf="productForm.get('name')?.errors?.['minlength']">Product name must be at least 2 characters</div>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label">Unit *</label>
+            <select formControlName="unit" class="form-control">
+              <option value="">Select unit</option>
+              <option value="kg">Kilogram (kg)</option>
+              <option value="g">Gram (g)</option>
+              <option value="l">Liter (l)</option>
+              <option value="ml">Milliliter (ml)</option>
+              <option value="pcs">Pieces (pcs)</option>
+              <option value="box">Box</option>
+              <option value="pack">Pack</option>
+            </select>
+            <div *ngIf="productForm.get('unit')?.touched && productForm.get('unit')?.invalid" class="text-danger small mt-1">
+              Unit is required
             </div>
           </div>
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Product Description</label>
-          <textarea formControlName="description" class="form-control" rows="3" placeholder="Write a short description"></textarea>
+          <label class="form-label">Product Description *</label>
+          <textarea formControlName="description" class="form-control" rows="3" placeholder="Write a detailed description (minimum 10 characters)"></textarea>
           <div *ngIf="productForm.get('description')?.touched && productForm.get('description')?.invalid" class="text-danger small mt-1">
-            Product description is required
+            <div *ngIf="productForm.get('description')?.errors?.['required']">Product description is required</div>
+            <div *ngIf="productForm.get('description')?.errors?.['minlength']">Description must be at least 10 characters</div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-12 col-md-4 mb-3 mb-md-0">
+            <label class="form-label">Expiry Days *</label>
+            <input type="number" formControlName="expiryInDays" class="form-control" placeholder="Enter expiry days" min="1">
+            <div *ngIf="productForm.get('expiryInDays')?.touched && productForm.get('expiryInDays')?.invalid" class="text-danger small mt-1">
+              <div *ngIf="productForm.get('expiryInDays')?.errors?.['required']">Expiry days is required</div>
+              <div *ngIf="productForm.get('expiryInDays')?.errors?.['min']">Expiry days must be at least 1</div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4 mb-3 mb-md-0">
+            <label class="form-label">GST Percentage *</label>
+            <input type="number" formControlName="gstPercentage" class="form-control" placeholder="Enter GST %" min="0" max="100" step="0.1">
+            <div *ngIf="productForm.get('gstPercentage')?.touched && productForm.get('gstPercentage')?.invalid" class="text-danger small mt-1">
+              <div *ngIf="productForm.get('gstPercentage')?.errors?.['required']">GST percentage is required</div>
+              <div *ngIf="productForm.get('gstPercentage')?.errors?.['min']">GST percentage must be at least 0</div>
+              <div *ngIf="productForm.get('gstPercentage')?.errors?.['max']">GST percentage cannot exceed 100</div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label">Category *</label>
+            <div formGroupName="category">
+              <select formControlName="id" class="form-control">
+                <option value="">Select category</option>
+                <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+              </select>
+            </div>
+            <div *ngIf="productForm.get('category.id')?.touched && productForm.get('category.id')?.invalid" class="text-danger small mt-1">
+              Category is required
+            </div>
           </div>
         </div>
 
         <!-- Add file input for images -->
         <div class="mb-3">
-          <label class="form-label">Product Images</label>
+          <label class="form-label">Product Images * (1-4 images required)</label>
           <input type="file" class="form-control" multiple accept="image/*" (change)="onFileSelected($event)">
-          <div class="form-text">Select multiple images for the product</div>
+          <div class="form-text">Select 1 to 4 images for the product (JPEG, JPG, PNG, GIF - Max 5MB each)</div>
+          
+          <!-- Image validation error -->
+          <div *ngIf="imageError" class="text-danger small mt-1">
+            {{ imageError }}
+          </div>
+          
           <!-- Preview selected images -->
           <div *ngIf="selectedFiles.length > 0" class="d-flex flex-wrap mt-2 gap-2">
-            <span class="badge bg-primary">{{ selectedFiles.length }} file(s) selected</span>
+            <span class="badge bg-success">{{ selectedFiles.length }} file(s) selected</span>
+            <div *ngFor="let file of selectedFiles" class="badge bg-info">{{ file.name }}</div>
           </div>
         </div>
 
@@ -53,33 +110,71 @@
             <h6 class="text-secondary mb-3">Level {{ levels.length > 0 ? levels[i].name : i + 1 }}</h6>
             
             <div class="row g-2 g-sm-3">
-              <div class="col-6 col-md-6 mb-2">
-                <label class="form-label">Min Quantity</label>
+              <div class="col-6 col-md-3 mb-2">
+                <label class="form-label">Min Quantity *</label>
                 <input type="number" formControlName="minQuantity" class="form-control" min="0">
                 <div *ngIf="levelPrice.get('minQuantity')?.touched && levelPrice.get('minQuantity')?.invalid" class="text-danger small mt-1">
                   Min quantity must be ≥ 0
                 </div>
               </div>
-              <div class="col-6 col-md-6 mb-2">
-                <label class="form-label">Max Quantity</label>
+              <div class="col-6 col-md-3 mb-2">
+                <label class="form-label">Max Quantity *</label>
                 <input type="number" formControlName="maxQuantity" class="form-control" min="0">
                 <div *ngIf="levelPrice.get('maxQuantity')?.touched && levelPrice.get('maxQuantity')?.invalid" class="text-danger small mt-1">
                   Max quantity must be ≥ 0
                 </div>
               </div>
 
-              <div class="col-6 col-md-6 mb-2">
-                <label class="form-label">Min Price</label>
-                <input type="number" formControlName="minPrice" class="form-control" min="0">
+              <div class="col-6 col-md-3 mb-2">
+                <label class="form-label">Min Price *</label>
+                <input type="number" formControlName="minPrice" class="form-control" min="0" step="0.01">
                 <div *ngIf="levelPrice.get('minPrice')?.touched && levelPrice.get('minPrice')?.invalid" class="text-danger small mt-1">
                   Min price must be ≥ 0
                 </div>
               </div>
-              <div class="col-6 col-md-6 mb-2">
-                <label class="form-label">Max Price</label>
-                <input type="number" formControlName="maxPrice" class="form-control" min="0">
+              <div class="col-6 col-md-3 mb-2">
+                <label class="form-label">Max Price *</label>
+                <input type="number" formControlName="maxPrice" class="form-control" min="0" step="0.01">
                 <div *ngIf="levelPrice.get('maxPrice')?.touched && levelPrice.get('maxPrice')?.invalid" class="text-danger small mt-1">
                   Max price must be ≥ 0
+                </div>
+              </div>
+
+              <div class="col-6 col-md-3 mb-2">
+                <label class="form-label">Platform Fee Buyer (%) *</label>
+                <input type="number" formControlName="platformFeeBuyer" class="form-control" min="0" max="100" step="0.1">
+                <div *ngIf="levelPrice.get('platformFeeBuyer')?.touched && levelPrice.get('platformFeeBuyer')?.invalid" class="text-danger small mt-1">
+                  <div *ngIf="levelPrice.get('platformFeeBuyer')?.errors?.['required']">Platform fee buyer is required</div>
+                  <div *ngIf="levelPrice.get('platformFeeBuyer')?.errors?.['min']">Must be ≥ 0</div>
+                  <div *ngIf="levelPrice.get('platformFeeBuyer')?.errors?.['max']">Must be ≤ 100</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3 mb-2">
+                <label class="form-label">Platform Fee Seller (%) *</label>
+                <input type="number" formControlName="platformFeeSeller" class="form-control" min="0" max="100" step="0.1">
+                <div *ngIf="levelPrice.get('platformFeeSeller')?.touched && levelPrice.get('platformFeeSeller')?.invalid" class="text-danger small mt-1">
+                  <div *ngIf="levelPrice.get('platformFeeSeller')?.errors?.['required']">Platform fee seller is required</div>
+                  <div *ngIf="levelPrice.get('platformFeeSeller')?.errors?.['min']">Must be ≥ 0</div>
+                  <div *ngIf="levelPrice.get('platformFeeSeller')?.errors?.['max']">Must be ≤ 100</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3 mb-2">
+                <label class="form-label">Platform Fee Type *</label>
+                <select formControlName="platformFeeType" class="form-control">
+                  <option value="PERCENTAGE">Percentage</option>
+                  <option value="FIXED">Fixed Amount</option>
+                </select>
+                <div *ngIf="levelPrice.get('platformFeeType')?.touched && levelPrice.get('platformFeeType')?.invalid" class="text-danger small mt-1">
+                  Platform fee type is required
+                </div>
+              </div>
+              <div class="col-6 col-md-3 mb-2">
+                <label class="form-label">GST Percentage (%) *</label>
+                <input type="number" formControlName="gstPercentage" class="form-control" min="0" max="100" step="0.1">
+                <div *ngIf="levelPrice.get('gstPercentage')?.touched && levelPrice.get('gstPercentage')?.invalid" class="text-danger small mt-1">
+                  <div *ngIf="levelPrice.get('gstPercentage')?.errors?.['required']">GST percentage is required</div>
+                  <div *ngIf="levelPrice.get('gstPercentage')?.errors?.['min']">Must be ≥ 0</div>
+                  <div *ngIf="levelPrice.get('gstPercentage')?.errors?.['max']">Must be ≤ 100</div>
                 </div>
               </div>
             </div>
@@ -92,10 +187,13 @@
         </div>
 
         <div class="text-center mt-4 mb-3">
-          <button type="submit" class="btn btn-primary px-4 px-sm-5 py-2 w-100 w-sm-auto" [disabled]="productForm.invalid || isLoading">
+          <button type="submit" class="btn btn-primary px-4 px-sm-5 py-2 w-100 w-sm-auto" [disabled]="productForm.invalid || isLoading || selectedFiles.length < 1 || selectedFiles.length > 4">
             <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
             Add Product
           </button>
+          <div class="mt-2 text-muted small">
+            * Required fields
+          </div>
         </div>
       </form>
     </div>

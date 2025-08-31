@@ -1,6 +1,67 @@
 <div class="container-fluid mt-3 px-2 px-sm-3">
   <h2 class="mb-3 mb-md-4">Product Catalog</h2>
 
+  <!-- Search and Filter Controls -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">Search & Filter Products</h5>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <!-- Search by Name -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <label for="searchName" class="form-label">Search by Name</label>
+          <input type="text" class="form-control" id="searchName" 
+                 placeholder="Enter product name..." 
+                 [(ngModel)]="searchTerm" 
+                 (input)="applyFilters()">
+        </div>
+        
+        <!-- Price Range Filter -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <label class="form-label">Price Range</label>
+          <div class="row g-2">
+            <div class="col-6">
+              <input type="number" class="form-control" placeholder="Min Price" 
+                     [(ngModel)]="minPrice" 
+                     (input)="applyFilters()">
+            </div>
+            <div class="col-6">
+              <input type="number" class="form-control" placeholder="Max Price" 
+                     [(ngModel)]="maxPrice" 
+                     (input)="applyFilters()">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Quantity Range Filter -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <label class="form-label">Quantity Range</label>
+          <div class="row g-2">
+            <div class="col-6">
+              <input type="number" class="form-control" placeholder="Min Qty" 
+                     [(ngModel)]="minQuantity" 
+                     (input)="applyFilters()">
+            </div>
+            <div class="col-6">
+              <input type="number" class="form-control" placeholder="Max Qty" 
+                     [(ngModel)]="maxQuantity" 
+                     (input)="applyFilters()">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Clear Filters Button -->
+        <div class="col-12">
+          <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">
+            <i class="bi bi-x-circle"></i> Clear Filters
+          </button>
+          <span class="ms-3 text-muted">Showing {{ filteredProducts.length }} of {{ products.length }} products</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="height: 200px;">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Loading...</span>
@@ -8,7 +69,7 @@
   </div>
 
   <!-- Desktop Table View (hidden on small screens) -->
-  <div *ngIf="!loading && products.length > 0" class="card d-none d-md-block">
+  <div *ngIf="!loading && filteredProducts.length > 0" class="card d-none d-md-block">
     <div class="card-body p-0 p-md-3">
       <div class="table-responsive touch-scroll" style="max-height: 500px;">
         <table class="table table-bordered table-hover">
@@ -23,7 +84,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let product of products; let i = index">
+            <tr *ngFor="let product of filteredProducts; let i = index">
               <th scope="row">{{ i + 1 }}</th>
               <td>{{ product.name }}</td>
               <td>{{ product.description }}</td>
@@ -46,6 +107,9 @@
                 </div>
               </td>
               <td>
+                <button class="btn btn-info btn-sm me-1" (click)="viewProduct(product.id)">
+                  <i class="bi bi-eye"></i> View
+                </button>
                 <button class="btn btn-primary btn-sm me-1" (click)="editProduct(product)">
                   <i class="bi bi-pencil-square"></i> Edit
                 </button>
@@ -58,9 +122,9 @@
   </div>
 
   <!-- Mobile Card View (visible only on small screens) -->
-  <div *ngIf="!loading && products.length > 0" class="d-md-none">
+  <div *ngIf="!loading && filteredProducts.length > 0" class="d-md-none">
     <div class="row g-3">
-      <div *ngFor="let product of products; let i = index" class="col-12">
+      <div *ngFor="let product of filteredProducts; let i = index" class="col-12">
         <div class="card h-100">
           <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">{{ product.name }}</h5>
@@ -88,7 +152,10 @@
             </div>
           </div>
           <div class="card-footer">
-            <button class="btn btn-primary btn-sm w-100" (click)="editProduct(product)">
+            <button class="btn btn-info btn-sm me-2" (click)="viewProduct(product.id)">
+              <i class="bi bi-eye"></i> View
+            </button>
+            <button class="btn btn-primary btn-sm" (click)="editProduct(product)">
               <i class="bi bi-pencil-square"></i> Edit
             </button>
           </div>
@@ -97,6 +164,10 @@
     </div>
   </div>
 
+  <div *ngIf="!loading && filteredProducts.length === 0 && products.length > 0" class="alert alert-warning" role="alert">
+    No products match your current filters. Try adjusting your search criteria.
+  </div>
+  
   <div *ngIf="!loading && products.length === 0" class="alert alert-info" role="alert">
     No products found.
   </div>
@@ -105,5 +176,126 @@
     <button class="btn btn-success" routerLink="/add-product" routerLinkActive="active">
       <i class="bi bi-plus-circle"></i> Add Product
     </button>
+  </div>
+</div>
+
+<!-- Product Details Modal -->
+<div *ngIf="showModal" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Product Details</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Loading State -->
+        <div *ngIf="modalLoading" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-2">Loading product details...</p>
+        </div>
+
+        <!-- Product Details -->
+        <div *ngIf="!modalLoading && selectedProduct" class="row">
+          <!-- Product Images -->
+          <div class="col-12 col-md-6 mb-3" *ngIf="selectedProduct.imageUrls && selectedProduct.imageUrls.length > 0">
+            <h6>Product Images</h6>
+            <div class="row g-2">
+              <div class="col-6" *ngFor="let imageUrl of selectedProduct.imageUrls">
+                <img [src]="imageUrl.trim()" class="img-fluid rounded" alt="Product Image" 
+                     style="max-height: 150px; object-fit: cover; width: 100%;">
+              </div>
+            </div>
+          </div>
+
+          <!-- Product Information -->
+          <div class="col-12" [class.col-md-6]="selectedProduct.imageUrls && selectedProduct.imageUrls.length > 0">
+            <h6>Basic Information</h6>
+            <table class="table table-sm table-borderless">
+              <tr>
+                <td><strong>ID:</strong></td>
+                <td>{{ selectedProduct.id }}</td>
+              </tr>
+              <tr>
+                <td><strong>Name:</strong></td>
+                <td>{{ selectedProduct.name }}</td>
+              </tr>
+              <tr>
+                <td><strong>Description:</strong></td>
+                <td>{{ selectedProduct.description }}</td>
+              </tr>
+              <tr *ngIf="selectedProduct.category">
+                <td><strong>Category:</strong></td>
+                <td>{{ selectedProduct.category.name }}</td>
+              </tr>
+              <tr>
+                <td><strong>Unit:</strong></td>
+                <td>{{ selectedProduct.unit }}</td>
+              </tr>
+              <tr>
+                <td><strong>GST Percentage:</strong></td>
+                <td>{{ selectedProduct.gstPercentage }}%</td>
+              </tr>
+              <tr>
+                <td><strong>Expiry (Days):</strong></td>
+                <td>{{ selectedProduct.expiryInDays }}</td>
+              </tr>
+              <tr>
+                <td><strong>Created At:</strong></td>
+                <td>{{ selectedProduct.createdAt | date:'medium' }}</td>
+              </tr>
+              <tr>
+                <td><strong>Updated At:</strong></td>
+                <td>{{ selectedProduct.updatedAt | date:'medium' }}</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Level Prices -->
+          <div class="col-12 mt-3" *ngIf="selectedProduct.levelPrices && selectedProduct.levelPrices.length > 0">
+            <h6>Level Pricing Details</h6>
+            <div class="table-responsive">
+              <table class="table table-bordered table-sm">
+                <thead class="table-dark">
+                  <tr>
+                    <th>Level</th>
+                    <th>Price Range</th>
+                    <th>Quantity Range</th>
+                    <th>Platform Fee (Buyer)</th>
+                    <th>Platform Fee (Seller)</th>
+                    <th>Fee Type</th>
+                    <th>GST %</th>
+                    <th>Pay at Completion</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let levelPrice of selectedProduct.levelPrices">
+                    <td>{{ levelPrice.level.name }}</td>
+                    <td>₹{{ levelPrice.minPrice }} - ₹{{ levelPrice.maxPrice }}</td>
+                    <td>{{ levelPrice.minQuantity }} - {{ levelPrice.maxQuantity }}</td>
+                    <td>{{ levelPrice.platformFeeBuyer }}{{ levelPrice.platformFeeType === 'PERCENTAGE' ? '%' : '' }}</td>
+                    <td>{{ levelPrice.platformFeeSeller }}{{ levelPrice.platformFeeType === 'PERCENTAGE' ? '%' : '' }}</td>
+                    <td>{{ levelPrice.platformFeeType }}</td>
+                    <td>{{ levelPrice.gstPercentage }}%</td>
+                    <td>
+                      <span class="badge" [class]="levelPrice.payPlatformFeeAtCompletionBuyer ? 'bg-success' : 'bg-secondary'">
+                        Buyer: {{ levelPrice.payPlatformFeeAtCompletionBuyer ? 'Yes' : 'No' }}
+                      </span><br>
+                      <span class="badge" [class]="levelPrice.payPlatformFeeAtCompletionSeller ? 'bg-success' : 'bg-secondary'">
+                        Seller: {{ levelPrice.payPlatformFeeAtCompletionSeller ? 'Yes' : 'No' }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+      </div>
+    </div>
   </div>
 </div>

@@ -41,6 +41,7 @@ import { NegotiationQuestionsComponent } from './components/negotiation-question
 import { ProductTradingCardComponent } from './components/product-trading-card/product-trading-card.component';
 import { ProductTradingSidePanelComponent } from './components/product-trading-side-panel/product-trading-side-panel.component';
 import { ReportsStatsComponent } from './components/reports-stats/reports-stats.component';
+import { LevelsDataDialogueComponent } from './dialogue/levels-data-dialogue/levels-data-dialogue.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { ReportsStatsComponent } from './components/reports-stats/reports-stats.
     ProductTradingCardComponent,
     ProductTradingSidePanelComponent,
     ReportsStatsComponent,
+    LevelsDataDialogueComponent,
     FilterPipe,
   ],
   imports: [

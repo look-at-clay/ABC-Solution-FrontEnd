@@ -16,9 +16,7 @@ export class ProductService {
     const formData = new FormData();
     
     // Add product data as JSON string
-    formData.append('product', new Blob([JSON.stringify(product)], { 
-      type: 'application/json' 
-    }));
+    formData.append('product', JSON.stringify(product));
     
     // Add images
     images.forEach(image => {

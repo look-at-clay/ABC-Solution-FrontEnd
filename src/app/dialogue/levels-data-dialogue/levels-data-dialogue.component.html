@@ -1,0 +1,134 @@
+<div class="levels-data-dialog">
+  <div class="dialog-header">
+    <h2 mat-dialog-title class="mb-0">
+      <i class="bi bi-layers me-2"></i>
+      Levels Management
+    </h2>
+    <button 
+      type="button" 
+      class="btn-close" 
+      aria-label="Close"
+      (click)="onClose()"
+      [disabled]="isLoading">
+    </button>
+  </div>
+
+  <mat-dialog-content class="dialog-content">
+    <!-- Add Level Section -->
+    <div class="add-level-section mb-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="bi bi-plus-circle me-2"></i>
+            Add New Level
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row align-items-end">
+            <div class="col-md-8">
+              <label for="newLevelName" class="form-label">Level Name</label>
+              <input 
+                type="number" 
+                id="newLevelName"
+                class="form-control" 
+                [(ngModel)]="newLevelName"
+                [disabled]="isLoading"
+                min="1"
+                placeholder="Enter level name">
+            </div>
+            <div class="col-md-4">
+              <button 
+                type="button" 
+                class="btn btn-primary w-100"
+                (click)="addLevel()"
+                [disabled]="isLoading || !newLevelName">
+                <i class="bi bi-plus-lg me-1"></i>
+                Add Level
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="text-center my-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2 text-muted">Processing...</p>
+    </div>
+
+    <!-- Levels Table -->
+    <div *ngIf="!isLoading" class="levels-table-section">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <i class="bi bi-table me-2"></i>
+            Current Levels ({{ levels.length }})
+          </h5>
+        </div>
+        <div class="card-body p-0">
+          <div *ngIf="levels.length === 0" class="text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <p class="text-muted mt-3">No levels found. Add your first level above.</p>
+          </div>
+          
+          <div *ngIf="levels.length > 0" class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Level ID</th>
+                  <th scope="col">Level Name</th>
+                  <th scope="col">Created At</th>
+                  <th scope="col">Updated At</th>
+                  <th scope="col" class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let level of levels; let i = index" class="align-middle">
+                  <td>{{ i + 1 }}</td>
+                  <td>
+                    <span class="badge bg-primary">{{ level.id }}</span>
+                  </td>
+                  <td>
+                    <strong>Level {{ level.name }}</strong>
+                  </td>
+                  <td>
+                    <small class="text-muted">{{ formatDate(level.createdAt) }}</small>
+                  </td>
+                  <td>
+                    <small class="text-muted">{{ formatDate(level.updatedAt) }}</small>
+                  </td>
+                  <td class="text-center">
+                    <button 
+                      type="button" 
+                      class="btn btn-outline-danger btn-sm"
+                      (click)="deleteLevel(level)"
+                      [disabled]="isLoading"
+                      title="Delete Level">
+                      <i class="bi bi-trash"></i>
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="dialog-actions">
+    <button 
+      type="button" 
+      class="btn btn-secondary"
+      (click)="onClose()"
+      [disabled]="isLoading">
+      <i class="bi bi-x-circle me-1"></i>
+      Close
+    </button>
+  </mat-dialog-actions>
+</div>

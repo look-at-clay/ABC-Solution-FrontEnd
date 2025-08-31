@@ -25,11 +25,19 @@ export class NewsService {
     return this.http.post<News>(`${this.baseUrl}/addNews`, news);
   }
 
+  createNewsWithFormData(formData: FormData): Observable<News> {
+    return this.http.post<News>(`${this.baseUrl}/addNews`, formData);
+  }
+
   updateNews(id: number, news: UpdateNewsRequest): Observable<News> {
     return this.http.put<News>(`${this.baseUrl}/updateNewsById/${id}`, news);
   }
 
   deleteNews(id: number): Observable<string> {
     return this.http.delete<string>(`${this.baseUrl}/deleteNewsById/${id}`);
+  }
+
+  partialUpdateNews(id: number, formData: FormData): Observable<News> {
+    return this.http.patch<News>(`${this.baseUrl}/partialUpdateNews/${id}`, formData);
   }
 }

@@ -85,12 +85,23 @@
               
               <!-- Image -->
               <td class="align-middle">
-                <img 
-                  [src]="newsItem.imageUrl" 
-                  [alt]="newsItem.title"
-                  class="news-thumbnail"
-                  (error)="onImageError($event)"
-                >
+                <div *ngIf="newsItem.imageUrls && newsItem.imageUrls.length > 0; else singleImage" class="d-flex gap-1">
+                  <img 
+                    [src]="newsItem.imageUrls[0]" 
+                    [alt]="newsItem.title"
+                    class="news-thumbnail"
+                    (error)="onImageError($event)"
+                  >
+                  <span *ngIf="newsItem.imageUrls.length > 1" class="badge bg-primary align-self-start">+{{ newsItem.imageUrls.length - 1 }}</span>
+                </div>
+                <ng-template #singleImage>
+                  <img 
+                    [src]="newsItem.imageUrl" 
+                    [alt]="newsItem.title"
+                    class="news-thumbnail"
+                    (error)="onImageError($event)"
+                  >
+                </ng-template>
               </td>
               
               <!-- Title -->
@@ -187,26 +198,41 @@
             ></textarea>
           </div>
           <div class="mb-3">
-            <label for="addImageUrl" class="form-label">Image URL *</label>
+            <label for="addImages" class="form-label">Images *</label>
             <input 
-              type="url" 
+              type="file" 
               class="form-control" 
-              id="addImageUrl"
-              [(ngModel)]="newsForm.imageUrl"
-              name="addImageUrl"
+              id="addImages"
+              (change)="onFileSelect($event)"
+              name="addImages"
+              accept="image/*"
+              multiple
               required
             >
+            <div class="form-text">Select one or more image files</div>
           </div>
-          <div class="mb-3" *ngIf="newsForm.imageUrl">
-            <label class="form-label">Image Preview</label>
-            <div>
-              <img 
-                [src]="newsForm.imageUrl" 
-                alt="Preview"
-                class="img-thumbnail"
-                style="max-width: 200px; max-height: 150px;"
-                (error)="onImageError($event)"
-              >
+          <div class="mb-3" *ngIf="selectedFiles.length > 0">
+            <label class="form-label">Selected Images</label>
+            <div class="d-flex flex-wrap gap-2">
+              <div *ngFor="let file of selectedFiles; let i = index" class="position-relative">
+                <img 
+                  [src]="getFilePreview(file)" 
+                  alt="Preview"
+                  class="img-thumbnail"
+                  style="max-width: 100px; max-height: 75px;"
+                >
+                <button 
+                  type="button" 
+                  class="btn btn-sm btn-danger position-absolute top-0 end-0" 
+                  style="transform: translate(50%, -50%); border-radius: 50%; width: 20px; height: 20px; padding: 0;"
+                  (click)="removeFile(i)"
+                >
+                  ×
+                </button>
+                <div class="text-center mt-1">
+                  <small class="text-muted">{{ file.name }}</small>
+                </div>
+              </div>
             </div>
           </div>
         </form>
@@ -217,7 +243,7 @@
           type="button" 
           class="btn btn-primary" 
           (click)="addNews()"
-          [disabled]="!isFormValid(newsForm) || formSubmitting"
+          [disabled]="!isAddFormValid() || formSubmitting"
         >
           <span *ngIf="formSubmitting" class="spinner-border spinner-border-sm me-2"></span>
           Add News
@@ -238,48 +264,61 @@
       <div class="modal-body">
         <form>
           <div class="mb-3">
-            <label for="editTitle" class="form-label">Title *</label>
+            <label for="editTitle" class="form-label">Title</label>
             <input 
               type="text" 
               class="form-control" 
               id="editTitle"
               [(ngModel)]="editForm.title"
               name="editTitle"
-              required
+              placeholder="Enter title (optional for partial update)"
             >
           </div>
           <div class="mb-3">
-            <label for="editContent" class="form-label">Content *</label>
+            <label for="editContent" class="form-label">Content</label>
             <textarea 
               class="form-control" 
               id="editContent"
               rows="5"
               [(ngModel)]="editForm.content"
               name="editContent"
-              required
+              placeholder="Enter content (optional for partial update)"
             ></textarea>
           </div>
           <div class="mb-3">
-            <label for="editImageUrl" class="form-label">Image URL *</label>
+            <label for="editImages" class="form-label">Images</label>
             <input 
-              type="url" 
+              type="file" 
               class="form-control" 
-              id="editImageUrl"
-              [(ngModel)]="editForm.imageUrl"
-              name="editImageUrl"
-              required
+              id="editImages"
+              multiple
+              accept="image/*"
+              (change)="onEditFileSelect($event)"
             >
+            <div class="form-text">Select new images to replace existing ones (optional)</div>
           </div>
-          <div class="mb-3" *ngIf="editForm.imageUrl">
-            <label class="form-label">Image Preview</label>
-            <div>
-              <img 
-                [src]="editForm.imageUrl" 
-                alt="Preview"
-                class="img-thumbnail"
-                style="max-width: 200px; max-height: 150px;"
-                (error)="onImageError($event)"
-              >
+          <div class="mb-3" *ngIf="editSelectedFiles.length > 0">
+            <label class="form-label">Selected Images Preview</label>
+            <div class="d-flex flex-wrap gap-2">
+              <div *ngFor="let file of editSelectedFiles; let i = index" class="position-relative">
+                <img 
+                  [src]="getFilePreview(file)" 
+                  alt="Preview"
+                  class="img-thumbnail"
+                  style="width: 100px; height: 100px; object-fit: cover;"
+                >
+                <button 
+                  type="button" 
+                  class="btn btn-danger btn-sm position-absolute top-0 end-0"
+                  style="transform: translate(50%, -50%); border-radius: 50%; width: 20px; height: 20px; padding: 0;"
+                  (click)="removeEditFile(i)"
+                >
+                  ×
+                </button>
+                <div class="text-center mt-1">
+                  <small class="text-muted">{{ file.name }}</small>
+                </div>
+              </div>
             </div>
           </div>
         </form>
@@ -290,7 +329,7 @@
           type="button" 
           class="btn btn-primary" 
           (click)="updateNews()"
-          [disabled]="!isFormValid(editForm) || formSubmitting"
+          [disabled]="!isEditFormValid() || formSubmitting"
         >
           <span *ngIf="formSubmitting" class="spinner-border spinner-border-sm me-2"></span>
           Update News
@@ -311,12 +350,24 @@
       <div class="modal-body" *ngIf="selectedNews">
         <div class="row">
           <div class="col-md-4">
-            <img 
-              [src]="selectedNews.imageUrl" 
-              [alt]="selectedNews.title"
-              class="img-fluid rounded"
-              (error)="onImageError($event)"
-            >
+            <div *ngIf="selectedNews.imageUrls && selectedNews.imageUrls.length > 0; else singleImageView">
+              <div *ngFor="let imageUrl of selectedNews.imageUrls; let i = index" class="mb-2">
+                <img 
+                  [src]="imageUrl" 
+                  [alt]="selectedNews.title + ' - Image ' + (i + 1)"
+                  class="img-fluid rounded"
+                  (error)="onImageError($event)"
+                >
+              </div>
+            </div>
+            <ng-template #singleImageView>
+              <img 
+                [src]="selectedNews.imageUrl" 
+                [alt]="selectedNews.title"
+                class="img-fluid rounded"
+                (error)="onImageError($event)"
+              >
+            </ng-template>
           </div>
           <div class="col-md-8">
             <h4>{{ selectedNews.title }}</h4>

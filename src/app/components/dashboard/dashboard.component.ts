@@ -12,6 +12,7 @@ import { CategoryManagementDialogueComponent } from '../../dialogue/category-man
 import { AuthService } from '../../services/auth.services';
 import { ConfirmDialogueComponent } from '../../dialogue/confirm-dialogue/confirm-dialogue.component';
 import { LevelAliasDialogueComponent } from '../../dialogue/level-alias-dialogue/level-alias-dialogue.component';
+import { LevelsDataDialogueComponent } from '../../dialogue/levels-data-dialogue/levels-data-dialogue.component';
 import { AdminService } from '../../services/admin.services';
 import { UserLevelStats } from '../../models/user-stats.mode';
 import { OrderStatistics } from '../../models/order-stat.model';
@@ -205,6 +206,20 @@ export class DashboardComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       this.fetchLevelCount();
+    });
+  }
+
+  openLevelsDataDialog(): void {
+    const dialogRef = this.dialog.open(LevelsDataDialogueComponent, {
+      width: '90vw',
+      maxWidth: '1000px',
+      height: 'auto',
+      maxHeight: '90vh',
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.fetchLevelCount(); // Refresh the total levels count
     });
   }
 
