@@ -42,6 +42,7 @@ import { ProductTradingCardComponent } from './components/product-trading-card/p
 import { ProductTradingSidePanelComponent } from './components/product-trading-side-panel/product-trading-side-panel.component';
 import { ReportsStatsComponent } from './components/reports-stats/reports-stats.component';
 import { LevelsDataDialogueComponent } from './dialogue/levels-data-dialogue/levels-data-dialogue.component';
+import { ConfigurationComponent } from './components/configuration/configuration.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import { LevelsDataDialogueComponent } from './dialogue/levels-data-dialogue/lev
     ProductTradingSidePanelComponent,
     ReportsStatsComponent,
     LevelsDataDialogueComponent,
+    ConfigurationComponent,
     FilterPipe,
   ],
   imports: [

@@ -22,6 +22,11 @@ export class ViewOngoingordersComponent implements OnInit {
   loadingQualityProof = false;
   qualityProofImage: string | null = null;
   qualityProofError: string | null = null;
+  
+  // Edit order properties
+  editingOrder: Order | null = null;
+  selectedStatus: string = '';
+  updatingStatus = false;
 
   Math = Math;
   
@@ -38,7 +43,7 @@ export class ViewOngoingordersComponent implements OnInit {
   totalItems = 0;
   
   // Status options
-  statusOptions = ['ACCEPTED', 'REJECTED', 'CANCELLED', 'INTRANSIT', 'DELIVERED'];
+  statusOptions = ['ACCEPTED', 'CANCELLED', 'INTRANSIT', 'DELIVERED'];
   orderTypeOptions = ['BUYER_REQUEST', 'SELLER_REQUEST'];
 
   constructor(private orderService: OrderService) { }
@@ -269,6 +274,57 @@ export class ViewOngoingordersComponent implements OnInit {
         this.loadingQualityProof = false;
         console.error('Failed to load quality proof:', error);
         this.qualityProofError = 'Failed to load quality proof. Please try again.';
+      }
+    });
+  }
+
+  editOrder(order: Order): void {
+    this.editingOrder = order;
+    this.selectedStatus = order.status;
+    
+    // Show the edit modal
+    const modal = document.getElementById('editOrderModal');
+    if (modal) {
+      const bootstrapModal = new (window as any).bootstrap.Modal(modal);
+      bootstrapModal.show();
+    }
+  }
+
+  updateOrderStatus(): void {
+    if (!this.editingOrder || !this.selectedStatus) {
+      return;
+    }
+
+    this.updatingStatus = true;
+    this.error = null;
+
+    this.orderService.updateOrderStatus(this.editingOrder.id, this.selectedStatus).subscribe({
+      next: (response) => {
+        // Update the order status in the local array
+        const orderIndex = this.orders.findIndex(o => o.id === this.editingOrder!.id);
+        if (orderIndex !== -1) {
+          this.orders[orderIndex].status = this.selectedStatus;
+        }
+        
+        // Reapply filters to update the filtered orders
+        this.applyFilters();
+        
+        // Close the modal
+        const modal = document.getElementById('editOrderModal');
+        if (modal) {
+          const bootstrapModal = (window as any).bootstrap.Modal.getInstance(modal);
+          if (bootstrapModal) {
+            bootstrapModal.hide();
+          }
+        }
+        
+        this.updatingStatus = false;
+        this.editingOrder = null;
+      },
+      error: (error) => {
+        console.error('Failed to update order status:', error);
+        this.error = 'Failed to update order status. Please try again.';
+        this.updatingStatus = false;
       }
     });
   }

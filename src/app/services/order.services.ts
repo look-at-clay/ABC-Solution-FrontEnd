@@ -136,4 +136,10 @@ export class OrderService {
   getQualityProof(orderId: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/preview-proof-file?orderId=${orderId}`);
   }
+
+  updateOrderStatus(orderId: number, status: string): Observable<any> {
+    const adminUrl = `${environment.baseUrl}/admin/v1/orders/${orderId}/status`;
+    let params = new HttpParams().set('status', status);
+    return this.http.put(adminUrl, {}, { params });
+  }
 }

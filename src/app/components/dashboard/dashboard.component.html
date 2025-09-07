@@ -191,7 +191,7 @@
           </div>
         </div>
 
-        <!-- Total Profit card -->
+        <!-- Total Profit card 
         <div class="col-12 col-sm-6 col-md-4 col-xl-3">
           <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body">
@@ -212,7 +212,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
 
         <!-- Total Levels card -->
         <div class="col-12 col-sm-6 col-md-4 col-xl-3">
@@ -240,19 +240,20 @@
           </div>
         </div>
 
-        <!-- New Card for Level Aliases -->
-        <div class="col-xl-3 col-md-6 mb-4">
-          <div
-            class="card border-left-info shadow h-100 py-2 cursor-pointer"
+        <!-- Level Aliases card -->
+        <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+          <div 
+            class="card border-left-info shadow h-100 py-2 cursor-pointer" 
             (click)="openLevelAliasDialog()"
-          >
+            style="cursor: pointer; transition: transform 0.2s;"
+            onmouseover="this.style.transform='scale(1.02)'" 
+            onmouseout="this.style.transform='scale(1)'">
             <div class="card-body">
               <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
-                  <div
-                    class="text-xs font-weight-bold text-info text-uppercase mb-1"
-                  >
+                  <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                     Level Aliases
+                    <i class="bi bi-info-circle ms-1" title="Click to manage level aliases"></i>
                   </div>
                   <div class="h5 mb-0 font-weight-bold text-gray-800">
                     Manage

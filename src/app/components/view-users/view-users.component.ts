@@ -32,6 +32,13 @@ export class ViewUsersComponent implements OnInit {
   showUserModal = false;
   selectedUser: AdminUser | null = null;
   
+  // Add amount modal properties
+  showAddAmountModal = false;
+  selectedUserForWallet: AdminUser | null = null;
+  amountToAdd: number = 0;
+  addingAmount = false;
+  addAmountError = '';
+  
   // Filter options
   regionOptions: string[] = [];
   levelOptions = [
@@ -226,7 +233,7 @@ export class ViewUsersComponent implements OnInit {
   }
 
   getWalletBalance(user: AdminUser): string {
-    return user.wallet ? `₹${user.wallet.balance}` : 'No Wallet';
+    return user.wallet ? `₹${user.wallet.balance.toFixed(2)}` : 'No Wallet';
   }
 
   getDefaultAddress(user: AdminUser): string {
@@ -251,8 +258,10 @@ export class ViewUsersComponent implements OnInit {
   }
 
   editUser(user: AdminUser): void {
-    console.log('Editing user:', user);
-    // Add your edit logic here (e.g., navigate to edit form)
+    this.selectedUserForWallet = user;
+    this.showAddAmountModal = true;
+    this.amountToAdd = 0;
+    this.addAmountError = '';
   }
 
   viewUserDetails(user: AdminUser): void {
@@ -263,6 +272,55 @@ export class ViewUsersComponent implements OnInit {
   closeUserModal(): void {
     this.showUserModal = false;
     this.selectedUser = null;
+  }
+
+  closeAddAmountModal(): void {
+    this.showAddAmountModal = false;
+    this.selectedUserForWallet = null;
+    this.amountToAdd = 0;
+    this.addAmountError = '';
+    this.addingAmount = false;
+  }
+
+  addAmountToWallet(): void {
+    if (!this.selectedUserForWallet || this.amountToAdd <= 0) {
+      this.addAmountError = 'Please enter a valid amount greater than 0';
+      return;
+    }
+
+    this.addingAmount = true;
+    this.addAmountError = '';
+
+    this.adminService.addAmountToWallet(this.selectedUserForWallet.id, this.amountToAdd)
+      .subscribe({
+        next: (response) => {
+          if (response.status === 200) {
+            // Update the user's wallet balance in the local arrays
+            const userIndex = this.users.findIndex(u => u.id === this.selectedUserForWallet!.id);
+            if (userIndex !== -1 && this.users[userIndex].wallet) {
+              this.users[userIndex].wallet!.balance = response.data.balance;
+            }
+            
+            const filteredUserIndex = this.filteredUsers.findIndex(u => u.id === this.selectedUserForWallet!.id);
+            if (filteredUserIndex !== -1 && this.filteredUsers[filteredUserIndex].wallet) {
+              this.filteredUsers[filteredUserIndex].wallet!.balance = response.data.balance;
+            }
+            
+            // Update selected user if it's the same user in the details modal
+            if (this.selectedUser && this.selectedUser.id === this.selectedUserForWallet!.id && this.selectedUser.wallet) {
+              this.selectedUser.wallet.balance = response.data.balance;
+            }
+            
+            alert(`Amount ₹${this.amountToAdd} added successfully! New balance: ₹${response.data.balance}`);
+            this.closeAddAmountModal();
+          }
+        },
+        error: (error) => {
+          console.error('Error adding amount to wallet:', error);
+          this.addAmountError = 'Failed to add amount. Please try again.';
+          this.addingAmount = false;
+        }
+      });
   }
 
   formatDate(dateString: string | null): string {

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../services/product.services';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LevelService } from '../../services/level.services';
+import { CategoryService, Category } from '../../services/category.services';
 
 @Component({
   selector: 'app-edit-product',
@@ -17,19 +18,23 @@ export class EditProductComponent implements OnInit {
   isLoading = false;
   submitError = '';
   levelAliases: { [key: number]: any[] } = {}; // Store level aliases by level ID
+  categories: Category[] = [];
+  imageUrls: string[] = [];
 
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
     private route: ActivatedRoute,
     private router: Router,
-    private levelService: LevelService
+    private levelService: LevelService,
+    private categoryService: CategoryService
   ) {
     this.productForm = this.createProductForm();
     this.productId = +this.route.snapshot.paramMap.get('id')!;
   }
 
   ngOnInit(): void {
+    this.loadCategories();
     this.loadProductDetails();
   }
 
@@ -37,6 +42,10 @@ export class EditProductComponent implements OnInit {
     return this.fb.group({
       name: ['', [Validators.required]],
       description: ['', [Validators.required]],
+      categoryId: [null, [Validators.required]],
+      gstPercentage: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
+      unit: ['', [Validators.required]],
+      expiryInDays: [null, [Validators.min(1)]],
       levelPrices: this.fb.array([])
     });
   }
@@ -56,18 +65,42 @@ export class EditProductComponent implements OnInit {
       minPrice: [levelPrice?.minPrice || 0, [Validators.required, Validators.min(0)]],
       maxPrice: [levelPrice?.maxPrice || 0, [Validators.required, Validators.min(0)]],
       minQuantity: [levelPrice?.minQuantity || 1, [Validators.required, Validators.min(1)]],
-      maxQuantity: [levelPrice?.maxQuantity || 1, [Validators.required, Validators.min(1)]]
+      maxQuantity: [levelPrice?.maxQuantity || 1, [Validators.required, Validators.min(1)]],
+      platformFeeBuyer: [levelPrice?.platformFeeBuyer || 0, [Validators.required, Validators.min(0)]],
+      platformFeeSeller: [levelPrice?.platformFeeSeller || 0, [Validators.required, Validators.min(0)]],
+      payPlatformFeeAtCompletionBuyer: [levelPrice?.payPlatformFeeAtCompletionBuyer || false],
+      payPlatformFeeAtCompletionSeller: [levelPrice?.payPlatformFeeAtCompletionSeller || false],
+      platformFeeType: [levelPrice?.platformFeeType || null],
+      gstPercentage: [levelPrice?.gstPercentage || 0, [Validators.required, Validators.min(0), Validators.max(100)]]
     });
+  }
+
+  loadCategories(): void {
+    this.categoryService.getAllCategories().subscribe(
+      (categories) => {
+        this.categories = categories;
+      },
+      (error) => {
+        console.error('Error loading categories:', error);
+      }
+    );
   }
 
   loadProductDetails(): void {
     this.isLoading = true;
     this.productService.getProductById(this.productId).subscribe(
       (product) => {
+        // Store image URLs
+        this.imageUrls = product.imageUrls || [];
+        
         // Patch basic product info
         this.productForm.patchValue({
           name: product.name,
-          description: product.description
+          description: product.description,
+          categoryId: product.category?.id || null,
+          gstPercentage: product.gstPercentage || 0,
+          unit: product.unit || '',
+          expiryInDays: product.expiryInDays
         });
 
         // Clear existing level prices
@@ -150,6 +183,11 @@ export class EditProductComponent implements OnInit {
     const updatedProduct = {
       name: formValue.name,
       description: formValue.description,
+      categoryId: formValue.categoryId,
+      gstPercentage: formValue.gstPercentage,
+      unit: formValue.unit,
+      expiryInDays: formValue.expiryInDays,
+      imageUrls: this.imageUrls,
       levelPrices: formValue.levelPrices
     };
 

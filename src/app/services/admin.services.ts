@@ -33,6 +33,14 @@ export class AdminService {
   return this.http.get<CombinedRequestStats>(`${this.baseUrl}/buyerseller-combined-request-statistics`);
 }
 
+  getBuyerCount(): Observable<number> {
+    return this.http.get<number>(`${environment.baseUrl}/api/v1/buyer/getBuyerCount`);
+  }
+
+  getSellerCount(): Observable<number> {
+    return this.http.get<number>(`${environment.baseUrl}/api/v1/seller/getSellerCount`);
+  }
+
   // Product trading statistics methods
   getProductTotalAmount(productId: number): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/delivered/total-amount/${productId}`);
@@ -49,5 +57,10 @@ export class AdminService {
 
   unblockUser(userId: number): Observable<any> {
     return this.http.put<any>(`${environment.baseUrl}/api/users/${userId}/unblock`, {});
+  }
+
+  // Wallet methods
+  addAmountToWallet(userId: number, amount: number): Observable<any> {
+    return this.http.post<any>(`${environment.baseUrl}/api/wallet/${userId}/add?amount=${amount}`, {});
   }
 }

@@ -177,7 +177,7 @@
                     <button class="btn btn-sm btn-outline-primary" title="View Details" (click)="viewOrderDetails(order)">
                       <i class="fas fa-eye"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary" title="Edit">
+                    <button class="btn btn-sm btn-outline-secondary" title="Edit" (click)="editOrder(order)">
                       <i class="fas fa-edit"></i>
                     </button>
                   </div>
@@ -228,6 +228,64 @@
         </p>
         <button class="btn btn-primary" (click)="clearFilters()">
           <i class="fas fa-refresh"></i> Clear All Filters
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Order Status Modal -->
+<div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editOrderModalLabel">
+          <i class="fas fa-edit"></i> Edit Order Status
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="editingOrder">
+          <div class="mb-3">
+            <label class="form-label"><strong>Order ID:</strong></label>
+            <p class="form-control-plaintext">{{ editingOrder.id }}</p>
+          </div>
+          <div class="mb-3">
+            <label class="form-label"><strong>Product:</strong></label>
+            <p class="form-control-plaintext">{{ editingOrder.product.name }}</p>
+          </div>
+          <div class="mb-3">
+            <label class="form-label"><strong>Current Status:</strong></label>
+            <p class="form-control-plaintext">
+              <span class="badge" [ngClass]="getStatusBadgeClass(editingOrder.status)">
+                {{ editingOrder.status }}
+              </span>
+            </p>
+          </div>
+          <div class="mb-3">
+            <label for="statusSelect" class="form-label"><strong>New Status:</strong></label>
+            <select id="statusSelect" class="form-select" [(ngModel)]="selectedStatus">
+              <option *ngFor="let status of statusOptions" [value]="status">
+                {{ status }}
+              </option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Error message -->
+        <div *ngIf="error" class="alert alert-danger">
+          <i class="fas fa-exclamation-triangle"></i>
+          {{ error }}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+        <button type="button" class="btn btn-primary" (click)="updateOrderStatus()" [disabled]="updatingStatus || !selectedStatus">
+          <span *ngIf="updatingStatus" class="spinner-border spinner-border-sm me-2" role="status"></span>
+          <i *ngIf="!updatingStatus" class="fas fa-save me-2"></i>
+          {{ updatingStatus ? 'Updating...' : 'Update Status' }}
         </button>
       </div>
     </div>

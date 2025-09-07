@@ -56,7 +56,8 @@ export class DashboardComponent {
   ) { }
 
   ngOnInit(): void {
-    this.fetchUserStats();
+    this.fetchBuyerCount();
+    this.fetchSellerCount();
     this.fetchUserLevelStats();
     this.fetchLevelCount();
     this.fetchOrderStatistics(); 
@@ -101,18 +102,32 @@ export class DashboardComponent {
     });
   }
 
-  fetchUserStats(): void {
+  fetchBuyerCount(): void {
     this.loading = true;
-    this.userService.getAllUsers().subscribe({
-      next: (users: User[]) => {
-        this.totalBuyers = users.filter(user => user.role === 'BUYER').length;
-        this.totalSellers = users.filter(user => user.role === 'SELLER').length;
+    this.adminService.getBuyerCount().subscribe({
+      next: (count: number) => {
+        this.totalBuyers = count;
         this.loading = false;
       },
       error: (err) => {
-        this.error = 'Failed to load user statistics';
+        this.error = 'Failed to load buyer count';
         this.loading = false;
-        console.error('Error fetching user stats:', err);
+        console.error('Error fetching buyer count:', err);
+      }
+    });
+  }
+
+  fetchSellerCount(): void {
+    this.loading = true;
+    this.adminService.getSellerCount().subscribe({
+      next: (count: number) => {
+        this.totalSellers = count;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load seller count';
+        this.loading = false;
+        console.error('Error fetching seller count:', err);
       }
     });
   }
@@ -261,7 +276,8 @@ export class DashboardComponent {
   }
 
   refreshData(): void {
-    this.fetchUserStats();
+    this.fetchBuyerCount();
+    this.fetchSellerCount();
     this.fetchUserLevelStats();
     this.fetchLevelCount();
     this.fetchOrderStatistics();

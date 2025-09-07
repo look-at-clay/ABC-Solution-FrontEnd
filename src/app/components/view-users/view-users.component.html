@@ -251,10 +251,10 @@
                           title="View Details">
                     <i class="bi bi-eye"></i>
                   </button>
-                  <button class="btn btn-outline-secondary" 
+                  <button class="btn btn-outline-success" 
                           (click)="editUser(user)"
-                          title="Edit User">
-                    <i class="bi bi-pencil-square"></i>
+                          title="Add Amount to Wallet">
+                    <i class="bi bi-wallet2"></i>
                   </button>
                   <button class="btn" 
                           [ngClass]="user.isBlocked || user.blocked ? 'btn-outline-success' : 'btn-outline-danger'"
@@ -368,8 +368,8 @@
                   <button class="btn btn-sm btn-outline-primary" (click)="viewUserDetails(user)">
                     <i class="bi bi-eye me-1"></i> View
                   </button>
-                  <button class="btn btn-sm btn-outline-secondary" (click)="editUser(user)">
-                    <i class="bi bi-pencil-square me-1"></i> Edit
+                  <button class="btn btn-sm btn-outline-success" (click)="editUser(user)">
+                    <i class="bi bi-wallet2 me-1"></i> Add Amount
                   </button>
                   <button class="btn btn-sm" 
                           [ngClass]="user.isBlocked || user.blocked ? 'btn-outline-success' : 'btn-outline-danger'"
@@ -692,13 +692,86 @@
         <button type="button" class="btn btn-secondary" (click)="closeUserModal()">
           <i class="bi bi-x-circle me-1"></i>Close
         </button>
-        <button type="button" class="btn btn-primary" (click)="editUser(selectedUser)">
-          <i class="bi bi-pencil-square me-1"></i>Edit User
+        <button type="button" class="btn btn-success" (click)="editUser(selectedUser)">
+          <i class="bi bi-wallet2 me-1"></i>Add Amount to Wallet
         </button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal Backdrop -->
+<!-- Add Amount to Wallet Modal -->
+<div class="modal fade" [class.show]="showAddAmountModal" [style.display]="showAddAmountModal ? 'block' : 'none'" 
+     tabindex="-1" role="dialog" aria-labelledby="addAmountModalLabel" aria-hidden="true"
+     *ngIf="showAddAmountModal && selectedUserForWallet">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="addAmountModalLabel">
+          <i class="bi bi-wallet2 me-2"></i>Add Amount to Wallet - {{ selectedUserForWallet.name }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeAddAmountModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-12">
+            <div class="card bg-light">
+              <div class="card-body text-center">
+                <h6 class="text-muted mb-1">Current Wallet Balance</h6>
+                <h4 class="mb-0" 
+                    [ngClass]="{
+                      'text-success': selectedUserForWallet.wallet && selectedUserForWallet.wallet.balance > 0,
+                      'text-muted': !selectedUserForWallet.wallet || selectedUserForWallet.wallet.balance === 0,
+                      'text-danger': selectedUserForWallet.wallet && selectedUserForWallet.wallet.balance < 0
+                    }">
+                  {{ getWalletBalance(selectedUserForWallet) }}
+                </h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <label for="amountInput" class="form-label fw-bold">
+              <i class="bi bi-currency-rupee me-1"></i>Amount to Add
+            </label>
+            <div class="input-group">
+              <span class="input-group-text">₹</span>
+              <input 
+                type="number" 
+                class="form-control" 
+                id="amountInput"
+                [(ngModel)]="amountToAdd"
+                placeholder="Enter amount"
+                min="1"
+                step="0.01"
+                [disabled]="addingAmount"
+                (keyup.enter)="addAmountToWallet()"
+              >
+            </div>
+            <div class="form-text text-muted">
+              <i class="bi bi-info-circle me-1"></i>Enter the amount you want to add to the user's wallet
+            </div>
+          </div>
+          <div class="col-12" *ngIf="addAmountError">
+            <div class="alert alert-danger mb-0">
+              <i class="bi bi-exclamation-triangle me-2"></i>{{ addAmountError }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeAddAmountModal()" [disabled]="addingAmount">
+          <i class="bi bi-x-circle me-1"></i>Cancel
+        </button>
+        <button type="button" class="btn btn-success" (click)="addAmountToWallet()" [disabled]="addingAmount || amountToAdd <= 0">
+          <span *ngIf="addingAmount" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          <i *ngIf="!addingAmount" class="bi bi-plus-circle me-1"></i>
+          {{ addingAmount ? 'Adding...' : 'Add Amount' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Backdrops -->
 <div class="modal-backdrop fade" [class.show]="showUserModal" *ngIf="showUserModal" (click)="closeUserModal()"></div>
+<div class="modal-backdrop fade" [class.show]="showAddAmountModal" *ngIf="showAddAmountModal" (click)="closeAddAmountModal()"></div>
