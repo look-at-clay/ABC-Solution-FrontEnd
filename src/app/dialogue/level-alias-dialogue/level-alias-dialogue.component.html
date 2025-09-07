@@ -36,15 +36,47 @@
           </div>
         </div>
         
+        <!-- Existing Aliases Section -->
+        <div *ngIf="aliasForm.get('levelId')?.value" class="mb-3">
+          <label class="form-label">Existing Aliases for Level {{ getLevelName(aliasForm.get('levelId')?.value) }}</label>
+          
+          <div *ngIf="isLoadingAliases" class="text-center py-2">
+            <div class="spinner-border spinner-border-sm text-primary" role="status">
+              <span class="visually-hidden">Loading aliases...</span>
+            </div>
+            <small class="text-muted ms-2">Loading existing aliases...</small>
+          </div>
+          
+          <div *ngIf="!isLoadingAliases" class="border rounded p-2" style="max-height: 150px; overflow-y: auto;">
+            <div *ngIf="existingAliases.length === 0" class="text-muted text-center py-2">
+              <i class="bi bi-info-circle me-1"></i>
+              No existing aliases for this level
+            </div>
+            
+            <div *ngIf="existingAliases.length > 0">
+              <div class="d-flex flex-wrap gap-2">
+                <span *ngFor="let alias of existingAliases" 
+                      class="badge bg-secondary px-2 py-1">
+                  <i class="bi bi-tag me-1"></i>{{ alias.aliasName }}
+                </span>
+              </div>
+              <small class="text-muted mt-2 d-block">
+                <i class="bi bi-info-circle me-1"></i>
+                {{ existingAliases.length }} alias(es) found
+              </small>
+            </div>
+          </div>
+        </div>
+        
         <div class="mb-3">
-          <label for="aliasName" class="form-label">Alias Name</label>
+          <label for="aliasName" class="form-label">New Alias Name</label>
           <input 
             type="text" 
             id="aliasName" 
             class="form-control" 
             formControlName="aliasName"
             [disabled]="isLoading"
-            placeholder="Enter alias name">
+            placeholder="Enter new alias name">
           <div *ngIf="aliasForm.get('aliasName')?.invalid && aliasForm.get('aliasName')?.touched" class="text-danger">
             <div *ngIf="aliasForm.get('aliasName')?.errors?.['required']">Alias name is required</div>
             <div *ngIf="aliasForm.get('aliasName')?.errors?.['minlength']">Alias name must be at least 3 characters</div>
@@ -64,7 +96,7 @@
           type="submit" 
           class="btn btn-primary" 
           [disabled]="aliasForm.invalid || isLoading">
-          Add Alias
+          Add Role
         </button>
       </mat-dialog-actions>
     </form>

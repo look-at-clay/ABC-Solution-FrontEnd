@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Level } from '../../models/level.model';
 import { UserService } from '../../services/user.service';
 import { AdminService } from '../../services/admin.services';
+import { LevelService } from '../../services/level.services';
 import { AdminUser } from '../../models/adminuser.model';
 
 @Component({
@@ -41,11 +42,8 @@ export class ViewUsersComponent implements OnInit {
   
   // Filter options
   regionOptions: string[] = [];
-  levelOptions = [
-    { value: '', label: 'All Levels' },
-    { value: '1', label: 'Level 1' },
-    { value: '2', label: 'Level 2' },
-    { value: '3', label: 'Level 3' }
+  levelOptions: { value: string; label: string }[] = [
+    { value: '', label: 'All Levels' }
   ];
   statusOptions = [
     { value: '', label: 'All Status' },
@@ -53,10 +51,14 @@ export class ViewUsersComponent implements OnInit {
     { value: 'blocked', label: 'Blocked' }
   ];
 
-  constructor(private adminService: AdminService) {}
+  constructor(
+    private adminService: AdminService,
+    private levelService: LevelService
+  ) {}
 
   ngOnInit(): void {
     this.fetchUsers();
+    this.fetchLevels();
   }
 
   fetchUsers(): void {
@@ -74,6 +76,28 @@ export class ViewUsersComponent implements OnInit {
           this.error = 'Failed to load users: ' + (err.message || 'Unknown error');
           this.loading = false;
           console.error('Error fetching users:', err);
+        }
+      });
+  }
+
+  fetchLevels(): void {
+    this.levelService.getAllLevels()
+      .subscribe({
+        next: (levels: Level[]) => {
+          // Reset levelOptions with 'All Levels' option
+          this.levelOptions = [{ value: '', label: 'All Levels' }];
+          
+          // Add each level from API to the options
+          levels.forEach(level => {
+            this.levelOptions.push({
+              value: level.id.toString(),
+              label: `Level ${level.name}`
+            });
+          });
+        },
+        error: (err) => {
+          console.error('Error fetching levels:', err);
+          // Keep default 'All Levels' option if API fails
         }
       });
   }
@@ -255,6 +279,7 @@ export class ViewUsersComponent implements OnInit {
   refreshData(): void {
     this.clearFilters();
     this.fetchUsers();
+    this.fetchLevels();
   }
 
   editUser(user: AdminUser): void {

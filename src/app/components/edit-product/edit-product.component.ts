@@ -146,22 +146,32 @@ export class EditProductComponent implements OnInit {
   }
 
   addLevelPrice(): void {
-    // Find the next available level ID (1, 2, or 3)
+    // Get currently used level IDs
     const usedLevelIds = this.levelPricesFormArray.controls.map(
       control => control.get('level')?.get('id')?.value
     );
     
-    for (let i = 1; i <= 3; i++) {
-      if (!usedLevelIds.includes(i)) {
-        const formGroup = this.createLevelPriceFormGroup(i, `L${i}`);
-        this.levelPricesFormArray.push(formGroup);
-        this.loadLevelAliases(i);
-        return;
+    // Fetch all available levels from API
+    this.levelService.getAllLevels().subscribe({
+      next: (levels) => {
+        // Find the first available level that hasn't been used
+        const availableLevel = levels.find(level => !usedLevelIds.includes(level.id));
+        
+        if (availableLevel) {
+          const formGroup = this.createLevelPriceFormGroup(availableLevel.id, `L${availableLevel.name}`);
+          this.levelPricesFormArray.push(formGroup);
+          this.loadLevelAliases(availableLevel.id);
+        } else {
+          // All available levels are already added
+          const levelNames = levels.map(level => `L${level.name}`).join(', ');
+          alert(`All available price levels (${levelNames}) are already added.`);
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching levels:', error);
+        alert('Error loading available levels. Please try again.');
       }
-    }
-    
-    // All levels are used
-    alert('All price levels (L1, L2, L3) are already added.');
+    });
   }
 
   removeLevelPrice(index: number): void {

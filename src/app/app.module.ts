@@ -43,6 +43,7 @@ import { ProductTradingSidePanelComponent } from './components/product-trading-s
 import { ReportsStatsComponent } from './components/reports-stats/reports-stats.component';
 import { LevelsDataDialogueComponent } from './dialogue/levels-data-dialogue/levels-data-dialogue.component';
 import { ConfigurationComponent } from './components/configuration/configuration.component';
+import { CancellationReasonsComponent } from './components/cancellation-reasons/cancellation-reasons.component';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { ConfigurationComponent } from './components/configuration/configuration
     LevelsDataDialogueComponent,
     ConfigurationComponent,
     FilterPipe,
+    CancellationReasonsComponent,
   ],
   imports: [
     BrowserModule,

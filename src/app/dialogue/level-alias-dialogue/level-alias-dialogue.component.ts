@@ -14,7 +14,9 @@ import { LevelService } from '../../services/level.services';
 export class LevelAliasDialogueComponent implements OnInit {
   aliasForm: FormGroup;
   levels: any[] = [];
+  existingAliases: any[] = [];
   isLoading = false;
+  isLoadingAliases = false;
   errorMessage = '';
   successMessage = '';
 
@@ -27,6 +29,15 @@ export class LevelAliasDialogueComponent implements OnInit {
     this.aliasForm = this.fb.group({
       levelId: ['', Validators.required],
       aliasName: ['', [Validators.required, Validators.minLength(3)]]
+    });
+    
+    // Listen for level selection changes
+    this.aliasForm.get('levelId')?.valueChanges.subscribe(levelId => {
+      if (levelId) {
+        this.loadExistingAliases(levelId);
+      } else {
+        this.existingAliases = [];
+      }
     });
   }
 
@@ -49,6 +60,21 @@ export class LevelAliasDialogueComponent implements OnInit {
     });
   }
 
+  loadExistingAliases(levelId: number): void {
+    this.isLoadingAliases = true;
+    this.levelService.getLevelAliases(levelId).subscribe({
+      next: (aliases) => {
+        this.existingAliases = aliases || [];
+        this.isLoadingAliases = false;
+      },
+      error: (err) => {
+        console.error('Error loading existing aliases:', err);
+        this.existingAliases = [];
+        this.isLoadingAliases = false;
+      }
+    });
+  }
+
   onSubmit(): void {
     if (this.aliasForm.invalid) {
       return;
@@ -64,7 +90,8 @@ export class LevelAliasDialogueComponent implements OnInit {
       next: (response) => {
         this.isLoading = false;
         this.successMessage = 'Level alias created successfully!';
-        this.aliasForm.reset();
+        // Reload existing aliases to show the newly added one
+        this.loadExistingAliases(aliasData.levelId);
         // Reset only the alias name, keep the level selected
         this.aliasForm.patchValue({
           levelId: aliasData.levelId,
@@ -77,6 +104,11 @@ export class LevelAliasDialogueComponent implements OnInit {
         console.error('Error creating level alias:', err);
       }
     });
+  }
+
+  getLevelName(levelId: number): string {
+    const level = this.levels.find(l => l.id == levelId);
+    return level ? level.name : '';
   }
 
   onClose(): void {

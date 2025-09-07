@@ -18,6 +18,7 @@ import { NewsManagementComponent } from './components/news-management/news-manag
 import { NegotiationQuestionsComponent } from './components/negotiation-questions/negotiation-questions.component';
 import { ReportsStatsComponent } from './components/reports-stats/reports-stats.component';
 import { ConfigurationComponent } from './components/configuration/configuration.component';
+import { CancellationReasonsComponent } from './components/cancellation-reasons/cancellation-reasons.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
@@ -38,6 +39,7 @@ const routes: Routes = [
   { path: 'negotiation-questions', component: NegotiationQuestionsComponent, canActivate: [AuthGuard] },
   { path: 'reports-stats', component: ReportsStatsComponent, canActivate: [AuthGuard] },
   { path: 'configuration', component: ConfigurationComponent, canActivate: [AuthGuard] },
+  { path: 'cancellation-reasons', component: CancellationReasonsComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '/dashboard' }
 ];
 
