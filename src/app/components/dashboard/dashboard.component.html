@@ -191,7 +191,7 @@
           </div>
         </div>
 
-        <!-- Total Profit card 
+        <!-- Total Profit card -->
         <div class="col-12 col-sm-6 col-md-4 col-xl-3">
           <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body">
@@ -203,7 +203,7 @@
                     Total Profit
                   </div>
                   <div class="h5 mb-0 font-weight-bold text-gray-800">
-                    Rs. {{ totalProfit.toLocaleString() }}
+                    Rs. {{ totalProfit | number:'1.2-2' }}
                   </div>
                 </div>
                 <div class="col-auto">
@@ -212,7 +212,7 @@
               </div>
             </div>
           </div>
-        </div>-->
+        </div>
 
         <!-- Total Levels card -->
         <div class="col-12 col-sm-6 col-md-4 col-xl-3">

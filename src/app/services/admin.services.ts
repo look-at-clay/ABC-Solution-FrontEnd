@@ -61,6 +61,11 @@ export class AdminService {
 
   // Wallet methods
   addAmountToWallet(userId: number, amount: number): Observable<any> {
-    return this.http.post<any>(`${environment.baseUrl}/api/wallet/${userId}/add?amount=${amount}`, {});
+    return this.http.post<any>(`${environment.baseUrl}/api/wallet/${userId}/addByAdmin?amount=${amount}`, {});
+  }
+
+  // Analytics methods
+  getTotalPlatformFees(): Observable<number> {
+    return this.http.get<number>(`${environment.baseUrl}/api/analytics/platform-fees/total`);
   }
 }

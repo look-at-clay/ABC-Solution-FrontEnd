@@ -29,7 +29,7 @@ export class DashboardComponent {
   totalUsers = 0;
   totalBuyers = 0;
   totalSellers = 0;
-  totalProfit = 52500;
+  totalProfit = 0;
   totalLevels = 0;
   totalOrders = 0;
   totalCategories = 0;
@@ -63,6 +63,21 @@ export class DashboardComponent {
     this.fetchOrderStatistics(); 
     this.fetchCombinedRequestStats();
     this.fetchCategoryCount();
+    this.fetchTotalProfit();
+  }
+
+  fetchTotalProfit(): void {
+    this.adminService.getTotalPlatformFees().subscribe({
+      next: (profit: number) => {
+        this.totalProfit = profit;
+        this.loading = false;
+      },
+      error: (error: any) => {
+        this.error = 'Failed to load total profit';
+        this.loading = false;
+        console.error('Error fetching total profit:', error);
+      }
+    });
   }
 
   // Add this new method
@@ -283,6 +298,7 @@ export class DashboardComponent {
     this.fetchOrderStatistics();
     this.fetchCombinedRequestStats();
     this.fetchCategoryCount();
+    this.fetchTotalProfit();
   }
 
   onLogout(): void {
